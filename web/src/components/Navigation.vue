@@ -26,6 +26,7 @@
     <template v-if="!mdAndDown">
       <ko-fi />
       <join-discord text="Discord" />
+      <locale-changer />
     </template>
     <template v-if="!mdAndDown" #append>
       <slot name="append" />
@@ -43,6 +44,7 @@
         <slot name="append" />
         <ko-fi />
         <join-discord text="Discord" />
+        <locale-changer />
       </div>
     </template>
   </v-navigation-drawer>
@@ -51,11 +53,16 @@
 <script setup lang="ts">
   import { useDisplay } from 'vuetify'
   import eventBus from '@/utils/eventBus'
+  import { useI18n } from 'vue-i18n'
+
   const { mdAndDown } = useDisplay()
 
   const toolbarDensity = computed(() => mdAndDown.value ? 'compact' : undefined)
   const isDrawerOpen = ref(false)
   const currentTab = ref(null)
+
+  const { t } = useI18n();
+  const plannerText = computed(() => t("planner"));
 
   const toggleDrawer = () => {
     isDrawerOpen.value = !isDrawerOpen.value
@@ -72,7 +79,7 @@
   })
 
   const tabItems = [
-    { title: 'Planner', icon: 'fas fa-ruler-triangle', href: '/' },
+    { title: plannerText.value, icon: 'fas fa-ruler-triangle', href: '/' },
     { title: 'Graph (WIP)', icon: 'fas fa-project-diagram', href: '/graph' },
     { title: 'Recipes', icon: 'fas fa-hat-chef', href: '/recipes' },
     { title: 'Change Log', icon: 'fas fa-scroll', href: '/changelog' },
