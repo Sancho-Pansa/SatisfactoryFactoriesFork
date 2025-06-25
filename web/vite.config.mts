@@ -7,10 +7,12 @@ import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import path from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
@@ -57,6 +59,9 @@ export default defineConfig(() => ({
         }],
       },
     }),
+    VueI18nPlugin({
+      include: [path.resolve(__dirname, './src/locales/**')]
+    })
   ],
   define: { 'process.env': {} },
   resolve: {
