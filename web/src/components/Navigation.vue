@@ -51,7 +51,10 @@
 <script setup lang="ts">
   import { useDisplay } from 'vuetify'
   import eventBus from '@/utils/eventBus'
+  import { useI18n } from 'vue-i18n'
+
   const { mdAndDown } = useDisplay()
+  const { t } = useI18n()
 
   const toolbarDensity = computed(() => mdAndDown.value ? 'compact' : undefined)
   const isDrawerOpen = ref(false)
@@ -72,10 +75,10 @@
   })
 
   const tabItems = [
-    { title: 'Planner', icon: 'fas fa-ruler-triangle', href: '/' },
-    { title: 'Graph (WIP)', icon: 'fas fa-project-diagram', href: '/graph' },
-    { title: 'Recipes', icon: 'fas fa-hat-chef', href: '/recipes' },
-    { title: 'Change Log', icon: 'fas fa-scroll', href: '/changelog' },
+    { title: t("navigation.planner"), icon: 'fas fa-ruler-triangle', href: '/' },
+    { title: t("navigation.graph"), icon: 'fas fa-project-diagram', href: '/graph' },
+    { title: t("navigation.recipes"), icon: 'fas fa-hat-chef', href: '/recipes' },
+    { title: t("navigation.changelog"), icon: 'fas fa-scroll', href: '/changelog' },
   ]
 
   onMounted(async () => {
