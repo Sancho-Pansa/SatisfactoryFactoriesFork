@@ -1,4 +1,9 @@
 export default {
+  general: {
+    powerUnitMW: "MW",
+    powerUnitGW: "GW",
+    timeUnitMin: "min",
+  },
   language: {
     self: "Language"
   },
@@ -33,6 +38,16 @@ export default {
       consumed: "{value} {unit} consumed",
       generated: "{value} {unit} generated",
       difference: "{value} {unit} difference",
+    },
+    itemsDifference: {
+      header: "Product Surplus & Deficit",
+      info: "Shows the amount of surplus or deficit of items you have in your factory. These are items that either need to be produced more (in red), or items that can be stored or sunk (in green)!",
+      emptyList: "No Product Surplus or Deficit"
+    },
+    items: {
+      header: "Produced Items",
+      info: "Shows all the items produced by all your factories.",
+      emptyList: "Awaiting Production"
     }
   }
 }

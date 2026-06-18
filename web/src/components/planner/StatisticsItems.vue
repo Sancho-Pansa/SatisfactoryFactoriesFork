@@ -1,11 +1,10 @@
 <template>
   <h1 class="text-h5">
     <i class="fas fa-conveyor-belt-alt" />
-    <span class="ml-3">Produced Items</span>
+    <span class="ml-3">{{ $t("statistics.items.header") }}</span>
   </h1>
   <p v-show="helpText" class="mb-4">
-    <i class="fas fa-info-circle" /> Shows all the items produced by all
-    your factories.
+    <i class="fas fa-info-circle" /> {{ $t("statistics.items.info") }}
   </p>
 
   <div v-if="allFactoryProducts.length > 0">
@@ -22,7 +21,7 @@
       </span>
     </v-chip>
   </div>
-  <p v-else class="text-body-1">Awaiting Production</p>
+  <p v-else class="text-body-1">{{ $t("statistics.items.emptyList") }}</p>
 </template>
 
 <script setup lang="ts">
