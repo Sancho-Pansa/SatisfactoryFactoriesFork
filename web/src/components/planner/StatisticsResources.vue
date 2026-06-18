@@ -1,11 +1,10 @@
 <template>
   <h1 class="text-h5">
     <i class="fas fa-globe" />
-    <span class="ml-3">Raw Resources</span>
+    <span class="ml-3">{{ $t("statistics.resources.header") }}</span>
   </h1>
   <p v-show="helpText" class="mb-4">
-    <i class="fas fa-info-circle" /> Shows the amount of raw resources
-    consumed by all your factories.
+    <i class="fas fa-info-circle" /> {{ $t("statistics.resources.info") }}
   </p>
   <div v-if="allFactoryRawResources.length > 0">
     <span v-for="(resource, id) in allFactoryRawResources" :key="id">
@@ -17,7 +16,7 @@
       </v-chip>
     </span>
   </div>
-  <p v-else class="text-body-1">Awaiting Resource Consumption</p>
+  <p v-else class="text-body-1">{{ $t("statistics.resources.noResources") }}</p>
 </template>
 
 <script setup lang="ts">

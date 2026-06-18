@@ -4,7 +4,7 @@
       <v-card class="factory-card">
         <v-row class="header">
           <v-col class="text-h4 flex-grow-1" cols="8">
-            <i class="fas fa-list" /><span class="ml-3">Statistics [WIP]</span>
+            <i class="fas fa-list" /><span class="ml-3">{{ $t("statistics.header") }}</span>
           </v-col>
           <v-col class="text-right" cols="4">
             <v-btn
@@ -13,7 +13,7 @@
               prepend-icon="fas fa-eye-slash"
               variant="outlined"
               @click="toggleVisibility"
-            >Hide
+            >{{ $t('statistics.hide') }}
             </v-btn>
             <v-btn
               v-show="hidden"
@@ -21,7 +21,7 @@
               prepend-icon="fas fa-eye"
               variant="outlined"
               @click="toggleVisibility"
-            >Show
+            >{{ $t('statistics.show') }}
             </v-btn>
           </v-col>
         </v-row>
@@ -40,7 +40,7 @@
               prepend-icon="fas fa-eye-slash"
               variant="outlined"
               @click="toggleProductsVisibility"
-            >Hide all Products
+            > {{ $t("statistics.hideAll") }}
             </v-btn>
             <v-btn
               v-show="hiddenProducts"
@@ -48,7 +48,7 @@
               prepend-icon="fas fa-eye"
               variant="outlined"
               @click="toggleProductsVisibility"
-            >Show all Products
+            >{{ $t("statistics.showAll") }}
             </v-btn>
           </v-col>
 

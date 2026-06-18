@@ -61,8 +61,10 @@
 <script setup lang="ts">
   import { useAppStore } from '@/stores/app-store'
   import { confirmDialog } from '@/utils/helpers'
+  import { useI18n } from 'vue-i18n'
 
   const appStore = useAppStore()
+  const { t } = useI18n()
 
   const isEditingName = ref(false)
   const currentTabName = ref(appStore.currentFactoryTab.name)
@@ -83,7 +85,7 @@
 
   const confirmDelete = () => {
     if (appStore.getFactories().length > 0) {
-      return confirmDialog('Are you sure you wish to delete this tab? This action is irreversible!')
+      return confirmDialog(t('tabnavigation.confirm'))
     }
     return true
   }
