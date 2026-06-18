@@ -16,7 +16,7 @@
       </v-chip>
     </span>
   </div>
-  <p v-else class="text-body-1">{{ $t("statistics.resources.noResources") }}</p>
+  <p v-else class="text-body-1">{{ $t("statistics.resources.emptyList") }}</p>
 </template>
 
 <script setup lang="ts">

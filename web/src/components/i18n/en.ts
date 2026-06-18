@@ -20,7 +20,19 @@ export default {
     resources: {
       header: "Raw Resources",
       info: "Shows the amount of raw resources consumed by all your factories.",
-      noResources: "Awaiting Resource Consumption"
+      emptyList: "Awaiting Resource Consumption"
+    },
+    buildings: {
+      header: "Building Summary",
+      info: "Shows the amount buildings of each type in all your factories.",
+      emptyList: "Awaiting Building Construction"
+    },
+    power: {
+      header: "Power Consumption and Generation",
+      info: "Shows world level power consumption and generation data.",
+      consumed: "{value} {unit} consumed",
+      generated: "{value} {unit} generated",
+      difference: "{value} {unit} difference",
     }
   }
 }

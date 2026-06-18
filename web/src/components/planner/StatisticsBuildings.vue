@@ -1,11 +1,10 @@
 <template>
   <h1 class="text-h5">
     <i class="fas fa-building" />
-    <span class="ml-3">Building Summary</span>
+    <span class="ml-3">{{ $t("statistics.buildings.header") }}</span>
   </h1>
   <p v-show="helpText" class="mb-4">
-    <i class="fas fa-info-circle" /> Shows the amount buildings of each
-    type in all your factories.
+    <i class="fas fa-info-circle" /> {{ $t("statistics.buildings.info") }}
   </p>
   <div v-if="totalBuildingsByType.length > 0">
     <span v-for="(building, type) in totalBuildingsByType" :key="type">
@@ -17,7 +16,7 @@
       </v-chip>
     </span>
   </div>
-  <p v-else class="text-body-1">Awaiting Building Construction</p>
+  <p v-else class="text-body-1">{{ $t("statistics.buildings.emptyList") }}</p>
 </template>
 
 <script setup lang="ts">

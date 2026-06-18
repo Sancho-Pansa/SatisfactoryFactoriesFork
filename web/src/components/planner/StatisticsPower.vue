@@ -1,9 +1,9 @@
 <template>
   <h1 class="text-h5">
-    <i class="fas fa-power-off mr-3" />Power Consumption and Generation
+    <i class="fas fa-power-off mr-3" /> {{ $t("statistics.power.header") }}
   </h1>
   <p v-show="helpText" class="mb-4">
-    <i class="fas fa-info-circle mr-2" />Shows world level power consumption and generation data.
+    <i class="fas fa-info-circle mr-2" /> {{ $t("statistics.power.info") }}
   </p>
   <v-chip
     class="sf-chip yellow"
@@ -11,7 +11,7 @@
   >
     <i class="fas fa-bolt" />
     <i class="fas fa-minus" />
-    <span class="ml-2">{{ powerConsumed.value }} {{ powerConsumed.unit }} consumed</span>
+    <span class="ml-2">{{ $t("statistics.power.consumed", { value: powerConsumed.value, unit: powerConsumed.unit }) }}</span>
   </v-chip>
   <v-chip
     class="sf-chip yellow"
@@ -19,7 +19,7 @@
   >
     <i class="fas fa-bolt" />
     <i class="fas fa-plus" />
-    <span class="ml-2">{{ powerProduced.value }} {{ powerProduced.unit }} generated</span>
+    <span class="ml-2">{{ $t("statistics.power.generated", { value: powerProduced.value, unit: powerProduced.unit }) }}</span>
   </v-chip>
   <v-chip
     class="sf-chip"
@@ -29,7 +29,7 @@
     }"
     variant="tonal"
   >
-    <i class="fas fa-plug mr-2" />{{ powerDifference.value }} {{ powerDifference.unit }} difference
+    <i class="fas fa-plug mr-2" />{{ $t("statistics.power.difference", { value: powerDifference.value, unit: powerDifference.unit }) }}
   </v-chip>
 </template>
 

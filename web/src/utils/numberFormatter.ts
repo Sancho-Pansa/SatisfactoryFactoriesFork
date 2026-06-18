@@ -1,3 +1,4 @@
+// TODO: Localization of MW/GW
 export function formatNumber (value: any): string {
   const num = Number(value)
   if (isNaN(num)) {
