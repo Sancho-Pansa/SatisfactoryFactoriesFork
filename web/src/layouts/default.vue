@@ -4,6 +4,7 @@
       <navigation>
         <template #append>
           <auth :button-color="authButtonColor" />
+          <locale-selector />
         </template>
       </navigation>
 
