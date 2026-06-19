@@ -65,7 +65,7 @@
             prepend-icon="fas fa-plus"
             size="large"
             @click="createFactory()"
-          >Add Factory</v-btn>
+          >{{ $t("planner.add") }}</v-btn>
         </div>
       </v-col>
     </v-row>

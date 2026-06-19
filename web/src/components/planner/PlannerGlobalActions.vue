@@ -10,7 +10,7 @@
         variant="tonal"
         @click="emit('hide-all')"
       >
-        Hide all
+        {{ $t("planner.globalActions.hideAll") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -21,7 +21,7 @@
         variant="tonal"
         @click="expandAll"
       >
-        Expand all
+        {{ $t("planner.globalActions.expandAll") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -30,7 +30,7 @@
         variant="tonal"
         @click="emit('toggle-help-text')"
       >
-        {{ helpTextShown ? "Hide" : "Show" }} Info
+        {{ helpTextShown ? $t("planner.globalActions.hideInfo") : $t("planner.globalActions.showInfo") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -40,7 +40,7 @@
         variant="tonal"
         @click="eventBus.emit('introToggle', true)"
       >
-        Show Intro
+        {{ $t("planner.globalActions.showIntro") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -50,7 +50,7 @@
         variant="tonal"
         @click="emit('import-world')"
       >
-        Import world [WIP]
+        {{ $t("planner.globalActions.importWorld") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -58,9 +58,9 @@
         :disabled="getFactories().length === 0"
         prepend-icon="fas fa-trash"
         variant="tonal"
-        @click="confirmDelete('Are you really sure? This will delete literally everything!') && emit('clear-all')"
+        @click="confirmDelete($t('planner.globalActions.clearConfirm')) && emit('clear-all')"
       >
-        Clear
+        {{ $t("planner.globalActions.clear") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -70,7 +70,7 @@
         variant="tonal"
         @click="copyPlanToClipboard"
       >
-        Copy plan
+        {{ $t("planner.globalActions.copyPlan") }}
       </v-btn>
       <v-btn
         class="ma-1"
@@ -79,7 +79,7 @@
         variant="tonal"
         @click="confirmReplace() && pastePlanFromClipboard()"
       >
-        Paste plan
+        {{ $t("planner.globalActions.pastePlan") }}
       </v-btn>
       <templates />
       <v-btn
@@ -90,7 +90,7 @@
         variant="tonal"
         @click="forceRecalc"
       >
-        Recalculate
+        {{ $t("planner.globalActions.recalculate.button") }}
       </v-btn>
     </v-col>
   </v-row>
@@ -100,9 +100,11 @@
   import { defineEmits, defineProps } from 'vue'
   import { useAppStore } from '@/stores/app-store'
   import { confirmDialog } from '@/utils/helpers'
+  import { useI18n } from 'vue-i18n'
   import eventBus from '@/utils/eventBus'
 
   const { getFactories, prepareLoader, forceCalculation } = useAppStore()
+  const { t } = useI18n()
 
   const disableRecalc = ref(false)
 
@@ -161,11 +163,12 @@
   }
 
   const forceRecalc = async () => {
-    const confirmed = confirmDialog('WARNING: Forcing a recalculation takes a LONG time for large plans. Your browser will lag and will likely complain about stalling. Are you sure?')
+    const confirmText = t("planner.recalculate.confirm")
+    const confirmed = confirmDialog(confirmText)
 
     if (!confirmed) return
 
-    eventBus.emit('toast', { message: 'Forcing recalculation of all factories. This may take a while for large plans. Expect lag.', type: 'warning' })
+    eventBus.emit('toast', { message: t("planner.recalculate.toast"), type: 'warning' })
     eventBus.emit('plannerShow', false)
     disableRecalc.value = true
 
@@ -175,7 +178,7 @@
 
     console.log('Calculations completed, telling planner to show')
     eventBus.emit('plannerShow', true)
-    eventBus.emit('toast', { message: 'Recalculations completed.', type: 'success' })
+    eventBus.emit('toast', { message: t("planner.recalculate.completionToast"), type: 'success' })
   }
 
   eventBus.on('calculationsCompleted', () => {

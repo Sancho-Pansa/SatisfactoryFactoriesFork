@@ -3,7 +3,7 @@
     class="ma-1"
     prepend-icon="fas fa-files-medical"
     @click="dialog = true"
-  >Templates</v-btn>
+  >{{ $t("planner.globalActions.templates.button") }}</v-btn>
   <v-dialog v-model="dialog" max-width="1200">
     <v-card class="pa-2">
       <v-card-title>

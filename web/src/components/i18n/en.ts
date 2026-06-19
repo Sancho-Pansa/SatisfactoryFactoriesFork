@@ -13,6 +13,27 @@ export default {
     recipes: "Recipes",
     changelog: "Change Log"
   },
+  planner: {
+    add: "Add Factory",
+    globalActions: {
+      hideAll: "Hide all",
+      expandAll: "Expand all",
+      showInfo: "Show Info",
+      hideInfo: "Hide Info",
+      showIntro: "Show Intro",
+      importWorld: "Import world [WIP]",
+      clear: "Clear",
+      clearConfirm: "Are you really sure? This will delete literally everything!",
+      copyPlan: "Copy Plan",
+      pastePlan: "Paste Plan",
+      recalculate: {
+        button: "Recalculate",
+        confirm: "WARNING: Forcing a recalculation takes a LONG time for large plans. Your browser will lag and will likely complain about stalling. Are you sure?",
+        toast: "Forcing recalculation of all factories. This may take a while for large plans. Expect lag.",
+        completionToast: "Recalculations completed."
+      }
+    }
+  },
   tabnavigation: {
     confirm: "Are you sure you wish to delete this tab? This action is irreversible!"
   },

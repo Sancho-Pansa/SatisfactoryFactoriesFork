@@ -71,10 +71,10 @@
               </template>
               <span>
                 {{ element.inSync === true
-                  ? 'In sync with game'
+                  ? $t("planner.factoryList.syncStatus.true")
                   : element.inSync === false
-                    ? 'Out of sync with game'
-                    : 'Game sync unknown'
+                    ? $t("planner.factoryList.syncStatus.false")
+                    : $t("planner.factoryList.syncStatus.unknown")
                 }}
               </span>
             </v-tooltip>
@@ -91,7 +91,7 @@
         ripple
         @click="createFactory"
       >
-        Add Factory
+        {{ $t("planner.add") }}
       </v-btn>
     </v-col>
   </v-row>
