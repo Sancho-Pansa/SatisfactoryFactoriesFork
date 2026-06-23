@@ -2,7 +2,7 @@
   <v-card class="factory-card sub-card">
     <v-card-title>
       <i class="fas fa-sticky-note" />
-      <span class="text-h5 ml-3">Notes</span>
+      <span class="text-h5 ml-3">{{ $t("planner.notes.header") }}</span>
     </v-card-title>
     <v-card-text>
       <v-textarea
@@ -10,11 +10,11 @@
         auto-grow
         :counter="charLimit"
         error-messages=""
-        placeholder="Add some notes!"
+        :placeholder="$t('planner.notes.placeholder')"
         rows="1"
         :rules="[rules.length]"
       />
-      <v-btn v-if="factory.notes.length > 0" class="mt-1" color="primary" @click="factory.notes = ''">Clear Notes</v-btn>
+      <v-btn v-if="factory.notes.length > 0" class="mt-1" color="primary" @click="factory.notes = ''">{{ $t("planner.notes.clear") }}</v-btn>
     </v-card-text>
   </v-card>
 </template>
@@ -22,6 +22,9 @@
 <script setup lang="ts">
   import { Factory } from '@/interfaces/planner/FactoryInterface'
   import eventBus from '@/utils/eventBus'
+  import { useI18n } from 'vue-i18n'
+
+  const { t } = useI18n();
 
   const props = defineProps <{
     factory: Factory;
@@ -34,7 +37,7 @@
       // Check if the value length exceeds the character limit
       if (props.factory.notes.length >= charLimit) {
         props.factory.notes = props.factory.notes.slice(0, charLimit) // Trim the value
-        return `Max character length (${charLimit}) reached, condense your notes, pioneer!`
+        return t("planner.notes.limitMessage", { charLimit });
       }
       return true // Validation passes
     },

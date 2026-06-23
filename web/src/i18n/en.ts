@@ -15,6 +15,13 @@ export default {
   },
   planner: {
     add: "Add Factory",
+    factoryList: {
+      syncStatus: {
+        unknown: "Game sync unknown",
+        true: "In sync with game",
+        false: "Out of sync with game"
+      }
+    },
     globalActions: {
       hideAll: "Hide all",
       expandAll: "Expand all",
@@ -32,6 +39,12 @@ export default {
         toast: "Forcing recalculation of all factories. This may take a while for large plans. Expect lag.",
         completionToast: "Recalculations completed."
       }
+    },
+    notes: {
+      header: "Notes",
+      placeholder: "Add some notes!",
+      clear: "Clear Notes",
+      limitMessage: "Max character length {charLimit} reached, condense your notes, pioneer!"
     }
   },
   tabnavigation: {
