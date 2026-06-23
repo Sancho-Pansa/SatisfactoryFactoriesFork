@@ -38,7 +38,14 @@ export default {
         emptyFactory: "Empty factory! Select a product!"
       },
       body: {
-
+        productsAndPower: {
+          header: "Products &amp; Power Generators",
+          help: {
+            paragraph: "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export.<br> e.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).<br>"
+          },
+          addProduct: "Add Product",
+          addGenerator: "Add Power Generator"
+        }
       }
     },
     syncStatus: {
