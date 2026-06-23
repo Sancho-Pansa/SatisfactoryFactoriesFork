@@ -56,6 +56,29 @@ export default {
           addProduct: "Add Product",
           addGenerator: "Add Power Generator"
         },
+        import: {
+          header: "Imports",
+          help: "Imports are the resources needed to produce the factory's products and ensure its satisfaction. To set up imports, you select another factory and choose one of its outputs. This creates a \"request\" for that output. The selected factory must fulfill this request, and you'll be notified if it cannot meet the demand. All available outputs are listed in the Outputs section of the factory you choose.",
+          wait: "Awaiting product selection",
+          selection: {
+            error: "There are no factories available to import the current product selection",
+            factoryLabel: "Factory",
+            itemLabel: "Item",
+            qtyLabel: "Qty /min",
+            satisfy: "Satisfy",
+            trim: "Trim",
+            view: "View",
+            noAmount: "No amount set",
+            redundant: "Redundant",
+            add: "Add Import",
+            rawOnly: "This factory is only using raw resources and requires no imports.",
+            noImport: "There are no factories that have exports available to supply this factory."
+          },
+          rawResources: {
+            header: "Raw Resources",
+            help: "Raw resources (e.g. Iron Ore) aren't defined as imports. It is assumed you'll supply them sufficiently. It seemed a little pointless to force you to make a factory to input it directly into a factory."
+          }
+        }
       }
     },
     syncStatus: {

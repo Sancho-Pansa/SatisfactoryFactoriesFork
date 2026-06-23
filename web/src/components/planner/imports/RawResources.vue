@@ -1,11 +1,11 @@
 <template>
   <v-card v-if="validToDisplay" class="mb-4 border-md sub-card">
     <v-card-title>
-      <i class="fas fa-hard-hat" /><span class="ml-2">Raw Resources</span>
+      <i class="fas fa-hard-hat" /><span class="ml-2">{{ $t("planner.factory.body.import.rawResources.header") }}</span>
     </v-card-title>
     <v-card-text class="text-body-2">
       <p class="mb-4">
-        <i class="fas fa-info-circle" /> Raw resources (e.g. Iron Ore) aren't defined as imports. It is assumed you'll supply them sufficiently. It seemed a little pointless to force you to make a factory to input it directly into a factory.
+        <i class="fas fa-info-circle" /> {{ $t("planner.factory.body.import.rawResources.help") }}
       </p>
       <v-chip
         v-for="(resource, resourceKey) in factory.rawResources"
@@ -14,7 +14,7 @@
       >
         <game-asset clickable :subject="resourceKey.toString() ?? 'unknown'" type="item" />
         <span class="ml-2">
-          <b>{{ getPartDisplayName(resourceKey.toString()) }}</b>: {{ formatNumber(resource.amount) }}/min
+          <b>{{ getPartDisplayName(resourceKey.toString()) }}</b>: {{ formatNumber(resource.amount) }}/{{ $t("general.timeUnitMin") }}
         </span>
       </v-chip>
     </v-card-text>
