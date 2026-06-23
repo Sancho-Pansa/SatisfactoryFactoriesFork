@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-h5 mb-4">
       <i class="fas fa-conveyor-belt-alt" />
-      <span class="ml-3">Products &amp; Power Generators</span>
+      <span class="ml-3">{{ $t("planner.factory.body.productsAndPower.header") }}</span>
     </h1>
     <p v-show="helpText" class="text-body-2 mb-4">
       <i class="fas fa-info-circle" /> {{ $t("planner.factory.body.productsAndPower.help.pararaph") }}

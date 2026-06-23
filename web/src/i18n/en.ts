@@ -43,9 +43,19 @@ export default {
           help: {
             paragraph: "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export.<br> e.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).<br>"
           },
+          product: {
+            itemLabel: "Item",
+            recipeLabel: "Recipe",
+            qtyLabel: "Qty /min",
+            satisfy: "Satisfy",
+            trim: "Trim",
+            internal: "Internal",
+            noDemand: "No demand",
+            byproduct: "Byproduct",
+          },
           addProduct: "Add Product",
           addGenerator: "Add Power Generator"
-        }
+        },
       }
     },
     syncStatus: {
