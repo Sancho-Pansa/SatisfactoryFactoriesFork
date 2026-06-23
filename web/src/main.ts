@@ -16,8 +16,8 @@ import '@/assets/styles/global.scss'
 import { inject } from '@vercel/analytics'
 import { injectSpeedInsights } from '@vercel/speed-insights'
 import { createI18n } from 'vue-i18n'
-import en from './components/i18n/en.js'
-import ru from './components/i18n/ru.js'
+import en from './i18n/en.js'
+import ru from './i18n/ru.js'
 
 inject()
 injectSpeedInsights()
