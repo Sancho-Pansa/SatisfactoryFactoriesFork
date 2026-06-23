@@ -71,10 +71,10 @@
               </template>
               <span>
                 {{ element.inSync === true
-                  ? $t("planner.factoryList.syncStatus.true")
+                  ? $t("planner.syncStatus.true")
                   : element.inSync === false
-                    ? $t("planner.factoryList.syncStatus.false")
-                    : $t("planner.factoryList.syncStatus.unknown")
+                    ? $t("planner.syncStatus.false")
+                    : $t("planner.syncStatus.unknown")
                 }}
               </span>
             </v-tooltip>

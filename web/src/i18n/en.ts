@@ -15,12 +15,39 @@ export default {
   },
   planner: {
     add: "Add Factory",
-    factoryList: {
-      syncStatus: {
-        unknown: "Game sync unknown",
-        true: "In sync with game",
-        false: "Out of sync with game"
+    factory: {
+      header: {
+        placeholder: "Factory Name",
+        tasks: "Tasks",
+        notes: "See notes",
+        controls: {
+          up: "Move Factory Up",
+          down: "Move Factory Down",
+          collapse: "Collapse Factory",
+          expand: "Expand Factory",
+          copy: "Copy Factory",
+          delete: "Delete Factory",
+          confirmDelete: "Are you sure you want to delete this factory?"
+        }
+      },
+      collapsed: {
+        import: "Imports",
+        export: "Exports",
+        raw: "Raw Resource(s)",
+        produce: "Produces",
+        emptyFactory: "Empty factory! Select a product!"
+      },
+      body: {
+
       }
+    },
+    syncStatus: {
+      unknown: "Game sync unknown",
+      true: "In sync with game",
+      false: "Out of sync with game",
+      reset: "Reset sync status",
+      clickTooltip: "Mark as in sync with game",
+      textTooltip: "Game Sync is when you have implemented the factory inside the game.<br> When it drops out of sync, there are changes that you need to implement.<br> When a factory's products are changed, the factory will be out of sync, or if you set it manually."
     },
     globalActions: {
       hideAll: "Hide all",

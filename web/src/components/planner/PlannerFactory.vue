@@ -9,7 +9,7 @@
               <input
                 v-model="factory.name"
                 class="ml-3 pl-0 factory-name"
-                placeholder="Factory Name"
+                :placeholder="$t('planner.factory.header.placeholder')"
               >
             </div>
             <!-- chips bar -->
@@ -18,26 +18,26 @@
               <div v-if="countActiveTasks(factory)" class="mr-2">
                 <v-chip class="sf-chip small yellow no-margin" @click="navigateToFactory(factory.id, `${factory.id}-tasks`)">
                   <i class="fas fa-tasks" />
-                  <span class="ml-2">Tasks: {{ countActiveTasks(factory) }}</span>
+                  <span class="ml-2">{{ $t("planner.factory.header.tasks") }}: {{ countActiveTasks(factory) }}</span>
                 </v-chip>
               </div>
               <!-- notes chip -->
               <div v-if="factory.notes" class="mr-2">
                 <v-chip class="sf-chip small yellow no-margin" @click="navigateToFactory(factory.id, `${factory.id}-notes`)">
                   <i class="fas fa-sticky-note" />
-                  <span class="ml-2">See notes</span>
+                  <span class="ml-2">{{ $t("planner.factory.header.notes") }}</span>
                 </v-chip>
               </div>
               <!-- sync status chip -->
               <div v-if="factory.inSync">
                 <v-chip class="sf-chip small green no-margin" @click="setSyncState(factory)">
                   <i class="fas fa-check-square" />
-                  <span class="ml-2">In sync with game</span>
+                  <span class="ml-2">{{ $t("planner.syncStatus.true") }}</span>
                   <v-btn
                     class="ml-2"
                     icon
                     size="x-small"
-                    title="Reset sync status"
+                    :title="$t('planner.syncStatus.reset')"
                     @click.stop="resetSyncState(factory)"
                   >
                     <i class="fas fa-times" />
@@ -47,12 +47,12 @@
               <div v-if="factory.inSync === false">
                 <v-chip class="sf-chip small orange no-margin" @click="setSyncState(factory)">
                   <i class="fas fa-times-square" />
-                  <span class="ml-2">Out of sync with game</span>
+                  <span class="ml-2">{{ $t("planner.syncStatus.false") }}</span>
                   <v-btn
                     class="ml-2"
                     icon
                     size="x-small"
-                    title="Reset sync status"
+                    :title="$t('planner.syncStatus.reset')"
                     @click.stop="resetSyncState(factory)"
                   >
                     <i class="fas fa-times" />
@@ -62,11 +62,11 @@
               <div v-if="factory.inSync === null">
                 <v-chip class="border border-gray border-dashed" :disabled="!validForGameSync(factory)" @click="setSyncState(factory)">
                   <i class="fas fa-question" />
-                  <span class="ml-2">Mark as in sync with game</span>
+                  <span class="ml-2">{{ $t("planner.syncStatus.clickTooltip") }}</span>
                 </v-chip>
               </div>
               <!-- sync status tooltip -->
-              <tooltip-info text="Game Sync is when you have implemented the factory inside the game.<br> When it drops out of sync, there are changes that you need to implement.<br> When a factory's products are changed, the factory will be out of sync, or if you set it manually." />
+              <tooltip-info :text="$t('planner.syncStatus.textTooltip')" />
             </div>
           </v-col>
           <v-col class="text-right pt-0 pt-md-3" cols="auto" md="4">
@@ -77,7 +77,7 @@
               :disabled="factory.displayOrder === 0"
               icon="fas fa-arrow-up"
               size="small"
-              title="Move Factory Up"
+              :title="$t('planner.factory.header.controls.up')"
               variant="outlined"
               @click="moveFactory(factory, 'up')"
             />
@@ -87,7 +87,7 @@
               :disabled="factory.displayOrder === totalFactories - 1"
               icon="fas fa-arrow-down"
               size="small"
-              title="Move Factory Down"
+              :title="$t('planner.factory.header.controls.down')"
               variant="outlined"
               @click="moveFactory(factory, 'down')"
             />
@@ -97,7 +97,7 @@
               color="secondary"
               icon="fas fa-compress-alt"
               size="small"
-              title="Collapse Factory"
+              :title="$t('planner.factory.header.controls.collapse')"
               variant="outlined"
               @click="factory.hidden = true"
             />
@@ -107,7 +107,7 @@
               color="secondary"
               icon="fas fa-expand-alt"
               size="small"
-              title="Expand Factory"
+              :title="$t('planner.factory.header.controls.expand')"
               variant="outlined"
               @click="factory.hidden = false"
             />
@@ -116,7 +116,7 @@
               color="orange rounded"
               icon="fas fa-copy"
               size="small"
-              title="Copy Factory"
+              :title="$t('planner.factory.header.controls.copy')"
               variant="outlined"
               @click="copyFactory(factory)"
             />
@@ -124,7 +124,7 @@
               color="red rounded"
               icon="fas fa-trash"
               size="small"
-              title="Delete Factory"
+              :title="$t('planner.factory.header.controls.delete')"
               variant="outlined"
               @click="confirmDelete() && deleteFactory(factory)"
             />
@@ -173,7 +173,7 @@
             :class="factory.products.length > 0 ? 'border-b-md' : ''"
           >
             <div class="d-flex align-center">
-              <p class="mr-2">Imports:</p>
+              <p class="mr-2">{{ $t("planner.factory.collapsed.import")}}:</p>
               <div
                 v-for="(input, inputIndex) in factory.inputs"
                 :key="inputIndex"
@@ -207,7 +207,7 @@
               >
                 <i class="fas fa-hard-hat" />
                 <span class="ml-2">
-                  <b>{{ "Raw Resource(s)" }}:</b>
+                  <b>{{ $t("planner.factory.collapsed.raw") }}:</b>
                 </span>
                 <v-chip
                   class="sf-chip blue ml-2"
@@ -220,7 +220,7 @@
                     type="item"
                     width="32"
                   />
-                  <span class="ml-2"><b>{{ getPartDisplayName(resource.id) }}:</b> {{ formatNumber(resource.amount) }}/min</span>
+                  <span class="ml-2"><b>{{ getPartDisplayName(resource.id) }}:</b> {{ formatNumber(resource.amount) }}/{{ $t("general.timeUnitMin") }}</span>
                 </v-chip>
               </div>
             </div>
@@ -229,9 +229,9 @@
             class="py-2 px-4 my-0 mx-0"
             :class="hasExports(factory) ? 'border-b-md' : ''"
           >
-            <p v-if="factory.products.length === 0" class="text-body-1">Empty factory! Select a product!</p>
+            <p v-if="factory.products.length === 0" class="text-body-1">{{ $t("planner.factory.collapsed.emptyFactory") }}</p>
             <div v-else>
-              <p class="text-body-1 d-inline-block mr-2">Producing: </p>
+              <p class="text-body-1 d-inline-block mr-2">{{ $t("planner.factory.collapsed.produce") }}: </p>
               <template v-for="part in factory.products">
                 <v-chip
                   v-if="factory.parts[part.id]"
@@ -248,14 +248,14 @@
                     />
                   </span>
                   <span>
-                    <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/min
+                    <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/{{ $t("general.timeUnitMin") }}
                   </span>
                   <span
                     v-if="factory.parts[part.id].amountRemaining !== 0"
                     class="ml-2"
                     :class="differenceClass(factory.parts[part.id].amountRemaining)"
                   >
-                    (<span v-if="factory.parts[part.id].amountRemaining > 0">+</span>{{ formatNumber(factory.parts[part.id].amountRemaining) }}/min)</span>
+                    (<span v-if="factory.parts[part.id].amountRemaining > 0">+</span>{{ formatNumber(factory.parts[part.id].amountRemaining) }}/{{ $t("general.timeUnitMin") }})</span>
                 </v-chip>
               </template>
             </div>
@@ -265,7 +265,7 @@
             class="text-body-1 py-2 px-4 pb-1"
           >
             <div class="d-flex align-center">
-              <p class="mr-2">Exports:</p>
+              <p class="mr-2">{{ $t("planner.factory.collapsed.export") }}:</p>
               <div
                 v-for="dependant in Object.keys(factory.dependencies.requests)"
                 :key="dependant"
@@ -289,7 +289,7 @@
                     type="item"
                     width="32"
                   />
-                  <span class="ml-2"><b>{{ getPartDisplayName(part.part) }}:</b> {{ formatNumber(part.amount) }}/min</span>
+                  <span class="ml-2"><b>{{ getPartDisplayName(part.part) }}:</b> {{ formatNumber(part.amount) }}/{{ $t("general.timeUnitMin") }}</span>
                 </v-chip>
               </div>
             </div>
@@ -309,6 +309,7 @@
   import { formatNumber } from '@/utils/numberFormatter'
   import { useDisplay } from 'vuetify'
   import { setSyncState } from '@/utils/factory-management/syncState'
+  import { useI18n } from 'vue-i18n'
 
   const findFactory = inject('findFactory') as (id: string | number) => Factory
   const copyFactory = inject('copyFactory') as (factory: Factory) => void
@@ -323,6 +324,7 @@
   }>()
 
   const { smAndDown } = useDisplay()
+  const { t } = useI18n()
 
   const factoryClass = (factory: Factory) => {
     return {
@@ -332,7 +334,7 @@
     }
   }
 
-  const confirmDelete = (message = 'Are you sure you want to delete this factory?') => {
+  const confirmDelete = (message = t("planner.factory.controls.confirmDelete")) => {
     return confirm(message)
   }
 
