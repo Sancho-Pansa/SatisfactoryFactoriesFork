@@ -4,6 +4,9 @@ export default {
     powerUnitGW: "GW",
     timeUnitMin: "min",
   },
+  buildings: {
+
+  },
   language: {
     self: "Language"
   },
@@ -52,6 +55,7 @@ export default {
             internal: "Internal",
             noDemand: "No demand",
             byproduct: "Byproduct",
+            requires: "Requires"
           },
           addProduct: "Add Product",
           addGenerator: "Add Power Generator"
@@ -78,6 +82,12 @@ export default {
             header: "Raw Resources",
             help: "Raw resources (e.g. Iron Ore) aren't defined as imports. It is assumed you'll supply them sufficiently. It seemed a little pointless to force you to make a factory to input it directly into a factory."
           }
+        },
+        satisfaction: {
+          header: "Satisfaction",
+          breakdownLabel: "Show Satisfaction Breakdowns",
+          internalLabel: "Hide Internal Products & Raw",
+          empty: "Awaiting product selection or requirements outside of Raw Resources."
         }
       }
     },

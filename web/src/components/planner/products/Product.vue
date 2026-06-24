@@ -150,7 +150,7 @@
         v-if="Object.keys(product.requirements).length > 0 || product.buildingRequirements"
         class="d-flex flex-sm-wrap align-center"
       >
-        <p class="mr-2">Requires:</p>
+        <p class="mr-2">{{ $t("planner.factory.body.productsAndPower.product.requires") }}:</p>
         <v-chip
           v-for="(requirement, part) in product.requirements"
           :key="`ingredients-${part}`"

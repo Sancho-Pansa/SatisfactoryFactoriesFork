@@ -163,12 +163,12 @@
   }
 
   const forceRecalc = async () => {
-    const confirmText = t("planner.recalculate.confirm")
+    const confirmText = t("planner.globalActions.recalculate.confirm")
     const confirmed = confirmDialog(confirmText)
 
     if (!confirmed) return
 
-    eventBus.emit('toast', { message: t("planner.recalculate.toast"), type: 'warning' })
+    eventBus.emit('toast', { message: t("planner.globalActions.recalculate.toast"), type: 'warning' })
     eventBus.emit('plannerShow', false)
     disableRecalc.value = true
 
@@ -178,7 +178,7 @@
 
     console.log('Calculations completed, telling planner to show')
     eventBus.emit('plannerShow', true)
-    eventBus.emit('toast', { message: t("planner.recalculate.completionToast"), type: 'success' })
+    eventBus.emit('toast', { message: t("planner.globalActions.recalculate.completionToast"), type: 'success' })
   }
 
   eventBus.on('calculationsCompleted', () => {

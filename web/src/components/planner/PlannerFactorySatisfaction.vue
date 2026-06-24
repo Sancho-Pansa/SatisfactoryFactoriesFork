@@ -6,27 +6,27 @@
         class="text-h5"
       >
         <i class="fas fa-check" />
-        <span class="ml-3">Satisfaction</span>
+        <span class="ml-3">{{ $t("planner.factory.body.satisfaction.header") }}</span>
       </h2>
       <h2
         v-show="!factory.requirementsSatisfied"
         class="text-h5 text-red"
       >
         <i class="fas fa-times" />
-        <span class="ml-3">Satisfaction</span>
+        <span class="ml-3">{{ $t("planner.factory.body.satisfaction.header") }}</span>
       </h2>
       <h2
         v-show="factory.requirementsSatisfied && !hasParts"
         class="text-h5"
       >
         <i class="fas fa-question" />
-        <span class="ml-3">Satisfaction</span>
+        <span class="ml-3">{{ $t("planner.factory.body.satisfaction.header") }}</span>
       </h2>
       <v-switch
         class="ml-4"
         color="primary"
         hide-details
-        label="Show Satisfaction Breakdowns"
+        :label="$t('planner.factory.body.satisfaction.breakdownLabel')"
         :model-value="showSatisfactionBreakdowns"
         @change="changeSatisfactionBreakdowns"
       />
@@ -35,7 +35,7 @@
         class="ml-4"
         color="primary"
         hide-details
-        label="Hide Internal Products & Raw"
+        :label="$t('planner.factory.body.satisfaction.internalLabel')"
       />
     </div>
     <v-row v-if="hasParts">
@@ -53,7 +53,7 @@
         />
       </v-col>
     </v-row>
-    <p v-else class="text-body-1">Awaiting product selection or requirements outside of Raw Resources.</p>
+    <p v-else class="text-body-1">{{ $t("planner.factory.body.satisfaction.empty") }}</p>
   </div>
 </template>
 

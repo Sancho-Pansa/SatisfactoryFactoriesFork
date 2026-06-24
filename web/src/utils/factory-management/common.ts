@@ -56,6 +56,7 @@ export const getPowerRecipeById = (id: string, gameData: DataInterface): PowerRe
 }
 
 export const getBuildingDisplayName = (building: string) => {
+  // TODO: Локализация названий построек
   const buildingFriendly = new Map<string, string>([
     ['assemblermk1', 'Assembler'],
     ['blender', 'Blender'],
