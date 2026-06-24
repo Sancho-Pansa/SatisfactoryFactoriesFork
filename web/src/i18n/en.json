@@ -111,6 +111,9 @@
         "confirm": "WARNING: Forcing a recalculation takes a LONG time for large plans. Your browser will lag and will likely complain about stalling. Are you sure?",
         "toast": "Forcing recalculation of all factories. This may take a while for large plans. Expect lag.",
         "completionToast": "Recalculations completed."
+      },
+      "templates": {
+        "button": "Templates"
       }
     },
     "notes": {
