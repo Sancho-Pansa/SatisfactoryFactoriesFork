@@ -103,7 +103,7 @@
           {{ $t("planner.factory.productsAndPower.product.internal") }}
         </v-chip>
         <v-chip v-if="shouldShowNotInDemand(product, factory)" class="ml-2 sf-chip small orange">
-          {{ $t("planner.factory.productsAndPower.product.internal") }}!
+          {{ $t("planner.factory.productsAndPower.product.noDemand") }}
         </v-chip>
       </div>
     </div>
@@ -115,7 +115,7 @@
         v-if="product.byProducts && product.byProducts.length > 0"
         class="d-flex align-center"
       >
-        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.byproduct") }}:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.byproduct") }}</p>
         <template
           v-for="byProduct in product.byProducts"
           :key="byProduct.id"
@@ -150,7 +150,7 @@
         v-if="Object.keys(product.requirements).length > 0 || product.buildingRequirements"
         class="d-flex flex-sm-wrap align-center"
       >
-        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.requires") }}:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.requires") }}</p>
         <v-chip
           v-for="(requirement, part) in product.requirements"
           :key="`ingredients-${part}`"
