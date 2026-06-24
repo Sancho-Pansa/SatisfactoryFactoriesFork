@@ -16,23 +16,23 @@ import '@/assets/styles/global.scss'
 import { inject } from '@vercel/analytics'
 import { injectSpeedInsights } from '@vercel/speed-insights'
 import { createI18n } from 'vue-i18n'
-import en from './i18n/en.js'
-import ru from './i18n/ru.js'
+import en from './i18n/en.json'
+import ru from './i18n/ru.json'
 
 inject()
 injectSpeedInsights()
 
 const app = createApp(App)
 
-const i18n = createI18n( {
+const i18n = createI18n({
   legacy: false,
-  locale: "ru",
-  fallbackLocale: "en",
+  locale: 'ru',
+  fallbackLocale: 'en',
   messages: {
-    en: en,
-    ru: ru
-  }
-});
+    en,
+    ru,
+  },
+})
 
 registerPlugins(app)
 
