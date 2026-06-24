@@ -38,55 +38,53 @@
         "produce": "Produces",
         "emptyFactory": "Empty factory! Select a product!"
       },
-      "body": {
-        "productsAndPower": {
-          "header": "Products &amp; Power Generators",
-          "help": {
-            "paragraph": "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export.<br> e.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).<br>"
-          },
-          "product": {
-            "itemLabel": "Item",
-            "recipeLabel": "Recipe",
-            "qtyLabel": "Qty /min",
-            "satisfy": "Satisfy",
-            "trim": "Trim",
-            "internal": "Internal",
-            "noDemand": "No demand",
-            "byproduct": "Byproduct",
-            "requires": "Requires"
-          },
-          "addProduct": "Add Product",
-          "addGenerator": "Add Power Generator"
+      "productsAndPower": {
+        "header": "Products &amp; Power Generators",
+        "help": {
+          "paragraph": "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export.<br> e.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).<br>"
         },
-        "import": {
-          "header": "Imports",
-          "help": "Imports are the resources needed to produce the factory's products and ensure its satisfaction. To set up imports, you select another factory and choose one of its outputs. This creates a \"request\" for that output. The selected factory must fulfill this request, and you'll be notified if it cannot meet the demand. All available outputs are listed in the Outputs section of the factory you choose.",
-          "wait": "Awaiting product selection",
-          "selection": {
-            "error": "There are no factories available to import the current product selection",
-            "factoryLabel": "Factory",
-            "itemLabel": "Item",
-            "qtyLabel": "Qty /min",
-            "satisfy": "Satisfy",
-            "trim": "Trim",
-            "view": "View",
-            "noAmount": "No amount set",
-            "redundant": "Redundant",
-            "add": "Add Import",
-            "rawOnly": "This factory is only using raw resources and requires no imports.",
-            "noImport": "There are no factories that have exports available to supply this factory."
-          },
-          "rawResources": {
-            "header": "Raw Resources",
-            "help": "Raw resources (e.g. Iron Ore) aren't defined as imports. It is assumed you'll supply them sufficiently. It seemed a little pointless to force you to make a factory to input it directly into a factory."
-          }
+        "product": {
+          "itemLabel": "Item",
+          "recipeLabel": "Recipe",
+          "qtyLabel": "Qty /min",
+          "satisfy": "Satisfy",
+          "trim": "Trim",
+          "internal": "Internal",
+          "noDemand": "No demand",
+          "byproduct": "Byproduct",
+          "requires": "Requires"
         },
-        "satisfaction": {
-          "header": "Satisfaction",
-          "breakdownLabel": "Show Satisfaction Breakdowns",
-          "internalLabel": "Hide Internal Products & Raw",
-          "empty": "Awaiting product selection or requirements outside of Raw Resources."
+        "addProduct": "Add Product",
+        "addGenerator": "Add Power Generator"
+      },
+      "import": {
+        "header": "Imports",
+        "help": "Imports are the resources needed to produce the factory's products and ensure its satisfaction. To set up imports, you select another factory and choose one of its outputs. This creates a \"request\" for that output. The selected factory must fulfill this request, and you'll be notified if it cannot meet the demand. All available outputs are listed in the Outputs section of the factory you choose.",
+        "wait": "Awaiting product selection",
+        "selection": {
+          "error": "There are no factories available to import the current product selection",
+          "factoryLabel": "Factory",
+          "itemLabel": "Item",
+          "qtyLabel": "Qty /min",
+          "satisfy": "Satisfy",
+          "trim": "Trim",
+          "view": "View",
+          "noAmount": "No amount set",
+          "redundant": "Redundant",
+          "add": "Add Import",
+          "rawOnly": "This factory is only using raw resources and requires no imports.",
+          "noImport": "There are no factories that have exports available to supply this factory."
+        },
+        "rawResources": {
+          "header": "Raw Resources",
+          "help": "Raw resources (e.g. Iron Ore) aren't defined as imports. It is assumed you'll supply them sufficiently. It seemed a little pointless to force you to make a factory to input it directly into a factory."
         }
+      },
+      "satisfaction": {
+        "header": "Satisfaction",
+        "breakdownLabel": "Show Satisfaction Breakdowns",
+        "internalLabel": "Hide Internal Products & Raw",
+        "empty": "Awaiting product selection or requirements outside of Raw Resources."
       }
     },
     "syncStatus": {

@@ -173,7 +173,7 @@
             :class="factory.products.length > 0 ? 'border-b-md' : ''"
           >
             <div class="d-flex align-center">
-              <p class="mr-2">{{ $t("planner.factory.collapsed.import")}}:</p>
+              <p class="mr-2">{{ $t("planner.factory.collapsed.import") }}:</p>
               <div
                 v-for="(input, inputIndex) in factory.inputs"
                 :key="inputIndex"
@@ -334,7 +334,7 @@
     }
   }
 
-  const confirmDelete = (message = t("planner.factory.controls.confirmDelete")) => {
+  const confirmDelete = (message = t('planner.factory.header.controls.confirmDelete')) => {
     return confirm(message)
   }
 

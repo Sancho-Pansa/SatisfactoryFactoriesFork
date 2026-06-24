@@ -23,7 +23,7 @@
           v-model="product.id"
           hide-details
           :items="autocompletePartItems"
-          :label="$t('planner.factory.body.productsAndPower.product.itemLabel')"
+          :label="$t('planner.factory.productsAndPower.product.itemLabel')"
           max-width="300px"
           variant="outlined"
           width="300px"
@@ -37,7 +37,7 @@
           :disabled="!product.id"
           hide-details
           :items="getRecipesForPartSelector(product.id)"
-          :label="$t('planner.factory.body.productsAndPower.product.recipeLabel')"
+          :label="$t('planner.factory.productsAndPower.product.recipeLabel')"
           max-width="350px"
           variant="outlined"
           width="350px"
@@ -49,7 +49,7 @@
           v-model="product.amount"
           control-variant="stacked"
           hide-details
-          :label="$t('planner.factory.body.productsAndPower.product.qtyLabel')"
+          :label="$t('planner.factory.productsAndPower.product.qtyLabel')"
           :max-width="smAndDown ? undefined : '130px'"
           :min-width="smAndDown ? undefined : '130px'"
           :name="`${product.id}.amount`"
@@ -64,7 +64,7 @@
           color="green"
           prepend-icon="fas fa-arrow-up"
           @click="doFixProduct(product, factory)"
-        >{{ $t("planner.factory.body.productsAndPower.product.satisfy") }}</v-btn>
+        >{{ $t("planner.factory.productsAndPower.product.satisfy") }}</v-btn>
         <v-btn
           v-show="shouldShowFix(product, factory) == 'surplus'"
           class="rounded mr-2"
@@ -72,7 +72,7 @@
           prepend-icon="fas fa-arrow-down"
           size="default"
           @click="doFixProduct(product, factory)"
-        >{{ $t("planner.factory.body.productsAndPower.product.trim") }}</v-btn>
+        >{{ $t("planner.factory.productsAndPower.product.trim") }}</v-btn>
         <v-btn
           class="rounded mr-2"
           color="blue"
@@ -100,10 +100,10 @@
           @click="deleteProduct(productIndex, factory)"
         />
         <v-chip v-if="shouldShowInternal(product, factory)" class="ml-2 sf-chip small green">
-          {{ $t("planner.factory.body.productsAndPower.product.internal") }}
+          {{ $t("planner.factory.productsAndPower.product.internal") }}
         </v-chip>
         <v-chip v-if="shouldShowNotInDemand(product, factory)" class="ml-2 sf-chip small orange">
-          {{ $t("planner.factory.body.productsAndPower.product.internal") }}!
+          {{ $t("planner.factory.productsAndPower.product.internal") }}!
         </v-chip>
       </div>
     </div>
@@ -115,7 +115,7 @@
         v-if="product.byProducts && product.byProducts.length > 0"
         class="d-flex align-center"
       >
-        <p class="mr-2">{{ $t("planner.factory.body.productsAndPower.product.byproduct") }}:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.byproduct") }}:</p>
         <template
           v-for="byProduct in product.byProducts"
           :key="byProduct.id"
@@ -142,7 +142,7 @@
             <span>/{{ $t("general.timeUnitMin") }}</span>
           </v-chip>
           <v-chip v-if="shouldShowInternal(byProduct, factory)" class="sf-chip small green">
-            {{ $t("planner.factory.body.productsAndPower.product.internal") }}
+            {{ $t("planner.factory.productsAndPower.product.internal") }}
           </v-chip>
         </template>
       </div>
@@ -150,7 +150,7 @@
         v-if="Object.keys(product.requirements).length > 0 || product.buildingRequirements"
         class="d-flex flex-sm-wrap align-center"
       >
-        <p class="mr-2">{{ $t("planner.factory.body.productsAndPower.product.requires") }}:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.requires") }}:</p>
         <v-chip
           v-for="(requirement, part) in product.requirements"
           :key="`ingredients-${part}`"

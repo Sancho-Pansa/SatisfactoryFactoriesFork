@@ -1,11 +1,11 @@
 <template>
   <v-card v-if="validToDisplay" class="mb-4 border-md sub-card">
     <v-card-title>
-      <i class="fas fa-hard-hat" /><span class="ml-2">{{ $t("planner.factory.body.import.rawResources.header") }}</span>
+      <i class="fas fa-hard-hat" /><span class="ml-2">{{ $t("planner.factory.import.rawResources.header") }}</span>
     </v-card-title>
     <v-card-text class="text-body-2">
       <p class="mb-4">
-        <i class="fas fa-info-circle" /> {{ $t("planner.factory.body.import.rawResources.help") }}
+        <i class="fas fa-info-circle" /> {{ $t("planner.factory.import.rawResources.help") }}
       </p>
       <v-chip
         v-for="(resource, resourceKey) in factory.rawResources"

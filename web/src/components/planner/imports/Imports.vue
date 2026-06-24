@@ -1,6 +1,6 @@
 <template>
   <template v-if="!validToDisplay">
-    <p class="text-body-2">{{ $t("planner.factory.body.import.selection.error") }}</p>
+    <p class="text-body-2">{{ $t("planner.factory.import.selection.error") }}</p>
   </template>
   <template v-else>
     <v-card class="rounded sub-card border-md mb-2">
@@ -16,7 +16,7 @@
             v-model.number="input.factoryId"
             hide-details
             :items="getImportFactorySelections(inputIndex)"
-            :label="$t('planner.factory.body.import.selection.factoryLabel')"
+            :label="$t('planner.factory.import.selection.factoryLabel')"
             max-width="300px"
             variant="outlined"
             width="300px"
@@ -41,7 +41,7 @@
             :disabled="!input.factoryId"
             hide-details
             :items="getImportPartSelections(inputIndex)"
-            :label="$t('planner.factory.body.import.selection.itemLabel')"
+            :label="$t('planner.factory.import.selection.itemLabel')"
             max-width="350px"
             variant="outlined"
             width="350px"
@@ -54,7 +54,7 @@
             control-variant="stacked"
             :disabled="!input.outputPart"
             hide-details
-            :label="$t('planner.factory.body.import.selection.qtyLabel')"
+            :label="$t('planner.factory.import.selection.qtyLabel')"
             :max-width="smAndDown ? undefined : '130px'"
             :min-width="smAndDown ? undefined : '130px'"
             :name="`${input.factoryId}-${input.outputPart}.amount`"
@@ -70,7 +70,7 @@
             prepend-icon="fas fa-arrow-down"
             size="default"
             @click="updateInputToSatisfy(inputIndex, factory)"
-          >{{ $t("planner.factory.body.import.selection.trim") }}</v-btn>
+          >{{ $t("planner.factory.import.selection.trim") }}</v-btn>
           <v-btn
             v-show="input.outputPart && !requirementSatisfied(factory, input.outputPart)"
             class="rounded mr-2"
@@ -78,7 +78,7 @@
             prepend-icon="fas fa-arrow-up"
             size="default"
             @click="updateInputToSatisfy(inputIndex, factory)"
-          >{{ $t("planner.factory.body.import.selection.satisfy") }}</v-btn>
+          >{{ $t("planner.factory.import.selection.satisfy") }}</v-btn>
           <v-btn
             class="rounded"
             color="primary"
@@ -87,7 +87,7 @@
             size="default"
             variant="outlined"
             @click="navigateToFactory(input.factoryId)"
-          >{{ $t("planner.factory.body.import.selection.view") }}</v-btn>
+          >{{ $t("planner.factory.import.selection.view") }}</v-btn>
           <v-btn
             class="rounded ml-2"
             color="red"
@@ -100,11 +100,11 @@
         <div class="input-row d-flex align-center">
           <v-chip v-if="input.amount === 0" class="sf-chip red small">
             <i class="fas fa-exclamation-triangle" />
-            <span class="ml-2">{{ $t("planner.factory.body.import.selection.noAmount") }}!</span>
+            <span class="ml-2">{{ $t("planner.factory.import.selection.noAmount") }}!</span>
           </v-chip>
           <v-chip v-if="isImportRedundant(inputIndex, factory)" class="sf-chip small orange">
             <i class="fas fa-exclamation-triangle" />
-            <span class="ml-2">{{ $t("planner.factory.body.import.selection.redundant") }}!</span>
+            <span class="ml-2">{{ $t("planner.factory.import.selection.redundant") }}!</span>
           </v-chip>
         </div>
       </div>
@@ -118,10 +118,10 @@
         ripple
         :variant="ableToImport(factory) === true ? 'flat' : 'outlined'"
         @click="addEmptyInput(factory)"
-      >{{ $t("planner.factory.body.import.selection.add") }}
+      >{{ $t("planner.factory.import.selection.add") }}
       </v-btn>
-      <span v-if="ableToImport(factory) === 'rawOnly'" class="ml-2">({{ $t("planner.factory.body.import.selection.rawOnly") }})</span>
-      <span v-if="ableToImport(factory) === 'noImportFacs'" class="ml-2">({{ $t("planner.factory.body.import.selection.noImport") }})</span>
+      <span v-if="ableToImport(factory) === 'rawOnly'" class="ml-2">({{ $t("planner.factory.import.selection.rawOnly") }})</span>
+      <span v-if="ableToImport(factory) === 'noImportFacs'" class="ml-2">({{ $t("planner.factory.import.selection.noImport") }})</span>
     </div>
   </template>
 
