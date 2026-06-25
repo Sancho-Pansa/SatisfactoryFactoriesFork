@@ -1,6 +1,7 @@
 import { Factory } from '@/interfaces/planner/FactoryInterface'
 import { DataInterface } from '@/interfaces/DataInterface'
 import { PowerRecipe, Recipe } from '@/interfaces/Recipes'
+import { useI18n } from 'vue-i18n'
 
 export const createNewPart = (factory: Factory, part: string) => {
   if (!factory.parts[part]) {
@@ -56,24 +57,24 @@ export const getPowerRecipeById = (id: string, gameData: DataInterface): PowerRe
 }
 
 export const getBuildingDisplayName = (building: string) => {
-  // TODO: Локализация названий построек
+  const { t } = useI18n()
   const buildingFriendly = new Map<string, string>([
-    ['assemblermk1', 'Assembler'],
-    ['blender', 'Blender'],
-    ['constructormk1', 'Constructor'],
-    ['converter', 'Converter'],
-    ['foundrymk1', 'Foundry'],
-    ['hadroncollider', 'Particle Accelerator'],
-    ['generatorbiomass', 'Biomass Burner'],
-    ['generatorcoal', 'Coal-Powered Generator'],
-    ['generatorfuel', 'Fuel-Powered Generator'],
-    ['generatornuclear', 'Nuclear Power Plant'],
-    ['manufacturermk1', 'Manufacturer'],
-    ['oilrefinery', 'Oil Refinery'],
-    ['packager', 'Packager'],
-    ['quantumencoder', 'Quantum Encoder'],
-    ['smeltermk1', 'Smelter'],
-    ['waterExtractor', 'Water Extractor'],
+    ['assemblermk1', t('buildings.assemblermk1')],
+    ['blender', t('buildings.blender')],
+    ['constructormk1', t('buildings.constructormk1')],
+    ['converter', t('buildings.converter')],
+    ['foundrymk1', t('buildings.foundrymk1')],
+    ['hadroncollider', t('buildings.hadroncollider')],
+    ['generatorbiomass', t('buildings.generatorbiomass')],
+    ['generatorcoal', t('buildings.generatorcoal')],
+    ['generatorfuel', t('buildings.generatorfuel')],
+    ['generatornuclear', t('buildings.generatornuclear')],
+    ['manufacturermk1', t('buildings.manufacturermk1')],
+    ['oilrefinery', t('buildings.oilrefinery')],
+    ['packager', t('buildings.packager')],
+    ['quantumencoder', t('buildings.quantumencoder')],
+    ['smeltermk1', t('buildings.smeltermk1')],
+    ['waterExtractor', t('buildings.waterExtractor')],
   ])
 
   return buildingFriendly.get(building) ?? `UNKNOWN BUILDING: ${building}`

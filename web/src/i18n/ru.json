@@ -193,5 +193,23 @@
       "info": "Показывает все предметы, произведенные на всех ваших заводах.",
       "emptyList": "Нет производимых предметов"
     }
+  },
+  "buildings": {
+    "assemblermk1": "Сборщик",
+    "blender": "Смеситель",
+    "constructormk1": "Конструктор",
+    "converter": "Преобразователь",
+    "foundrymk1": "Литейная",
+    "hadroncollider": "Ускоритель частиц",
+    "generatorbiomass": "Сжигатель биомассы",
+    "generatorcoal": "Угольный генератор",
+    "generatorfuel": "Топливный генератор",
+    "generatornuclear": "Атомная электростанция",
+    "manufacturermk1": "Изготовитель",
+    "oilrefinery": "Очистительный завод",
+    "packager": "Упаковщик",
+    "quantumencoder": "Квантовый шифратор",
+    "smeltermk1": "Плавильня",
+    "waterExtractor": "Экстрактор воды"
   }
 }
