@@ -139,7 +139,7 @@
               width="60px"
               @input="setProductQtyByByproduct(product, byProduct.id)"
             />
-            <span>/{{ $t("general.timeUnitMin") }}</span>
+            <span>/{{ $t("common.units.timeMin") }}</span>
           </v-chip>
           <v-chip v-if="shouldShowInternal(byProduct, factory)" class="sf-chip small green">
             {{ $t("planner.factory.productsAndPower.product.internal") }}
@@ -175,7 +175,7 @@
             width="60px"
             @input="setProductQtyByRequirement(product, part.toString())"
           />
-          <span>/{{ $t("general.timeUnitMin") }}</span>
+          <span>/{{ $t("common.units.timeMin") }}</span>
         </v-chip>
         <v-chip
           class="sf-chip orange"

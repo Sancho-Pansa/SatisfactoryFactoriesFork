@@ -14,7 +14,7 @@
       >
         <game-asset clickable :subject="resourceKey.toString() ?? 'unknown'" type="item" />
         <span class="ml-2">
-          <b>{{ getPartDisplayName(resourceKey.toString()) }}</b>: {{ formatNumber(resource.amount) }}/{{ $t("general.timeUnitMin") }}
+          <b>{{ getPartDisplayName(resourceKey.toString()) }}</b>: {{ formatNumber(resource.amount) }}/{{ $t("common.units.timeMin") }}
         </span>
       </v-chip>
     </v-card-text>

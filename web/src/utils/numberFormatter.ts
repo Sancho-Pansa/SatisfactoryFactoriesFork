@@ -1,6 +1,5 @@
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
-// TODO: Localization of MW/GW
 export function formatNumber (value: any): string {
   const num = Number(value)
   if (isNaN(num)) {
@@ -17,14 +16,14 @@ export function formatNumberFully (value: any): number {
 
 // Returns a number formatted in the value of megawatts or gigawatts. If supplied GW, the number is divided by 1000.
 export function formatPower (value: number): { value: string, unit: string } {
-  const { t } = useI18n();
+  const { t } = useI18n()
   let formattedValue = formatNumber(value)
-  let unit = t("general.powerUnitMW")
+  let unit = t('common.units.powerMW')
 
   // If the unit is above 1000, or less than -1000, convert the unit into gigawatts.
   if (value >= 1000 || value <= -1000) {
     formattedValue = formatNumber(value / 1000)
-    unit = t("general.powerUnitGW")
+    unit = t('common.units.powerGW')
   }
   return { value: formattedValue, unit }
 }

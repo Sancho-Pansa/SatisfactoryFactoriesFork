@@ -1,8 +1,10 @@
 {
-  "general": {
-    "powerUnitMW": "МВт",
-    "powerUnitGW": "ГВт",
-    "timeUnitMin": "мин."
+  "common": {
+    "units": {
+      "powerMW": "МВт",
+      "timeMin": "мин.",
+      "powerGW": "ГВт"
+    }
   },
   "language": {
     "self": "Язык"

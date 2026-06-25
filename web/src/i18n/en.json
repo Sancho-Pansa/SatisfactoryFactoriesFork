@@ -1,8 +1,10 @@
 {
-  "general": {
-    "powerUnitMW": "MW",
-    "powerUnitGW": "GW",
-    "timeUnitMin": "min"
+  "common": {
+    "units": {
+      "powerMW": "MW",
+      "timeMin": "min",
+      "powerGW": "GW"
+    }
   },
   "buildings": {},
   "language": {

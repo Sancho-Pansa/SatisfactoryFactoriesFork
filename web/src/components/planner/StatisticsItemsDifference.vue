@@ -18,7 +18,7 @@
     >
       <game-asset clickable :subject="product.id" type="item" />
       <span class="ml-2">
-        <b>{{ getPartDisplayName(product.id) }}</b>: {{ formatNumber(product.amountRemaining) }}/{{ $t("general.timeUnitMin") }}
+        <b>{{ getPartDisplayName(product.id) }}</b>: {{ formatNumber(product.amountRemaining) }}/{{ $t("common.units.timeMin") }}
       </span>
     </v-chip>
   </div>

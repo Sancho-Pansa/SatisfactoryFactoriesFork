@@ -220,7 +220,7 @@
                     type="item"
                     width="32"
                   />
-                  <span class="ml-2"><b>{{ getPartDisplayName(resource.id) }}:</b> {{ formatNumber(resource.amount) }}/{{ $t("general.timeUnitMin") }}</span>
+                  <span class="ml-2"><b>{{ getPartDisplayName(resource.id) }}:</b> {{ formatNumber(resource.amount) }}/{{ $t("common.units.timeMin") }}</span>
                 </v-chip>
               </div>
             </div>
@@ -248,14 +248,14 @@
                     />
                   </span>
                   <span>
-                    <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/{{ $t("general.timeUnitMin") }}
+                    <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/{{ $t("common.units.timeMin") }}
                   </span>
                   <span
                     v-if="factory.parts[part.id].amountRemaining !== 0"
                     class="ml-2"
                     :class="differenceClass(factory.parts[part.id].amountRemaining)"
                   >
-                    (<span v-if="factory.parts[part.id].amountRemaining > 0">+</span>{{ formatNumber(factory.parts[part.id].amountRemaining) }}/{{ $t("general.timeUnitMin") }})</span>
+                    (<span v-if="factory.parts[part.id].amountRemaining > 0">+</span>{{ formatNumber(factory.parts[part.id].amountRemaining) }}/{{ $t("common.units.timeMin") }})</span>
                 </v-chip>
               </template>
             </div>
@@ -289,7 +289,7 @@
                     type="item"
                     width="32"
                   />
-                  <span class="ml-2"><b>{{ getPartDisplayName(part.part) }}:</b> {{ formatNumber(part.amount) }}/{{ $t("general.timeUnitMin") }}</span>
+                  <span class="ml-2"><b>{{ getPartDisplayName(part.part) }}:</b> {{ formatNumber(part.amount) }}/{{ $t("common.units.timeMin") }}</span>
                 </v-chip>
               </div>
             </div>
