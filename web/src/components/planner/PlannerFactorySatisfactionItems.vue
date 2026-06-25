@@ -3,14 +3,14 @@
     <thead>
       <tr>
         <th class="text-h6 text-left border-e-md" scope="row">
-          <i class="fas fa-box" /><span class="ml-2">Item</span>
+          <i class="fas fa-box" /><span class="ml-2">{{ $t("planner.factory.satisfaction.item") }}</span>
         </th>
         <th class="d-flex text-h6 border-e-md align-center justify-center" scope="row">
-          <i class="fas fa-abacus" /><span class="ml-2">Satisfaction</span>
-          <tooltip-info text="Amount of the item that is available after internal production needs and other export requests are taken into account.<br>This amount is available for other factories to import." />
+          <i class="fas fa-abacus" /><span class="ml-2">{{ $t("planner.factory.satisfaction.satisfaction") }}</span>
+          <tooltip-info :text="$t('planner.factory.satisfaction.help')" />
         </th>
         <th class="text-h6 text-center" scope="row">
-          <i class="fas fa-truck-container" /><span class="ml-2">Exports</span>
+          <i class="fas fa-truck-container" /><span class="ml-2">{{ $t("planner.factory.satisfaction.exports") }}</span>
         </th>
         <th class="text-h6 text-center" scope="row" />
       </tr>
@@ -39,19 +39,19 @@
                     <b>{{ getPartDisplayName(partId.toString()) }}</b>
                   </div>
                   <v-chip v-if="showProductChip(factory, partId.toString())" class="sf-chip blue x-small mr-2">
-                    Product
+                    {{ $t("planner.factory.satisfaction.product") }}
                   </v-chip>
                   <v-chip v-if="showByProductChip(factory, partId.toString())" class="sf-chip gray x-small mr-2">
-                    Byproduct
+                    {{ $t("planner.factory.satisfaction.byproduct") }}
                   </v-chip>
                   <v-chip v-if="showImportedChip(factory, partId.toString())" class="sf-chip gray x-small mr-2">
-                    Imported
+                    {{ $t("planner.factory.satisfaction.imported") }}
                   </v-chip>
                   <v-chip v-if="showRawChip(factory, partId.toString())" class="sf-chip cyan x-small mr-2">
-                    Raw
+                    {{ $t("planner.factory.satisfaction.raw") }}
                   </v-chip>
                   <v-chip v-if="showInternalChip(factory, partId.toString())" class="sf-chip green x-small mr-2">
-                    Internal
+                    {{ $t("planner.factory.satisfaction.internal") }}
                   </v-chip>
                 </div>
               </div>
@@ -65,7 +65,7 @@
                   variant="outlined"
                   @click="addProduct(factory, partId.toString(), part.amountRemaining)"
                 >
-                  +&nbsp;<i class="fas fa-cube" /><span class="ml-1">Product</span>
+                  +&nbsp;<i class="fas fa-cube" /><span class="ml-1">{{ $t("planner.factory.satisfaction.addProduct") }}</span>
                 </v-btn>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'addGenerator')"
@@ -75,7 +75,7 @@
                   variant="outlined"
                   @click="addGenerator(factory, partId.toString(), part.amountRemaining)"
                 >
-                  +&nbsp;<i class="fas fa-bolt mr-0" style="max-height: 16px" /><span class="ml-1">Generator</span>
+                  +&nbsp;<i class="fas fa-bolt mr-0" style="max-height: 16px" /><span class="ml-1">{{ $t("planner.factory.satisfaction.addGenerator") }}</span>
                 </v-btn>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'fixGenerator')"
@@ -85,7 +85,7 @@
                   variant="outlined"
                   @click="doFixGenerator(factory, partId.toString(), part.amountRequired)"
                 >
-                  <i class="fas fa-wrench" /><span class="ml-1">Fix Generator</span>
+                  <i class="fas fa-wrench" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixGenerator") }}</span>
                 </v-btn>
 
                 <template v-if="showSatisfactionItemButton(factory, partId.toString(), 'fixGeneratorManually')">
@@ -99,13 +99,13 @@
                     <v-tooltip bottom>
                       <template #activator="{ props }">
                         <div v-bind="props">
-                          <i class="fas fa-exclamation-circle" /><span class="ml-1">FIX GENS MANUALLY</span>
+                          <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixManually") }}</span>
                         </div>
                       </template>
-                      <span>You have multiple Generator groups for this waste. Since the planner cannot read your mind, we don't know which group to fix.<br>Please either fix manually or reduce to one Generator & Fuel group.</span>
+                      <span>{{ $t("planner.factory.satisfaction.fixManuallyTooltip") }}</span>
                     </v-tooltip>
                   </v-btn>
-                  <p class="text-center"><b>+{{ showFuelRodsNeeded(partId.toString(), part.amountRemaining) }}</b> rods needed</p>
+                  <p class="text-center"><b>{{ + $t("planner.factory.satisfaction.fixManuallyRodsNeeded", { rodsAmount: showFuelRodsNeeded(partId.toString(), part.amountRemaining)}) }}</b> </p>
                 </template>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'fixProduct')"
@@ -114,7 +114,7 @@
                   size="small"
                   @click="doFixProduct(partId.toString(), factory)"
                 >
-                  <i class="fas fa-wrench" /><span class="ml-1">Fix Product</span>
+                  <i class="fas fa-wrench" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixProduct") }}</span>
                 </v-btn>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'correctManually')"
@@ -127,10 +127,10 @@
                   <v-tooltip bottom>
                     <template #activator="{ props }">
                       <div v-bind="props">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">CORRECT MANUALLY</span>
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.correctManually") }}</span>
                       </div>
                     </template>
-                    <span>This item is a byproduct, currently the planner does not know how to scale byproducts correctly<br> as there could be a number of ways to do it that the user may not want.<br> Please scale it manually.</span>
+                    <span>{{ $t("planner.factory.satisfaction.correctManuallyTooltip") }}</span>
                   </v-tooltip>
                 </v-btn>
                 <v-btn
@@ -140,7 +140,7 @@
                   size="small"
                   @click="fixSatisfactionImport(factory, partId.toString())"
                 >
-                  &nbsp;<i class="fas fa-arrow-up" /><span class="ml-1">Fix Import</span>
+                  &nbsp;<i class="fas fa-arrow-up" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixImport") }}</span>
                 </v-btn>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'fixImport') === 'multiple'"
@@ -153,10 +153,10 @@
                   <v-tooltip bottom>
                     <template #activator="{ props }">
                       <div v-bind="props">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">Fix Import</span>
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixImport") }}</span>
                       </div>
                     </template>
-                    <span>There are multiple Imports for this Item. The planner doesn't know which one you would want to be fixed.<br>Please correct manually by using the Satisfy buttons in the Imports section.</span>
+                    <span>{{ $t("planner.factory.satisfaction.fixImportTooltip") }}</span>
                   </v-tooltip>
                 </v-btn>
               </div>
@@ -165,33 +165,34 @@
           <td class="border-e-md satisfaction" :class="satisfactionShading(part)">
             <div v-if="satisfactionBreakdowns">
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Production</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.production") }}</span>
                 <span class="align-self-end text-right">
-                  +{{ formatNumber(part.amountSuppliedViaProduction) }}/min
+                  <!-- "+" instead of plain plus is needed due to JS convertion to number in case of preceeding plus in string -->
+                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaProduction)}) }}
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Supply from Imports</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.fromImports") }}</span>
                 <span class="align-self-end text-right">
-                  +{{ formatNumber(part.amountSuppliedViaInput ) }}/min
+                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaInput)}) }}
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Supply from Raw</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.fromRaw") }}</span>
                 <span class="align-self-end text-right">
-                  +{{ formatNumber(part.amountSuppliedViaRaw ) }}/min
+                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaRaw)}) }}
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>Internal Consumption</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.internalConsumption") }}</span>
                 <span class="align-self-end text-right">
-                  -{{ formatNumber((part.amountRequiredProduction + part.amountRequiredPower)) }}/min
+                  {{ "-" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber((part.amountRequiredProduction + part.amountRequiredPower))}) }}
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>Exports</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.export") }}</span>
                 <span class="align-self-end text-right">
-                  -{{ formatNumber(part.amountRequiredExports ) }}/min
+                  {{ "-" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountRequiredExports)}) }}
                 </span>
               </div>
               <v-divider class="my-2" color="#ccc" />
@@ -201,16 +202,16 @@
                 class="sf-chip small"
                 :class="part.satisfied ? 'green' : 'red'"
               >
-                <b>{{ formatNumber(part.amountRemaining) }}/min {{ getSatisfactionLabel(part.amountRemaining) }}</b>
+                <b>{{ formatNumber(part.amountRemaining) }}/{{ $t("common.units.timeMin") }} {{ getSatisfactionLabel(part.amountRemaining) }}</b>
               </v-chip>
               <template v-if="showRawChip(factory, partId.toString())">
                 <v-tooltip bottom>
                   <template #activator="{ props }">
                     <v-chip v-bind="props" class="sf-chip cyan small">
-                      <span class="mr-2">Raw</span> <i class="fas fa-info-circle" />
+                      <span class="mr-2">{{ $t("planner.factory.satisfaction.raw") }}</span> <i class="fas fa-info-circle" />
                     </v-chip>
                   </template>
-                  <span>Raw Items e.g. Iron Ore are always satisfied. Expand the Satisfaction Breakdowns or look at the Imports section for details of how much is needed.</span>
+                  <span>{{ $t("planner.factory.satisfaction.breakdown.rawTooltip") }}</span>
                 </v-tooltip>
               </template>
             </div>
@@ -231,7 +232,7 @@
                 >
                   <i class="fas fa-industry" />
                   <span class="ml-2">
-                    <b>{{ findFactory(request.requestingFactoryId).name }}</b>: {{ formatNumber(request.amount) }}/min
+                    <b>{{ findFactory(request.requestingFactoryId).name }}</b>: {{ formatNumber(request.amount) }}/{{ $t("common.units.timeMin") }}
                   </span>
                 </v-chip>
               </div>
@@ -244,7 +245,7 @@
               color="primary"
               icon="fas fa-calculator"
               size="small"
-              title="Export Calculator"
+              :title="$t('planner.factory.satisfaction.breakdown.showCalculator')"
               variant="outlined"
               @click="initCalculator(factory, partId.toString(), factory.exportCalculator[partId]?.selected)"
             />
@@ -254,7 +255,7 @@
               color="primary"
               icon="fas fa-arrow-up"
               size="small"
-              title="Close Export Calculator"
+              :title="$t('planner.factory.satisfaction.breakdown.hideCalculator')"
               variant="outlined"
               @click="closeCalculator()"
             />
@@ -290,6 +291,7 @@
   import { getPartExportRequests } from '@/utils/factory-management/exports'
   import { formatNumber } from '@/utils/numberFormatter'
   import { useAppStore } from '@/stores/app-store'
+  import { useI18n } from 'vue-i18n'
   import {
     convertWasteToGeneratorFuel,
     showByProductChip,
@@ -311,6 +313,7 @@
   const findFactory = inject('findFactory') as (factoryId: string | number) => Factory
 
   const appStore = useAppStore()
+  const { t } = useI18n()
 
   const { getDefaultRecipeForPart, getGeneratorFuelRecipeByPart } = useGameDataStore()
   const openedCalculator = ref('')
@@ -470,7 +473,7 @@
   }
 
   const getSatisfactionLabel = (total: number) => {
-    return total >= 0 ? 'surplus' : 'shortage'
+    return (total >= 0 ? t('planner.factory.satisfaction.breakdown.surplus') : t('planner.factory.satisfaction.breakdown.shortage')).toLocaleLowerCase()
   }
 
   const doFixProduct = (partId: string, factory: Factory) => {
