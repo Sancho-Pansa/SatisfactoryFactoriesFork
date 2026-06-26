@@ -3,7 +3,7 @@
     <v-card-title>
       <h2 class="text-h6">
         <i class="fas fa-building" />
-        <span class="ml-3">Power &amp; Buildings</span>
+        <span class="ml-3">{{ $t("planner.factory.buildings.header") }}</span>
       </h2>
     </v-card-title>
     <v-card-text class="text-body-1 pb-2">
@@ -14,7 +14,7 @@
         <i class="fas fa-bolt" />
         <i class="fas fa-minus" />
         <span class="ml-2">
-          Consumes: {{ formatPower(factory.power.consumed).value }} {{ formatPower(factory.power.consumed).unit }}
+          {{ $t("planner.factory.buildings.consumes") }}: {{ formatPower(factory.power.consumed).value }} {{ formatPower(factory.power.consumed).unit }}
         </span>
       </v-chip>
       <v-chip
@@ -24,7 +24,7 @@
         <i class="fas fa-bolt" />
         <i class="fas fa-plus" />
         <span class="ml-2">
-          Produces: {{ formatPower(factory.power.produced).value }} {{ formatPower(factory.power.produced).unit }}
+          {{ $t("planner.factory.buildings.produces") }}: {{ formatPower(factory.power.produced).value }} {{ formatPower(factory.power.produced).unit }}
         </span>
       </v-chip>
       <div

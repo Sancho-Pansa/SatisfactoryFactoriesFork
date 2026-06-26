@@ -145,6 +145,11 @@
           "showCalculator": "Export Calculator",
           "itemUnit": "{number}/@:common.units.timeMin"
         }
+      },
+      "buildings": {
+        "header": "Power & Buildings",
+        "consumes": "Consumes",
+        "produces": "Produces"
       }
     },
     "syncStatus": {

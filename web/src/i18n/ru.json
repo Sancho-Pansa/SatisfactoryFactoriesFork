@@ -127,6 +127,11 @@
           "hideCalculator": "Закрыть калькулятор экспорта",
           "showCalculator": "Калькулятор экспорта"
         }
+      },
+      "buildings": {
+        "header": "Энергопотребление строений",
+        "consumes": "Потребление",
+        "produces": "Генерация"
       }
     },
     "syncStatus": {
