@@ -74,7 +74,15 @@
           "requires": "Requires:"
         },
         "addProduct": "Add Product",
-        "addGenerator": "Add Power Generator"
+        "addGenerator": "Add Power Generator",
+        "power": {
+          "qtyLabel": "Fuel Qty/min",
+          "fuelLabel": "Fuel",
+          "buildingLabel": "Generator",
+          "byproduct": "Byproduct",
+          "requires": "Requires",
+          "ingredientQty": "{ingredient}: {qty}/@:common.units.timeMin"
+        }
       },
       "import": {
         "header": "Imports",

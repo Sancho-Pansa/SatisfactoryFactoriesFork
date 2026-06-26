@@ -23,10 +23,10 @@
           v-model="producer.building"
           hide-details
           :items="autocompletePowerProducerGenerator()"
-          label="Generator"
-          max-width="250px"
+          :label="$t('planner.factory.productsAndPower.power.buildingLabel')"
+          max-width="275px"
           variant="outlined"
-          width="250px"
+          width="275px"
           @update:model-value="updatePowerProducerSelection('building', producer, factory)"
         />
       </div>
@@ -49,7 +49,7 @@
           :disabled="!producer.building"
           hide-details
           :items="getRecipesForPowerProducerSelector(producer.building)"
-          label="Fuel"
+          :label="$t('planner.factory.productsAndPower.power.fuelLabel')"
           max-width="235px"
           variant="outlined"
           width="235px"
@@ -61,7 +61,7 @@
           v-model.number="producer.ingredientAmount"
           :disabled="!producer.recipe"
           hide-details
-          label="Fuel Qty/min"
+          :label="$t('planner.factory.productsAndPower.power.qtyLabel')"
           :max-width="smAndDown ? undefined : '110px'"
           min="0"
           :min-width="smAndDown ? undefined : '100px'"
@@ -76,7 +76,7 @@
           v-model.number="producer.powerAmount"
           :disabled="!producer.recipe"
           hide-details
-          label="MW"
+          :label="$t('common.units.powerMW')"
           :max-width="smAndDown ? undefined : '110px'"
           min="0"
           :min-width="smAndDown ? undefined : '100px'"
@@ -132,16 +132,23 @@
         v-if="producer.byproduct"
         class="d-flex align-center"
       >
-        <p class="mr-2">Byproduct:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.power.byproduct") + ":" }}</p>
         <v-chip class="sf-chip">
           <game-asset clickable :subject="producer.byproduct.part" type="item" />
           <span class="ml-2">
-            <b>{{ getPartDisplayName(producer.byproduct.part) }}</b>: {{ formatNumber(producer.byproduct.amount ?? 0) }}/min
+            <i18n-t keypath="planner.factory.productsAndPower.power.ingredientQty">
+              <template #ingredient>
+                <b>{{ getPartDisplayName(producer.byproduct.part) }}</b>
+              </template>
+              <template #qty>
+                {{ formatNumber(producer.byproduct.amount ?? 0) }}
+              </template>
+            </i18n-t>
           </span>
         </v-chip>
       </div>
       <div class="d-flex align-center">
-        <p class="mr-2">Requires:</p>
+        <p class="mr-2">{{ $t("planner.factory.productsAndPower.power.requires") + ":" }}</p>
         <v-chip
           v-if="producer.ingredients[1]"
           class="sf-chip blue"
@@ -149,7 +156,14 @@
         >
           <game-asset clickable :subject="producer.ingredients[1].part" type="item" />
           <span class="ml-2">
-            <b>{{ getPartDisplayName(producer.ingredients[1].part.toString()) }}</b>: {{ formatNumber(producer.ingredients[1].perMin) }}/min
+            <i18n-t keypath="planner.factory.productsAndPower.power.ingredientQty">
+              <template #ingredient>
+                <b>{{ getPartDisplayName(producer.ingredients[1].part.toString()) }}</b>
+              </template>
+              <template #qty>
+                {{ formatNumber(producer.ingredients[1].perMin) }}
+              </template>
+            </i18n-t>
           </span>
         </v-chip>
         <span>
