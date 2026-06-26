@@ -2,20 +2,20 @@
   <v-card class="factory-card sub-card">
     <v-card-title>
       <i class="fas fa-tasks" />
-      <span class="ml-3 text-h5">Tasks</span>
+      <span class="ml-3 text-h5">{{ $t("planner.factory.tasks.header") }}</span>
     </v-card-title>
     <v-card-text>
       <v-text-field
         v-model="newTask"
         counter="200"
         dense
-        label="New Task"
+        :label="$t('planner.factory.tasks.label')"
         outlined
-        placeholder="Add a task..."
+        :placeholder="$t('planner.factory.tasks.placeholder')"
         :rules="[newTaskRules.length]"
         @keyup.enter="addTask"
       />
-      <p v-if="factory.tasks.length >= 40" class="text-red">You are only allowed up to 50 tasks.</p>
+      <p v-if="factory.tasks.length >= 40" class="text-red">{{ $t("planner.factory.tasks.limitMessage") }}</p>
       <v-table v-if="factory.tasks.length > 0" class="sub-card" :class="{ 'mt-2': factory.tasks.length > 0 }" density="compact">
         <tbody>
           <tr v-for="(task, index) in factory.tasks" :key="index">

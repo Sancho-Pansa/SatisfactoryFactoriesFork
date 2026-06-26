@@ -150,6 +150,12 @@
         "header": "Power & Buildings",
         "consumes": "Consumes",
         "produces": "Produces"
+      },
+      "tasks": {
+        "header": "Tasks",
+        "placeholder": "Add a task...",
+        "label": "New Task",
+        "limitMessage": "You are only allowed up to 50 tasks."
       }
     },
     "syncStatus": {
