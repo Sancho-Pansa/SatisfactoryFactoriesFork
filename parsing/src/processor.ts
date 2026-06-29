@@ -9,6 +9,7 @@ import {ParserPart, ParserItemDataInterface} from "./interfaces/ParserPart";
 import {getItems, fixItemNames, fixTurbofuel} from './parts';
 import {getProductionRecipes, getPowerGeneratingRecipes} from './recipes';
 import {getProducingBuildings, getPowerConsumptionForBuildings} from './buildings';
+import { I18nDictionary } from './interfaces/I18nDictionary';
 
 // Function to detect if the file is UTF-16
 async function isUtf16(inputFile: string): Promise<boolean> {
@@ -69,9 +70,11 @@ function removeRubbishItems(items: ParserItemDataInterface, recipes: ParserRecip
 
 // Central function to process the file and generate the output
 async function processFile(
-    inputFile: string, 
-    outputFile: string) : Promise<{ buildings: { 
-                                        [key: string]: number }; 
+    inputFile: string,
+    outputFile: string,
+    locale = "en",
+    localizationFile?: string) : Promise<{ buildings: {
+                                        [key: string]: number };
                                         items: ParserItemDataInterface;
                                         recipes: ParserRecipe[],
                                         powerGenerationRecipes: ParserPowerRecipe[];
@@ -81,8 +84,24 @@ async function processFile(
         const cleanedContent = cleanInput(fileContent);
         const data = JSON.parse(cleanedContent);
 
+        // Game localization file
+        const localizationJson = await readFileAsUtf8(localizationFile ?? inputFile);
+        const cleanedLocalizationJson = cleanInput(localizationJson);
+        const localizationData = JSON.parse(cleanedLocalizationJson);
+
+        // Custom i18n file
+        const i18nDictionary: I18nDictionary = (await import(`./i18n/${locale}.json`)).default ?? {};
+        localizationData
+            .flatMap((entry: any) => entry.Classes)
+            .filter((entry: any) => entry.ClassName.startsWith("Desc_"))
+            .forEach((entry: any) => {
+                if (entry.mDisplayName) {
+                    i18nDictionary[entry.ClassName] = entry.mDisplayName
+                }
+            })
+
         // Get parts
-        const items = getItems(data);
+        const items = getItems(data, i18nDictionary);
         fixItemNames(items);
 
         // Get an array of all buildings that produce something
@@ -96,7 +115,7 @@ async function processFile(
         removeRubbishItems(items, recipes);
         fixTurbofuel(items, recipes);
 
-        //IMPORTANT: The order here matters - don't run this because fixing the turbofuel. 
+        //IMPORTANT: The order here matters - don't run this because fixing the turbofuel.
         const powerGenerationRecipes = getPowerGeneratingRecipes(data, items);
 
         // Since we've done some manipulation of the items data, re-sort it

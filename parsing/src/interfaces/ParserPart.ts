@@ -1,5 +1,6 @@
 export interface ParserPart {
     name: string;
+    localName?: string;
     stackSize: number;
     isFluid: boolean;
     isFicsmas: boolean;

@@ -1,14 +1,14 @@
 import {processFile } from './processor';
 
 // Get command line arguments for input and output files
-const [inputFile, outputFile] = process.argv.slice(2);
+const [inputFile, outputFile, localizationFile] = process.argv.slice(2);
 
 if (!inputFile || !outputFile) {
-    console.error('Usage: node dist/index.js <input-file> <output-file>');
+    console.error('Usage: node dist/index.js <input-file> <output-file> <localization-file (optional)>');
     process.exit(1);
 }
 
 // Run the recipe processing
-export const processing = processFile(inputFile, outputFile).then(() => {
+export const processing = processFile(inputFile, outputFile, "ru", localizationFile).then(() => {
     console.log('Processing complete');
 });

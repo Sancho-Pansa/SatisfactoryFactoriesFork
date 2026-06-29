@@ -1,5 +1,6 @@
 import { ParserRecipe } from "./interfaces/ParserRecipe";
 import { ParserPart, ParserItemDataInterface, ParserRawResource } from "./interfaces/ParserPart";
+import { I18nDictionary } from "./interfaces/I18nDictionary";
 import {
   blacklist,
   whitelist,
@@ -9,11 +10,23 @@ import {
   getFriendlyName
 } from "./common";
 
-function getItems(data: any[]): ParserItemDataInterface {
+function getItems(data: any[], i18nDictionary: I18nDictionary): ParserItemDataInterface {
     const parts: { [key: string]: ParserPart } = {};
     const rawResources = getRawResources(data);
 
-    // Scan all recipes (not parts), looking for parts that are used in recipes. 
+    if (!i18nDictionary) {
+        i18nDictionary = {};
+        data
+            .flatMap((entry: any) => entry.Classes)
+            .filter((entry: any) => entry.ClassName.startsWith("Desc_"))
+            .forEach((entry: any) => {
+                if (entry.ClassName) {
+                    i18nDictionary[entry.ClassName] = entry.mDisplayName
+                }
+            })
+    }
+
+    // Scan all recipes (not parts), looking for parts that are used in recipes.
     data
         .filter((entry: any) => entry.Classes)
         .flatMap((entry: any) => entry.Classes)
@@ -21,8 +34,9 @@ function getItems(data: any[]): ParserItemDataInterface {
             // There are two exception products we need to check for and add to the parts list
             if (entry.ClassName === "Desc_NuclearWaste_C") {
                 // Note that this part id is NuclearWaste, not Uranium Waste
-                parts["NuclearWaste"] = { 
+                parts["NuclearWaste"] = {
                     name: "Uranium Waste",
+                    localName: i18nDictionary["Desc_NuclearWaste_C"] ?? "Uranium Waste",
                     stackSize: 500, //SS_HUGE
                     isFluid: isFluid("NuclearWaste"),
                     isFicsmas: isFicsmas(entry.mDisplayName),
@@ -36,7 +50,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFicsmas: isFicsmas(entry.mDisplayName),
                     energyGeneratedInMJ: 0
                 };
-            }         
+            }
             //These are exception products that aren't produced by mines or extractors, they are raw materials
             if (entry.ClassName === "Desc_Leaves_C") {
                 parts["Leaves"] = {
@@ -111,7 +125,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: true,
                     isFicsmas: false,
                     energyGeneratedInMJ: 320
-                }; 
+                };
             } else if (entry.ClassName === "Desc_Gift_C") {
                 // this is a ficsmas collectable
                 parts["Gift"] = {
@@ -120,7 +134,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: true,
                     energyGeneratedInMJ: 0
-                };   
+                };
             } else if (entry.ClassName === "Desc_Snow_C") {
                 // this is a ficsmas collectable
                 parts["Snow"] = {
@@ -129,7 +143,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: true,
                     energyGeneratedInMJ: 0
-                };                
+                };
             } else if (entry.ClassName === "Desc_Crystal_C") {
                 parts["Crystal"] = {
                     name: "Blue Power Slug",
@@ -137,7 +151,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                };                
+                };
             } else if (entry.ClassName === "Desc_Crystal_mk2_C") {
                 parts["Crystal_mk2"] = {
                     name: "Yellow Power Slug",
@@ -145,7 +159,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                };                
+                };
             } else if (entry.ClassName === "Desc_Crystal_mk3_C") {
                 parts["Crystal_mk3"] = {
                     name: "Purple Power Slug",
@@ -153,7 +167,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                };                
+                };
             } else if (entry.ClassName === "Desc_SAM_C") {
                 parts["SAM"] = {
                     name: "SAM",
@@ -161,7 +175,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                };                
+                };
             } else if (entry.ClassName === "Desc_CrystalShard_C") {
                 parts["CrystalShard"] = {
                     name: "Power Shard",
@@ -169,7 +183,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                }; 
+                };
             } else if (entry.ClassName === "BP_ItemDescriptorPortableMiner_C") {
                 parts["PortableMiner"] = {
                     name: "Portable Miner",
@@ -177,7 +191,7 @@ function getItems(data: any[]): ParserItemDataInterface {
                     isFluid: false,
                     isFicsmas: false,
                     energyGeneratedInMJ: 0
-                }; 
+                };
             }
 
             if (!entry.ClassName) return;
@@ -209,6 +223,8 @@ function getItems(data: any[]): ParserItemDataInterface {
                     .flatMap((entry: any) => entry.Classes)
                     .find((entry: any) => entry.ClassName === `Desc_${productClass}_C`);
 
+
+                const localName = i18nDictionary[`Desc_${productClass}_C`] ?? friendlyName
                 // Extract stack size
                 const stackSize: number = stackSizeConvert(classDescriptor?.mStackSize || "SS_UNKNOWN")
                 // Extract the energy value
@@ -223,10 +239,11 @@ function getItems(data: any[]): ParserItemDataInterface {
                 //console.log(`Adding part: ${partName} (${friendlyName}) with energy value: ${energyValue}`);
                 parts[partName] = {
                     name: friendlyName,
+                    localName,
                     stackSize,
                     isFluid: isFluid(partName),
                     isFicsmas: isFicsmas(entry.mDisplayName),
-                    energyGeneratedInMJ: Math.round(energyValue), // Round to the nearest whole number (all energy numbers are whole numbers) 
+                    energyGeneratedInMJ: Math.round(energyValue), // Round to the nearest whole number (all energy numbers are whole numbers)
                 };
 
             });
@@ -294,53 +311,53 @@ function getRawResources(data: any[]): { [key: string]: ParserRawResource } {
     // Manually add Leaves, Wood, Mycelia to the rawResources list
     rawResources["Leaves"] = {
         name: "Leaves",
-        limit: limits["Leaves"] || 100000000  
+        limit: limits["Leaves"] || 100000000
     };
     rawResources["Wood"] = {
         name: "Wood",
-        limit: limits["Wood"] || 100000000  
+        limit: limits["Wood"] || 100000000
     };
     rawResources["Mycelia"] = {
         name: "Mycelia",
-        limit: limits["Mycelia"] || 100000000  
+        limit: limits["Mycelia"] || 100000000
     };
 
     //Manually add alien parts to the rawResources list
     rawResources["HatcherParts"] = {
         name: "Hatcher Remains",
-        limit: 100000000  
+        limit: 100000000
     };
     rawResources["HogParts"] = {
         name: "Hog Remains",
-        limit: 100000000  
+        limit: 100000000
     };
     rawResources["SpitterParts"] = {
         name: "Spitter Remains",
-        limit: 100000000  
+        limit: 100000000
     };
     rawResources["StingerParts"] = {
         name: "Stinger Remains",
-        limit: 100000000  
+        limit: 100000000
     };
 
     //Manually add slugs. Numbers from Satisfactory Calculator map
     rawResources["Crystal"] = {
         name: "Blue Power Slug",
-        limit: 596  
+        limit: 596
     };
     rawResources["Crystal_mk2"] = {
         name: "Yellow Power Slug",
-        limit: 389  
+        limit: 389
     };
     rawResources["Crystal_mk3"] = {
         name: "Purple Power Slug",
-        limit: 257  
+        limit: 257
     };
-    
+
     //Ficmas items
     rawResources["Gift"] = {
         name: "FICSMAS Gift",
-        limit: 100000000  
+        limit: 100000000
     };
 
     // Order the rawResources by key
