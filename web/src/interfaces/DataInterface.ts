@@ -2,6 +2,7 @@ import { PowerRecipe, Recipe } from './Recipes'
 
 export interface Part {
   name: string;
+  localName: string;
   stackSize: number;
   isFluid: boolean;
   isFicsmas: boolean;
@@ -9,6 +10,7 @@ export interface Part {
 
 export interface RawResource {
   name: string;
+  localName: string;
   limit: number;
 }
 

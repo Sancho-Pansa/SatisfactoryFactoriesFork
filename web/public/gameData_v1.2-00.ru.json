@@ -20,7 +20,7 @@
         "parts": {
             "AlienDNACapsule": {
                 "name": "Alien DNA Capsule",
-                "localName": "Alien DNA Capsule",
+                "localName": "Капсула инопланетной ДНК",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -28,7 +28,7 @@
             },
             "AlienPowerFuel": {
                 "name": "Alien Power Matrix",
-                "localName": "Alien Power Matrix",
+                "localName": "Инопланетная энергоматрица",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -36,7 +36,7 @@
             },
             "AlienProtein": {
                 "name": "Инопланетный протеин",
-                "localName": "Alien Protein",
+                "localName": "Инопланетный протеин",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -44,7 +44,7 @@
             },
             "AluminaSolution": {
                 "name": "Alumina Solution",
-                "localName": "Alumina Solution",
+                "localName": "Раствор глинозёма",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -52,7 +52,7 @@
             },
             "AluminumCasing": {
                 "name": "Aluminum Casing",
-                "localName": "Aluminum Casing",
+                "localName": "Алюминиевый корпус",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -60,7 +60,7 @@
             },
             "AluminumIngot": {
                 "name": "Aluminum Ingot",
-                "localName": "Aluminum Ingot",
+                "localName": "Алюминиевый слиток",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -68,7 +68,7 @@
             },
             "AluminumPlate": {
                 "name": "Alclad Aluminum Sheet",
-                "localName": "Alclad Aluminum Sheet",
+                "localName": "Дюралюминиевый лист",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -76,7 +76,7 @@
             },
             "AluminumPlateReinforced": {
                 "name": "Heat Sink",
-                "localName": "Heat Sink",
+                "localName": "Радиатор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -84,7 +84,7 @@
             },
             "AluminumScrap": {
                 "name": "Aluminum Scrap",
-                "localName": "Aluminum Scrap",
+                "localName": "Алюминиевый лом",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -92,7 +92,7 @@
             },
             "Battery": {
                 "name": "Battery",
-                "localName": "Battery",
+                "localName": "Аккумулятор",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -100,7 +100,7 @@
             },
             "Biofuel": {
                 "name": "Solid Biofuel",
-                "localName": "Solid Biofuel",
+                "localName": "Твёрдое биотопливо",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -108,7 +108,7 @@
             },
             "Cable": {
                 "name": "Cable",
-                "localName": "Cable",
+                "localName": "Кабель",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -116,7 +116,7 @@
             },
             "CandyCane": {
                 "name": "Candy Cane",
-                "localName": "Candy Cane",
+                "localName": "Карамельная трость",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -124,7 +124,7 @@
             },
             "CartridgeChaos": {
                 "name": "Turbo Rifle Ammo",
-                "localName": "Turbo Rifle Ammo",
+                "localName": "Турбопатроны для винтовки",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -132,7 +132,7 @@
             },
             "CartridgeSmartProjectile": {
                 "name": "Homing Rifle Ammo",
-                "localName": "Homing Rifle Ammo",
+                "localName": "Самонаводящиеся патроны",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -140,7 +140,7 @@
             },
             "CartridgeStandard": {
                 "name": "Rifle Ammo",
-                "localName": "Rifle Ammo",
+                "localName": "Патроны для винтовки",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -148,7 +148,7 @@
             },
             "Cement": {
                 "name": "Concrete",
-                "localName": "Concrete",
+                "localName": "Бетон",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -156,7 +156,7 @@
             },
             "CircuitBoard": {
                 "name": "Circuit Board",
-                "localName": "Circuit Board",
+                "localName": "Печатная плата",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -164,7 +164,7 @@
             },
             "CircuitBoardHighSpeed": {
                 "name": "AI Limiter",
-                "localName": "AI Limiter",
+                "localName": "Ограничитель ИИ",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -172,7 +172,7 @@
             },
             "Coal": {
                 "name": "Coal",
-                "localName": "Coal",
+                "localName": "Уголь",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -180,7 +180,7 @@
             },
             "CompactedCoal": {
                 "name": "Compacted Coal",
-                "localName": "Compacted Coal",
+                "localName": "Угольный брикет",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -188,7 +188,7 @@
             },
             "Computer": {
                 "name": "Computer",
-                "localName": "Computer",
+                "localName": "Компьютер",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -196,7 +196,7 @@
             },
             "ComputerSuper": {
                 "name": "Supercomputer",
-                "localName": "Supercomputer",
+                "localName": "Суперкомпьютер",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -204,7 +204,7 @@
             },
             "CoolingSystem": {
                 "name": "Cooling System",
-                "localName": "Cooling System",
+                "localName": "Система охлаждения",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -212,7 +212,7 @@
             },
             "CopperDust": {
                 "name": "Copper Powder",
-                "localName": "Copper Powder",
+                "localName": "Медный порошок",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -220,7 +220,7 @@
             },
             "CopperIngot": {
                 "name": "Copper Ingot",
-                "localName": "Copper Ingot",
+                "localName": "Медный слиток",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -228,7 +228,7 @@
             },
             "CopperSheet": {
                 "name": "Copper Sheet",
-                "localName": "Copper Sheet",
+                "localName": "Медный лист",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -236,7 +236,7 @@
             },
             "Crystal": {
                 "name": "Blue Power Slug",
-                "localName": "Blue Power Slug",
+                "localName": "Синий энергослизень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -244,7 +244,7 @@
             },
             "Crystal_mk2": {
                 "name": "Yellow Power Slug",
-                "localName": "Yellow Power Slug",
+                "localName": "Жёлтый энергослизень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -252,7 +252,7 @@
             },
             "Crystal_mk3": {
                 "name": "Purple Power Slug",
-                "localName": "Purple Power Slug",
+                "localName": "Фиолетовый энергослизень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -260,7 +260,7 @@
             },
             "CrystalOscillator": {
                 "name": "Crystal Oscillator",
-                "localName": "Crystal Oscillator",
+                "localName": "Кварцевый резонатор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -268,7 +268,7 @@
             },
             "CrystalShard": {
                 "name": "Power Shard",
-                "localName": "Power Shard",
+                "localName": "Энергомодуль",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -276,7 +276,7 @@
             },
             "DarkEnergy": {
                 "name": "Dark Matter Residue",
-                "localName": "Dark Matter Residue",
+                "localName": "Остатки темной материи",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -284,7 +284,7 @@
             },
             "DarkMatter": {
                 "name": "Dark Matter Crystal",
-                "localName": "Dark Matter Crystal",
+                "localName": "Кристаллы темной материи",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -292,7 +292,7 @@
             },
             "Diamond": {
                 "name": "Diamonds",
-                "localName": "Diamonds",
+                "localName": "Алмазы",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -300,7 +300,7 @@
             },
             "DissolvedSilica": {
                 "name": "Dissolved Silica",
-                "localName": "Dissolved Silica",
+                "localName": "Раствор кременезёма",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -308,7 +308,7 @@
             },
             "ElectromagneticControlRod": {
                 "name": "Electromagnetic Control Rod",
-                "localName": "Electromagnetic Control Rod",
+                "localName": "Электромагнитный регулирующий стержень",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -316,7 +316,7 @@
             },
             "Fabric": {
                 "name": "Fabric",
-                "localName": "Fabric",
+                "localName": "Ткань",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -324,7 +324,7 @@
             },
             "FicsiteIngot": {
                 "name": "Ficsite Ingot",
-                "localName": "Ficsite Ingot",
+                "localName": "Слиток FICSIT",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -332,7 +332,7 @@
             },
             "FicsiteMesh": {
                 "name": "Ficsite Trigon",
-                "localName": "Ficsite Trigon",
+                "localName": "Тригон FICSIT",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -340,7 +340,7 @@
             },
             "Ficsonium": {
                 "name": "Ficsonium",
-                "localName": "Ficsonium",
+                "localName": "Фиксоний",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -348,7 +348,7 @@
             },
             "FicsoniumFuelRod": {
                 "name": "Ficsonium Fuel Rod",
-                "localName": "Ficsonium Fuel Rod",
+                "localName": "Фиксониевый стержень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -356,7 +356,7 @@
             },
             "Filter": {
                 "name": "Gas Filter",
-                "localName": "Gas Filter",
+                "localName": "Газовый фильтр",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -364,7 +364,7 @@
             },
             "Fireworks_Projectile_01": {
                 "name": "Sweet Fireworks",
-                "localName": "Sweet Fireworks",
+                "localName": "Милые фейерверки",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -372,7 +372,7 @@
             },
             "Fireworks_Projectile_02": {
                 "name": "Fancy Fireworks",
-                "localName": "Fancy Fireworks",
+                "localName": "Праздничные фейерверки",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -380,7 +380,7 @@
             },
             "Fireworks_Projectile_03": {
                 "name": "Sparkly Fireworks",
-                "localName": "Sparkly Fireworks",
+                "localName": "Искрящиеся фейерверки",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -388,7 +388,7 @@
             },
             "FluidCanister": {
                 "name": "Empty Canister",
-                "localName": "Empty Canister",
+                "localName": "Пустая канистра",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -396,7 +396,7 @@
             },
             "Fuel": {
                 "name": "Packaged Fuel",
-                "localName": "Packaged Fuel",
+                "localName": "Канистра топлива",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -404,7 +404,7 @@
             },
             "GasTank": {
                 "name": "Empty Fluid Tank",
-                "localName": "Empty Fluid Tank",
+                "localName": "Пустой баллон",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -412,7 +412,7 @@
             },
             "GenericBiomass": {
                 "name": "Biomass",
-                "localName": "Biomass",
+                "localName": "Биомасса",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -420,7 +420,7 @@
             },
             "Gift": {
                 "name": "FICSMAS Gift",
-                "localName": "FICSMAS Gift",
+                "localName": "Рождественский подарок FICSIT™",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -428,7 +428,7 @@
             },
             "GoldIngot": {
                 "name": "Caterium Ingot",
-                "localName": "Caterium Ingot",
+                "localName": "Катерийный слиток",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -436,7 +436,7 @@
             },
             "Gunpowder": {
                 "name": "Black Powder",
-                "localName": "Black Powder",
+                "localName": "Чёрный порох",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -444,7 +444,7 @@
             },
             "GunpowderMK2": {
                 "name": "Smokeless Powder",
-                "localName": "Smokeless Powder",
+                "localName": "Бездымный порох",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -452,7 +452,7 @@
             },
             "HatcherParts": {
                 "name": "Hatcher Remains",
-                "localName": "Hatcher Remains",
+                "localName": "Останки гнезда",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -460,7 +460,7 @@
             },
             "HazmatFilter": {
                 "name": "Iodine-Infused Filter",
-                "localName": "Iodine-Infused Filter",
+                "localName": "Йодный фильтр",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -468,7 +468,7 @@
             },
             "HeavyOilResidue": {
                 "name": "Heavy Oil Residue",
-                "localName": "Heavy Oil Residue",
+                "localName": "Мазут",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -476,7 +476,7 @@
             },
             "HighSpeedConnector": {
                 "name": "High-Speed Connector",
-                "localName": "High-Speed Connector",
+                "localName": "Скоростной разъём",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -484,7 +484,7 @@
             },
             "HighSpeedWire": {
                 "name": "Quickwire",
-                "localName": "Quickwire",
+                "localName": "Сверхпроволока",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -492,7 +492,7 @@
             },
             "HogParts": {
                 "name": "Hog Remains",
-                "localName": "Hog Remains",
+                "localName": "Останки кабана",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -500,7 +500,7 @@
             },
             "IonizedFuel": {
                 "name": "Ionized Fuel",
-                "localName": "Ionized Fuel",
+                "localName": "Ионизированное топливо",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -508,7 +508,7 @@
             },
             "IronIngot": {
                 "name": "Iron Ingot",
-                "localName": "Iron Ingot",
+                "localName": "Железный слиток",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -516,7 +516,7 @@
             },
             "IronPlate": {
                 "name": "Iron Plate",
-                "localName": "Iron Plate",
+                "localName": "Железная пластина",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -524,7 +524,7 @@
             },
             "IronPlateReinforced": {
                 "name": "Reinforced Iron Plate",
-                "localName": "Reinforced Iron Plate",
+                "localName": "Усиленная железная пластина",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -532,7 +532,7 @@
             },
             "IronRod": {
                 "name": "Iron Rod",
-                "localName": "Iron Rod",
+                "localName": "Железный прут",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -540,7 +540,7 @@
             },
             "IronScrew": {
                 "name": "Screws",
-                "localName": "Screws",
+                "localName": "Винты",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -548,7 +548,7 @@
             },
             "Leaves": {
                 "name": "Leaves",
-                "localName": "Leaves",
+                "localName": "Листва",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -556,7 +556,7 @@
             },
             "LiquidBiofuel": {
                 "name": "Liquid Biofuel",
-                "localName": "Liquid Biofuel",
+                "localName": "Жидкое биотопливо",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -564,7 +564,7 @@
             },
             "LiquidFuel": {
                 "name": "Fuel",
-                "localName": "Fuel",
+                "localName": "Топливо",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -572,7 +572,7 @@
             },
             "LiquidOil": {
                 "name": "Crude Oil",
-                "localName": "Crude Oil",
+                "localName": "Сырая нефть",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -588,7 +588,7 @@
             },
             "ModularFrame": {
                 "name": "Modular Frame",
-                "localName": "Modular Frame",
+                "localName": "Модульный каркас",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -596,7 +596,7 @@
             },
             "ModularFrameFused": {
                 "name": "Fused Modular Frame",
-                "localName": "Fused Modular Frame",
+                "localName": "Сплавленный модульный каркас",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -604,7 +604,7 @@
             },
             "ModularFrameHeavy": {
                 "name": "Heavy Modular Frame",
-                "localName": "Heavy Modular Frame",
+                "localName": "Тяжёлый модульный каркас",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -612,7 +612,7 @@
             },
             "ModularFrameLightweight": {
                 "name": "Radio Control Unit",
-                "localName": "Radio Control Unit",
+                "localName": "Блок радиоуправления",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -620,7 +620,7 @@
             },
             "Motor": {
                 "name": "Motor",
-                "localName": "Motor",
+                "localName": "Мотор",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -628,7 +628,7 @@
             },
             "MotorLightweight": {
                 "name": "Turbo Motor",
-                "localName": "Turbo Motor",
+                "localName": "Турбомотор",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -636,7 +636,7 @@
             },
             "Mycelia": {
                 "name": "Mycelia",
-                "localName": "Mycelia",
+                "localName": "Мицелий",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -644,7 +644,7 @@
             },
             "NitricAcid": {
                 "name": "Nitric Acid",
-                "localName": "Nitric Acid",
+                "localName": "Азотная кислота",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -652,7 +652,7 @@
             },
             "NitrogenGas": {
                 "name": "Nitrogen Gas",
-                "localName": "Nitrogen Gas",
+                "localName": "Азот",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -660,7 +660,7 @@
             },
             "NobeliskCluster": {
                 "name": "Cluster Nobelisk",
-                "localName": "Cluster Nobelisk",
+                "localName": "Осколочный нобелиск",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -668,7 +668,7 @@
             },
             "NobeliskExplosive": {
                 "name": "Nobelisk",
-                "localName": "Nobelisk",
+                "localName": "Нобелиск",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -676,7 +676,7 @@
             },
             "NobeliskGas": {
                 "name": "Gas Nobelisk",
-                "localName": "Gas Nobelisk",
+                "localName": "Газовый нобелиск",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -684,7 +684,7 @@
             },
             "NobeliskNuke": {
                 "name": "Nuke Nobelisk",
-                "localName": "Nuke Nobelisk",
+                "localName": "Ядерный нобелиск",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -692,7 +692,7 @@
             },
             "NobeliskShockwave": {
                 "name": "Pulse Nobelisk",
-                "localName": "Pulse Nobelisk",
+                "localName": "Ударный нобелиск",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -700,7 +700,7 @@
             },
             "NonFissibleUranium": {
                 "name": "Non-Fissile Uranium",
-                "localName": "Non-Fissile Uranium",
+                "localName": "Нерасщепляемый уран",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -708,7 +708,7 @@
             },
             "NuclearFuelRod": {
                 "name": "Uranium Fuel Rod",
-                "localName": "Uranium Fuel Rod",
+                "localName": "Урановый стержень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -716,7 +716,7 @@
             },
             "NuclearWaste": {
                 "name": "Uranium Waste",
-                "localName": "Uranium Waste",
+                "localName": "Урановые отходы",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -724,7 +724,7 @@
             },
             "OreBauxite": {
                 "name": "Bauxite",
-                "localName": "Bauxite",
+                "localName": "Боксит",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -732,7 +732,7 @@
             },
             "OreCopper": {
                 "name": "Copper Ore",
-                "localName": "Copper Ore",
+                "localName": "Медная руда",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -740,7 +740,7 @@
             },
             "OreGold": {
                 "name": "Caterium Ore",
-                "localName": "Caterium Ore",
+                "localName": "Катерийная руда",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -748,7 +748,7 @@
             },
             "OreIron": {
                 "name": "Iron Ore",
-                "localName": "Iron Ore",
+                "localName": "Железная руда",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -756,7 +756,7 @@
             },
             "OreUranium": {
                 "name": "Uranium Ore",
-                "localName": "Uranium",
+                "localName": "Уран",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -764,7 +764,7 @@
             },
             "PackagedAlumina": {
                 "name": "Packaged Alumina Solution",
-                "localName": "Packaged Alumina Solution",
+                "localName": "Бутыль раствора глинозёма",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -772,7 +772,7 @@
             },
             "PackagedBiofuel": {
                 "name": "Packaged Liquid Biofuel",
-                "localName": "Packaged Liquid Biofuel",
+                "localName": "Канистра биотоплива",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -780,7 +780,7 @@
             },
             "PackagedIonizedFuel": {
                 "name": "Packaged Ionized Fuel",
-                "localName": "Packaged Ionized Fuel",
+                "localName": "Баллон ионизированного топлива",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -788,7 +788,7 @@
             },
             "PackagedNitricAcid": {
                 "name": "Packaged Nitric Acid",
-                "localName": "Packaged Nitric Acid",
+                "localName": "Канистра азотной кислоты",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -796,7 +796,7 @@
             },
             "PackagedNitrogenGas": {
                 "name": "Packaged Nitrogen Gas",
-                "localName": "Packaged Nitrogen Gas",
+                "localName": "Баллон азота",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -804,7 +804,7 @@
             },
             "PackagedOil": {
                 "name": "Packaged Oil",
-                "localName": "Packaged Oil",
+                "localName": "Бочка нефти",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -812,7 +812,7 @@
             },
             "PackagedOilResidue": {
                 "name": "Packaged Heavy Oil Residue",
-                "localName": "Packaged Heavy Oil Residue",
+                "localName": "Бочка мазута",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -820,7 +820,7 @@
             },
             "PackagedRocketFuel": {
                 "name": "Packaged Rocket Fuel",
-                "localName": "Packaged Rocket Fuel",
+                "localName": "Баллон ракетного топлива",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -828,7 +828,7 @@
             },
             "PackagedSulfuricAcid": {
                 "name": "Packaged Sulfuric Acid",
-                "localName": "Packaged Sulfuric Acid",
+                "localName": "Канистра серной кислоты",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -844,7 +844,7 @@
             },
             "PackagedWater": {
                 "name": "Packaged Water",
-                "localName": "Packaged Water",
+                "localName": "Бутыль воды",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -852,7 +852,7 @@
             },
             "PetroleumCoke": {
                 "name": "Petroleum Coke",
-                "localName": "Petroleum Coke",
+                "localName": "Нефтяной кокс",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -860,7 +860,7 @@
             },
             "Plastic": {
                 "name": "Residual Plastic",
-                "localName": "Plastic",
+                "localName": "Пластик",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -868,7 +868,7 @@
             },
             "PlutoniumCell": {
                 "name": "Encased Plutonium Cell",
-                "localName": "Encased Plutonium Cell",
+                "localName": "Обетонированная плутониевая ячейка",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -876,7 +876,7 @@
             },
             "PlutoniumFuelRod": {
                 "name": "Plutonium Fuel Rod",
-                "localName": "Plutonium Fuel Rod",
+                "localName": "Плутониевый стержень",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -884,7 +884,7 @@
             },
             "PlutoniumPellet": {
                 "name": "Plutonium Pellet",
-                "localName": "Plutonium Pellet",
+                "localName": "Плутониевая таблетка",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -892,7 +892,7 @@
             },
             "PlutoniumWaste": {
                 "name": "Plutonium Waste",
-                "localName": "Plutonium Waste",
+                "localName": "Плутониевые отходы",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -900,7 +900,7 @@
             },
             "PolymerResin": {
                 "name": "Polymer Resin",
-                "localName": "Polymer Resin",
+                "localName": "Полимерная смола",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -916,7 +916,7 @@
             },
             "PressureConversionCube": {
                 "name": "Pressure Conversion Cube",
-                "localName": "Pressure Conversion Cube",
+                "localName": "Куб преобразования давления",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -924,7 +924,7 @@
             },
             "QuantumEnergy": {
                 "name": "Excited Photonic Matter",
-                "localName": "Excited Photonic Matter",
+                "localName": "Возбужденная фотонная материя",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -932,7 +932,7 @@
             },
             "QuantumOscillator": {
                 "name": "Superposition Oscillator",
-                "localName": "Superposition Oscillator",
+                "localName": "Суперпозиционный резонатор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -940,7 +940,7 @@
             },
             "QuartzCrystal": {
                 "name": "Quartz Crystal",
-                "localName": "Quartz Crystal",
+                "localName": "Кварцевый кристалл",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -948,7 +948,7 @@
             },
             "RawQuartz": {
                 "name": "Raw Quartz",
-                "localName": "Raw Quartz",
+                "localName": "Неогранённый кварц",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -956,7 +956,7 @@
             },
             "Rebar_Explosive": {
                 "name": "Explosive Rebar",
-                "localName": "Explosive Rebar",
+                "localName": "Разрывной болт",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -964,7 +964,7 @@
             },
             "Rebar_Spreadshot": {
                 "name": "Shatter Rebar",
-                "localName": "Shatter Rebar",
+                "localName": "Дробный болт",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -972,7 +972,7 @@
             },
             "Rebar_Stunshot": {
                 "name": "Stun Rebar",
-                "localName": "Stun Rebar",
+                "localName": "Парализующий болт",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -980,7 +980,7 @@
             },
             "RocketFuel": {
                 "name": "Rocket Fuel",
-                "localName": "Rocket Fuel",
+                "localName": "Ракетное топливо",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -988,7 +988,7 @@
             },
             "Rotor": {
                 "name": "Rotor",
-                "localName": "Rotor",
+                "localName": "Ротор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -996,7 +996,7 @@
             },
             "Rubber": {
                 "name": "Резина",
-                "localName": "Rubber",
+                "localName": "Резина",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1004,7 +1004,7 @@
             },
             "SAM": {
                 "name": "SAM",
-                "localName": "SAM",
+                "localName": "СИМ",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1012,7 +1012,7 @@
             },
             "SAMFluctuator": {
                 "name": "SAM Fluctuator",
-                "localName": "SAM Fluctuator",
+                "localName": "Флуктуатор СИМ",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1020,7 +1020,7 @@
             },
             "SAMIngot": {
                 "name": "Reanimated SAM",
-                "localName": "Reanimated SAM",
+                "localName": "Активизированная СИМ",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1028,7 +1028,7 @@
             },
             "Silica": {
                 "name": "Кремнезём",
-                "localName": "Silica",
+                "localName": "Кремнезём",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1036,7 +1036,7 @@
             },
             "SingularityCell": {
                 "name": "Singularity Cell",
-                "localName": "Singularity Cell",
+                "localName": "Ячейка сингулярности",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1044,7 +1044,7 @@
             },
             "Snow": {
                 "name": "Снежок",
-                "localName": "FICSMAS Actual Snow",
+                "localName": "Реальный рождественский снег FICSIT",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1052,7 +1052,7 @@
             },
             "SnowballProjectile": {
                 "name": "Snowball",
-                "localName": "Snowball",
+                "localName": "Снежок",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1060,7 +1060,7 @@
             },
             "SpaceElevatorPart_1": {
                 "name": "Smart Plating",
-                "localName": "Smart Plating",
+                "localName": "Умная обшивка",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1068,7 +1068,7 @@
             },
             "SpaceElevatorPart_10": {
                 "name": "Biochemical Sculptor",
-                "localName": "Biochemical Sculptor",
+                "localName": "Биохимический скульптор",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1076,7 +1076,7 @@
             },
             "SpaceElevatorPart_11": {
                 "name": "Ballistic Warp Drive",
-                "localName": "Ballistic Warp Drive",
+                "localName": "Баллистический варп-двигатель",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1084,7 +1084,7 @@
             },
             "SpaceElevatorPart_12": {
                 "name": "AI Expansion Server",
-                "localName": "AI Expansion Server",
+                "localName": "Расширенный сервер ИИ",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1092,7 +1092,7 @@
             },
             "SpaceElevatorPart_2": {
                 "name": "Versatile Framework",
-                "localName": "Versatile Framework",
+                "localName": "Универсальный каркас",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1100,7 +1100,7 @@
             },
             "SpaceElevatorPart_3": {
                 "name": "Automated Wiring",
-                "localName": "Automated Wiring",
+                "localName": "Автопроводка",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1108,7 +1108,7 @@
             },
             "SpaceElevatorPart_4": {
                 "name": "Modular Engine",
-                "localName": "Modular Engine",
+                "localName": "Модульный двигатель",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1116,7 +1116,7 @@
             },
             "SpaceElevatorPart_5": {
                 "name": "Adaptive Control Unit",
-                "localName": "Adaptive Control Unit",
+                "localName": "Адаптивный блок управления",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1124,7 +1124,7 @@
             },
             "SpaceElevatorPart_6": {
                 "name": "Magnetic Field Generator",
-                "localName": "Magnetic Field Generator",
+                "localName": "Генератор магнитного поля",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1132,7 +1132,7 @@
             },
             "SpaceElevatorPart_7": {
                 "name": "Assembly Director System",
-                "localName": "Assembly Director System",
+                "localName": "Система управления сборкой",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1140,7 +1140,7 @@
             },
             "SpaceElevatorPart_8": {
                 "name": "Thermal Propulsion Rocket",
-                "localName": "Thermal Propulsion Rocket",
+                "localName": "Ракета на тепловой тяге",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1148,7 +1148,7 @@
             },
             "SpaceElevatorPart_9": {
                 "name": "Nuclear Pasta",
-                "localName": "Nuclear Pasta",
+                "localName": "Ядерная паста",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1156,7 +1156,7 @@
             },
             "SpikedRebar": {
                 "name": "Iron Rebar",
-                "localName": "Iron Rebar",
+                "localName": "Железный болт",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1164,7 +1164,7 @@
             },
             "SpitterParts": {
                 "name": "Spitter Remains",
-                "localName": "Spitter Remains",
+                "localName": "Останки плевателя",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1172,7 +1172,7 @@
             },
             "Stator": {
                 "name": "Stator",
-                "localName": "Stator",
+                "localName": "Статор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1180,7 +1180,7 @@
             },
             "SteelIngot": {
                 "name": "Steel Ingot",
-                "localName": "Steel Ingot",
+                "localName": "Стальной слиток",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1188,7 +1188,7 @@
             },
             "SteelPipe": {
                 "name": "Steel Pipe",
-                "localName": "Steel Pipe",
+                "localName": "Стальная труба",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1196,7 +1196,7 @@
             },
             "SteelPlate": {
                 "name": "Steel Beam",
-                "localName": "Steel Beam",
+                "localName": "Стальная балка",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1204,7 +1204,7 @@
             },
             "SteelPlateReinforced": {
                 "name": "Encased Industrial Beam",
-                "localName": "Encased Industrial Beam",
+                "localName": "Железобетонная балка",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1212,7 +1212,7 @@
             },
             "StingerParts": {
                 "name": "Stinger Remains",
-                "localName": "Stinger Remains",
+                "localName": "Останки жалоносца",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1220,7 +1220,7 @@
             },
             "Stone": {
                 "name": "Limestone",
-                "localName": "Limestone",
+                "localName": "Известняк",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1228,7 +1228,7 @@
             },
             "Sulfur": {
                 "name": "Sulfur",
-                "localName": "Sulfur",
+                "localName": "Сера",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1236,7 +1236,7 @@
             },
             "SulfuricAcid": {
                 "name": "Sulfuric Acid",
-                "localName": "Sulfuric Acid",
+                "localName": "Серная кислота",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -1244,7 +1244,7 @@
             },
             "TemporalProcessor": {
                 "name": "Neural-Quantum Processor",
-                "localName": "Neural-Quantum Processor",
+                "localName": "Нейроквантовый процессор",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1252,7 +1252,7 @@
             },
             "TimeCrystal": {
                 "name": "Time Crystal",
-                "localName": "Time Crystal",
+                "localName": "Кристалл времени",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1260,7 +1260,7 @@
             },
             "UraniumCell": {
                 "name": "Encased Uranium Cell",
-                "localName": "Encased Uranium Cell",
+                "localName": "Обетонированная урановая ячейка",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1268,7 +1268,7 @@
             },
             "Water": {
                 "name": "Вода",
-                "localName": "Water",
+                "localName": "Вода",
                 "stackSize": 0,
                 "isFluid": true,
                 "isFicsmas": false,
@@ -1276,7 +1276,7 @@
             },
             "Wire": {
                 "name": "Wire",
-                "localName": "Wire",
+                "localName": "Проволока",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1284,7 +1284,7 @@
             },
             "Wood": {
                 "name": "Wood",
-                "localName": "Wood",
+                "localName": "Древесина",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": false,
@@ -1292,7 +1292,7 @@
             },
             "XmasBall1": {
                 "name": "Red FICSMAS Ornament",
-                "localName": "Red FICSMAS Ornament",
+                "localName": "Красное рождественское украшение FICSIT™",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1300,7 +1300,7 @@
             },
             "XmasBall2": {
                 "name": "Blue FICSMAS Ornament",
-                "localName": "Blue FICSMAS Ornament",
+                "localName": "Синее рождественское украшение FICSIT™",
                 "stackSize": 200,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1308,7 +1308,7 @@
             },
             "XmasBall3": {
                 "name": "Copper FICSMAS Ornament",
-                "localName": "Copper FICSMAS Ornament",
+                "localName": "Медное рождественское украшение FICSIT™",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1316,7 +1316,7 @@
             },
             "XmasBall4": {
                 "name": "Iron FICSMAS Ornament",
-                "localName": "Iron FICSMAS Ornament",
+                "localName": "Железное рождественское украшение FICSIT™",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1324,7 +1324,7 @@
             },
             "XmasBallCluster": {
                 "name": "FICSMAS Ornament Bundle",
-                "localName": "FICSMAS Ornament Bundle",
+                "localName": "Набор рождественских украшений FICSIT™",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1332,7 +1332,7 @@
             },
             "XmasBow": {
                 "name": "FICSMAS Bow",
-                "localName": "FICSMAS Bow",
+                "localName": "Рождественский бантик FICSIT™",
                 "stackSize": 100,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1340,7 +1340,7 @@
             },
             "XmasBranch": {
                 "name": "FICSMAS Tree Branch",
-                "localName": "FICSMAS Tree Branch",
+                "localName": "Рождественская еловая ветвь FICSIT™",
                 "stackSize": 500,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1348,7 +1348,7 @@
             },
             "XmasStar": {
                 "name": "FICSMAS Wonder Star",
-                "localName": "FICSMAS Wonder Star",
+                "localName": "Рождественская чудо-звезда FICSIT™",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1356,7 +1356,7 @@
             },
             "XmasWreath": {
                 "name": "FICSMAS Wreath",
-                "localName": "FICSMAS Wreath",
+                "localName": "Рождественский венок FICSIT™",
                 "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": true,
@@ -1366,98 +1366,122 @@
         "rawResources": {
             "Coal": {
                 "name": "Coal",
+                "localName": "Уголь",
                 "limit": 42300
             },
             "Crystal": {
                 "name": "Blue Power Slug",
+                "localName": "Синий энергослизень",
                 "limit": 596
             },
             "Crystal_mk2": {
                 "name": "Yellow Power Slug",
+                "localName": "Жёлтый энергослизень",
                 "limit": 389
             },
             "Crystal_mk3": {
                 "name": "Purple Power Slug",
+                "localName": "Фиолетовый энергослизень",
                 "limit": 257
             },
             "Gift": {
                 "name": "FICSMAS Gift",
+                "localName": "Рождественский подарок FICSIT™",
                 "limit": 100000000
             },
             "HatcherParts": {
                 "name": "Hatcher Remains",
+                "localName": "Останки гнезда",
                 "limit": 100000000
             },
             "HogParts": {
                 "name": "Hog Remains",
+                "localName": "Останки кабана",
                 "limit": 100000000
             },
             "Leaves": {
                 "name": "Leaves",
+                "localName": "Листва",
                 "limit": 100000000
             },
             "LiquidOil": {
                 "name": "Crude Oil",
+                "localName": "Сырая нефть",
                 "limit": 12600
             },
             "Mycelia": {
                 "name": "Mycelia",
+                "localName": "Мицелий",
                 "limit": 100000000
             },
             "NitrogenGas": {
                 "name": "Nitrogen Gas",
+                "localName": "Азот",
                 "limit": 12000
             },
             "OreBauxite": {
                 "name": "Bauxite",
+                "localName": "Боксит",
                 "limit": 12300
             },
             "OreCopper": {
                 "name": "Copper Ore",
+                "localName": "Медная руда",
                 "limit": 36900
             },
             "OreGold": {
                 "name": "Caterium Ore",
+                "localName": "Катерийная руда",
                 "limit": 15000
             },
             "OreIron": {
                 "name": "Iron Ore",
+                "localName": "Железная руда",
                 "limit": 92100
             },
             "OreUranium": {
                 "name": "Uranium",
+                "localName": "Уран",
                 "limit": 2100
             },
             "RawQuartz": {
                 "name": "Raw Quartz",
+                "localName": "Неогранённый кварц",
                 "limit": 13500
             },
             "SAM": {
                 "name": "SAM",
+                "localName": "СИМ",
                 "limit": 10200
             },
             "SpitterParts": {
                 "name": "Spitter Remains",
+                "localName": "Останки плевателя",
                 "limit": 100000000
             },
             "StingerParts": {
                 "name": "Stinger Remains",
+                "localName": "Останки жалоносца",
                 "limit": 100000000
             },
             "Stone": {
                 "name": "Limestone",
+                "localName": "Известняк",
                 "limit": 69900
             },
             "Sulfur": {
                 "name": "Sulfur",
+                "localName": "Сера",
                 "limit": 10800
             },
             "Water": {
                 "name": "Water",
+                "localName": "Вода",
                 "limit": 9007199254740991
             },
             "Wood": {
                 "name": "Wood",
+                "localName": "Древесина",
                 "limit": 100000000
             }
         }
