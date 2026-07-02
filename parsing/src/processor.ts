@@ -93,7 +93,6 @@ async function processFile(
         const i18nDictionary: I18nDictionary = (await import(`./i18n/${locale}.json`)).default ?? {};
         localizationData
             .flatMap((entry: any) => entry.Classes)
-            .filter((entry: any) => entry.ClassName.startsWith("Desc_"))
             .forEach((entry: any) => {
                 if (entry.mDisplayName) {
                     i18nDictionary[entry.ClassName] = entry.mDisplayName
@@ -111,12 +110,12 @@ async function processFile(
         const buildings = getPowerConsumptionForBuildings(data, producingBuildings);
 
         // Pass the producing buildings with power data to getRecipes to calculate perMin and powerPerProduct
-        const recipes = getProductionRecipes(data, buildings);
+        const recipes = getProductionRecipes(data, buildings, i18nDictionary);
         removeRubbishItems(items, recipes);
         fixTurbofuel(items, recipes, i18nDictionary);
 
         //IMPORTANT: The order here matters - don't run this because fixing the turbofuel.
-        const powerGenerationRecipes = getPowerGeneratingRecipes(data, items);
+        const powerGenerationRecipes = getPowerGeneratingRecipes(data, items, i18nDictionary);
 
         // Since we've done some manipulation of the items data, re-sort it
         const sortedItems: { [key: string]: ParserPart } = {};

@@ -16,11 +16,13 @@ import {
     getPowerProducerBuildingName
 } from "./common";
 import {ParserItemDataInterface} from "./interfaces/ParserPart";
+import { I18nDictionary } from "./interfaces/I18nDictionary";
 
 // If you can read this, you are a wizard. ChatGPT made this, it works, so I won't question it!
 function getProductionRecipes(
     data: any[],
-    producingBuildings: { [key: string]: number }
+    producingBuildings: { [key: string]: number },
+    i18nDictionary: I18nDictionary
 ): ParserRecipe[] {
     const recipes: ParserRecipe[] = [];
 
@@ -48,7 +50,6 @@ function getProductionRecipes(
             return validBuilding;
         })
         .forEach((recipe: any) => {
-
             const ingredients = recipe.mIngredients
                 ? recipe.mIngredients
                     .match(/ItemClass=".*?\/Desc_(.*?)\.Desc_.*?",Amount=(\d+)/g)
@@ -124,8 +125,8 @@ function getProductionRecipes(
             // Calculate variable power for recipes that need it
             let lowPower: number | null = null;
             let highPower: number | null = null;
-            if (selectedBuilding === 'hadroncollider' || 
-                selectedBuilding === 'converter' || 
+            if (selectedBuilding === 'hadroncollider' ||
+                selectedBuilding === 'converter' ||
                 selectedBuilding === 'quantumencoder') {
                 // get the power from the recipe instead of the building
                 lowPower = Number(recipe.mVariablePowerConsumptionConstant);
@@ -149,7 +150,7 @@ function getProductionRecipes(
 
             recipes.push({
                 id: recipe.ClassName.replace("Recipe_", "").replace(/_C$/, ""),
-                displayName: recipe.mDisplayName,
+                displayName: i18nDictionary[recipe.ClassName] ?? recipe.mDisplayName,
                 ingredients,
                 products,
                 building,
@@ -183,7 +184,8 @@ function getProductionRecipes(
 
 function getPowerGeneratingRecipes(
     data: any[],
-    parts: ParserItemDataInterface
+    parts: ParserItemDataInterface,
+    i18nDictionary: I18nDictionary
 ): ParserPowerRecipe[] {
 
     const recipes: any[] = [];
@@ -199,12 +201,12 @@ function getPowerGeneratingRecipes(
         .forEach((recipe: any) => {
             const building : ParserBuilding = {
                 name: getPowerProducerBuildingName(recipe.ClassName) ?? 'UNKNOWN',
-                power: Math.round(recipe.mPowerProduction), // generated power - can be rounded to the nearest whole number (all energy numbers are whole numbers) 
-            };   
+                power: Math.round(recipe.mPowerProduction), // generated power - can be rounded to the nearest whole number (all energy numbers are whole numbers)
+            };
             const supplementalRatio = Number(recipe.mSupplementalToPowerRatio);
             // 1. Generator MW generated. This is an hourly value.
             // 2. Divide by 60, to get the minute value
-            // 3. Now calculate the MJ, using the MJ->MW constant (1/3600), (https://en.wikipedia.org/wiki/Joule#Conversions) 
+            // 3. Now calculate the MJ, using the MJ->MW constant (1/3600), (https://en.wikipedia.org/wiki/Joule#Conversions)
             // 4. Now divide this number by the part energy to calculate how many MJ we burn in 1 minute. e.g. For nuclear reactors this is 150,000MJ / minute.
             const burnRateMJ = (recipe.mPowerProduction / 60) / (1/3600);
 
@@ -236,7 +238,7 @@ function getPowerGeneratingRecipes(
                 //Find the part for the primary fuel
                 let primaryPerMin = 0;
                 if (primaryFuelPart.energyGeneratedInMJ > 0) {
-                    // The rounding here is important to remove floating point errors that appear with some types 
+                    // The rounding here is important to remove floating point errors that appear with some types
                     // (this is step 4 from above)
                     primaryPerMin = parseFloat((burnRateMJ / primaryFuelPart.energyGeneratedInMJ).toFixed(5))
                 }
@@ -265,8 +267,8 @@ function getPowerGeneratingRecipes(
                 }
 
                 recipes.push({
-                    id: getRecipeName(recipe.ClassName) +'_'+ fuelItem.primaryFuel,
-                    displayName: recipe.mDisplayName + ' (' + primaryFuelPart.name + ')',
+                    id: `${getRecipeName(recipe.ClassName)}_${fuelItem.primaryFuel}`,
+                    displayName: `${i18nDictionary[recipe.ClassName] ?? recipe.mDisplayName} (${primaryFuelPart.localName ?? primaryFuelPart.name})`,
                     ingredients,
                     byproduct,
                     building
