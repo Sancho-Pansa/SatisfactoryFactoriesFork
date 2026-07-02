@@ -14,5 +14,6 @@ export interface ParserItemDataInterface {
 
 export interface ParserRawResource {
     name: string;
+    localName?: string;
     limit: number;
 }

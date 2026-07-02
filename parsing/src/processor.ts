@@ -72,7 +72,7 @@ function removeRubbishItems(items: ParserItemDataInterface, recipes: ParserRecip
 async function processFile(
     inputFile: string,
     outputFile: string,
-    locale = "en",
+    locale = "ru",
     localizationFile?: string) : Promise<{ buildings: {
                                         [key: string]: number };
                                         items: ParserItemDataInterface;
@@ -102,7 +102,7 @@ async function processFile(
 
         // Get parts
         const items = getItems(data, i18nDictionary);
-        fixItemNames(items);
+        fixItemNames(items, i18nDictionary);
 
         // Get an array of all buildings that produce something
         const producingBuildings = getProducingBuildings(data);
@@ -113,7 +113,7 @@ async function processFile(
         // Pass the producing buildings with power data to getRecipes to calculate perMin and powerPerProduct
         const recipes = getProductionRecipes(data, buildings);
         removeRubbishItems(items, recipes);
-        fixTurbofuel(items, recipes);
+        fixTurbofuel(items, recipes, i18nDictionary);
 
         //IMPORTANT: The order here matters - don't run this because fixing the turbofuel.
         const powerGenerationRecipes = getPowerGeneratingRecipes(data, items);

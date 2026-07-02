@@ -2,17 +2,17 @@ import { ParserRecipe } from "./interfaces/ParserRecipe";
 import { ParserPart, ParserItemDataInterface, ParserRawResource } from "./interfaces/ParserPart";
 import { I18nDictionary } from "./interfaces/I18nDictionary";
 import {
-  blacklist,
-  whitelist,
-  isFluid,
-  isFicsmas,
-  getPartName,
-  getFriendlyName
+    blacklist,
+    whitelist,
+    isFluid,
+    isFicsmas,
+    getPartName,
+    getFriendlyName
 } from "./common";
 
 function getItems(data: any[], i18nDictionary: I18nDictionary): ParserItemDataInterface {
-    const parts: { [key: string]: ParserPart } = {};
-    const rawResources = getRawResources(data);
+    const parts: { [key: string]: ParserPart; } = {};
+    const rawResources = getRawResources(data, i18nDictionary);
 
     if (!i18nDictionary) {
         i18nDictionary = {};
@@ -21,9 +21,9 @@ function getItems(data: any[], i18nDictionary: I18nDictionary): ParserItemDataIn
             .filter((entry: any) => entry.ClassName.startsWith("Desc_"))
             .forEach((entry: any) => {
                 if (entry.ClassName) {
-                    i18nDictionary[entry.ClassName] = entry.mDisplayName
+                    i18nDictionary[entry.ClassName] = entry.mDisplayName;
                 }
-            })
+            });
     }
 
     // Scan all recipes (not parts), looking for parts that are used in recipes.
@@ -31,167 +31,203 @@ function getItems(data: any[], i18nDictionary: I18nDictionary): ParserItemDataIn
         .filter((entry: any) => entry.Classes)
         .flatMap((entry: any) => entry.Classes)
         .forEach((entry: any) => {
-            // There are two exception products we need to check for and add to the parts list
-            if (entry.ClassName === "Desc_NuclearWaste_C") {
+            switch (entry.ClassName) {
+                // There are two exception products we need to check for and add to the parts list
                 // Note that this part id is NuclearWaste, not Uranium Waste
-                parts["NuclearWaste"] = {
-                    name: "Uranium Waste",
-                    localName: i18nDictionary["Desc_NuclearWaste_C"] ?? "Uranium Waste",
-                    stackSize: 500, //SS_HUGE
-                    isFluid: isFluid("NuclearWaste"),
-                    isFicsmas: isFicsmas(entry.mDisplayName),
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_PlutoniumWaste_C") {
-                parts["PlutoniumWaste"] = {
-                    name: "Plutonium Waste",
-                    stackSize: 500, //SS_HUGE
-                    isFluid: isFluid("PlutoniumWaste"),
-                    isFicsmas: isFicsmas(entry.mDisplayName),
-                    energyGeneratedInMJ: 0
-                };
-            }
-            //These are exception products that aren't produced by mines or extractors, they are raw materials
-            if (entry.ClassName === "Desc_Leaves_C") {
-                parts["Leaves"] = {
-                    name: "Leaves",
-                    stackSize: 500, //SS_HUGE
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 15
-                };
-            } else if (entry.ClassName === "Desc_Wood_C") {
-                parts["Wood"] = {
-                    name: "Wood",
-                    stackSize: 200, //SS_BIG
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 100
-                };
-            } else if (entry.ClassName === "Desc_Mycelia_C") {
-                parts["Mycelia"] = {
-                    name: "Mycelia",
-                    stackSize: 200, //SS_BIG
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 20
-                };
-            } else if (entry.ClassName === "Desc_HogParts_C") {
-                parts["HogParts"] = {
-                    name: "Hog Remains",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_SpitterParts_C") {
-                parts["SpitterParts"] = {
-                    name: "Spitter Remains",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_StingerParts_C") {
-                parts["StingerParts"] = {
-                    name: "Stinger Remains",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_HatcherParts_C") {
-                parts["HatcherParts"] = {
-                    name: "Hatcher Remains",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_DissolvedSilica_C") {
-                // This is a special intermediate alt product
-                parts["DissolvedSilica"] = {
-                    name: "Dissolved Silica",
-                    stackSize: 0, //SS_FLUID
-                    isFluid: true,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_LiquidOil_C") {
-                // This is a special liquid raw material
-                parts["LiquidOil"] = {
-                    name: "Crude Oil",
-                    stackSize: 0, //SS_FLUID
-                    isFluid: true,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 320
-                };
-            } else if (entry.ClassName === "Desc_Gift_C") {
-                // this is a ficsmas collectable
-                parts["Gift"] = {
-                    name: "FICSMAS Gift",
-                    stackSize: 200, //SS_BIG
-                    isFluid: false,
-                    isFicsmas: true,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_Snow_C") {
-                // this is a ficsmas collectable
-                parts["Snow"] = {
-                    name: "Snow",
-                    stackSize: 500, //SS_HUGE
-                    isFluid: false,
-                    isFicsmas: true,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_Crystal_C") {
-                parts["Crystal"] = {
-                    name: "Blue Power Slug",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_Crystal_mk2_C") {
-                parts["Crystal_mk2"] = {
-                    name: "Yellow Power Slug",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_Crystal_mk3_C") {
-                parts["Crystal_mk3"] = {
-                    name: "Purple Power Slug",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_SAM_C") {
-                parts["SAM"] = {
-                    name: "SAM",
-                    stackSize: 100, //SS_MEDIUM
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "Desc_CrystalShard_C") {
-                parts["CrystalShard"] = {
-                    name: "Power Shard",
-                    stackSize: 100, //SS_MEDIUM
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
-            } else if (entry.ClassName === "BP_ItemDescriptorPortableMiner_C") {
-                parts["PortableMiner"] = {
-                    name: "Portable Miner",
-                    stackSize: 50, //SS_SMALL
-                    isFluid: false,
-                    isFicsmas: false,
-                    energyGeneratedInMJ: 0
-                };
+                case "Desc_NuclearWaste_C":
+                    parts["NuclearWaste"] = {
+                        name: "Uranium Waste",
+                        localName: i18nDictionary["Desc_NuclearWaste_C"] ?? "Uranium Waste",
+                        stackSize: 500, //SS_HUGE
+                        isFluid: isFluid("NuclearWaste"),
+                        isFicsmas: isFicsmas(entry.mDisplayName),
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_PlutoniumWaste_C":
+                    parts["PlutoniumWaste"] = {
+                        name: "Plutonium Waste",
+                        localName: i18nDictionary["Desc_PlutoniumWaste_C"] ?? "Plutonium Waste",
+                        stackSize: 500, //SS_HUGE
+                        isFluid: isFluid("PlutoniumWaste"),
+                        isFicsmas: isFicsmas(entry.mDisplayName),
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                //These are exception products that aren't produced by mines or extractors, they are raw materials
+                case "Desc_Leaves_C":
+                    parts["Leaves"] = {
+                        name: "Leaves",
+                        localName: i18nDictionary["Desc_Leaves_C"] ?? "Leaves",
+                        stackSize: 500, //SS_HUGE
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 15
+                    };
+                    break;
+                case "Desc_Wood_C":
+                    parts["Wood"] = {
+                        name: "Wood",
+                        localName: i18nDictionary["Desc_Wood_C"] ?? "Wood",
+                        stackSize: 200, //SS_BIG
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 100
+                    };
+                    break;
+                case "Desc_Mycelia_C":
+                    parts["Mycelia"] = {
+                        name: "Mycelia",
+                        localName: i18nDictionary["Desc_Mycelia_C"] ?? "Mycelia",
+                        stackSize: 200, //SS_BIG
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 20
+                    };
+                    break;
+                case "Desc_HogParts_C":
+                    parts["HogParts"] = {
+                        name: "Hog Remains",
+                        localName: i18nDictionary["Desc_HogParts_C"] ?? "Hog Remains",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_SpitterParts_C":
+                    parts["SpitterParts"] = {
+                        name: "Spitter Remains",
+                        localName: i18nDictionary["Desc_SpitterParts_C"] ?? "Spitter Remains",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_StingerParts_C":
+                    parts["StingerParts"] = {
+                        name: "Stinger Remains",
+                        localName: i18nDictionary["Desc_StingerParts_C"] ?? "Stinger Remains",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_HatcherParts_C":
+                    parts["HatcherParts"] = {
+                        name: "Hatcher Remains",
+                        localName: i18nDictionary["Desc_HatcherParts_C"] ?? "Hatcher Remains",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_DissolvedSilica_C":
+                    // This is a special intermediate alt product
+                    parts["DissolvedSilica"] = {
+                        name: "Dissolved Silica",
+                        localName: i18nDictionary["Desc_DissolvedSilica_C"] ?? "Dissolved Silica",
+                        stackSize: 0, //SS_FLUID
+                        isFluid: true,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_LiquidOil_C":
+                    // This is a special liquid raw material
+                    parts["LiquidOil"] = {
+                        name: "Crude Oil",
+                        localName: i18nDictionary["Desc_LiquidOil_C"] ?? "Crude Oil",
+                        stackSize: 0, //SS_FLUID
+                        isFluid: true,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 320
+                    };
+                    break;
+                case "Desc_Gift_C":
+                    // this is a ficsmas collectable
+                    parts["Gift"] = {
+                        name: "FICSMAS Gift",
+                        localName: i18nDictionary["Desc_Gift_C"] ?? "FICSMAS Gift",
+                        stackSize: 200, //SS_BIG
+                        isFluid: false,
+                        isFicsmas: true,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_Snow_C":
+                    // this is a ficsmas collectable
+                    parts["Snow"] = {
+                        name: "Snow",
+                        localName: i18nDictionary["Desc_Snow_C"] ?? "Snow",
+                        stackSize: 500, //SS_HUGE
+                        isFluid: false,
+                        isFicsmas: true,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_Crystal_C":
+                    parts["Crystal"] = {
+                        name: "Blue Power Slug",
+                        localName: i18nDictionary["Desc_Crystal_C"] ?? "Blue Power Slug",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_Crystal_mk2_C":
+                    parts["Crystal_mk2"] = {
+                        name: "Yellow Power Slug",
+                        localName: i18nDictionary["Desc_Crystal_mk2_C"] ?? "Yellow Power Slug",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_Crystal_mk3_C":
+                    parts["Crystal_mk3"] = {
+                        name: "Purple Power Slug",
+                        localName: i18nDictionary["Desc_Crystal_mk3_C"] ?? "Purple Power Slug",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_SAM_C":
+                    parts["SAM"] = {
+                        name: "SAM",
+                        localName: i18nDictionary["Desc_SAM_C"] ?? "SAM",
+                        stackSize: 100, //SS_MEDIUM
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "Desc_CrystalShard_C":
+                    parts["CrystalShard"] = {
+                        name: "Power Shard",
+                        localName: i18nDictionary["Desc_CrystalShard_C"] ?? "Power Shard",
+                        stackSize: 100, //SS_MEDIUM
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
+                    break;
+                case "BP_ItemDescriptorPortableMiner_C":
+                    parts["PortableMiner"] = {
+                        name: "Portable Miner",
+                        localName: i18nDictionary["BP_ItemDescriptorPortableMiner_C"] ?? "Portable Miner",
+                        stackSize: 50, //SS_SMALL
+                        isFluid: false,
+                        isFicsmas: false,
+                        energyGeneratedInMJ: 0
+                    };
             }
 
             if (!entry.ClassName) return;
@@ -224,9 +260,9 @@ function getItems(data: any[], i18nDictionary: I18nDictionary): ParserItemDataIn
                     .find((entry: any) => entry.ClassName === `Desc_${productClass}_C`);
 
 
-                const localName = i18nDictionary[`Desc_${productClass}_C`] ?? friendlyName
+                const localName = i18nDictionary[`Desc_${productClass}_C`] ?? friendlyName;
                 // Extract stack size
-                const stackSize: number = stackSizeConvert(classDescriptor?.mStackSize || "SS_UNKNOWN")
+                const stackSize: number = stackSizeConvert(classDescriptor?.mStackSize || "SS_UNKNOWN");
                 // Extract the energy value
 
                 let energyValue = classDescriptor.mEnergyValue ?? 0;
@@ -273,9 +309,9 @@ function stackSizeConvert(stackSize: string): number {
 }
 
 // Function to extract raw resources from the game data
-function getRawResources(data: any[]): { [key: string]: ParserRawResource } {
-    const rawResources: { [key: string]: ParserRawResource } = {};
-    const limits: { [key: string]: number } = {
+function getRawResources(data: any[], i18nDictionary: I18nDictionary): { [key: string]: ParserRawResource; } {
+    const rawResources: { [key: string]: ParserRawResource; } = {};
+    const limits: { [key: string]: number; } = {
         "Coal": 42300,
         "LiquidOil": 12600,
         "NitrogenGas": 12000,
@@ -297,11 +333,13 @@ function getRawResources(data: any[]): { [key: string]: ParserRawResource } {
         .forEach((resource: any) => {
             const className = getPartName(resource.ClassName);
             const displayName: string = resource.mDisplayName;
+            const localName: string = i18nDictionary[resource.ClassName] ?? displayName;
 
             const data = {
                 name: displayName,
+                localName,
                 limit: limits[className] || 0
-            }
+            };
 
             if (className && displayName) {
                 rawResources[className] = data;
@@ -311,78 +349,88 @@ function getRawResources(data: any[]): { [key: string]: ParserRawResource } {
     // Manually add Leaves, Wood, Mycelia to the rawResources list
     rawResources["Leaves"] = {
         name: "Leaves",
+        localName: i18nDictionary["Desc_Leaves_C"] ?? "Leaves",
         limit: limits["Leaves"] || 100000000
     };
     rawResources["Wood"] = {
         name: "Wood",
+        localName: i18nDictionary["Desc_Wood_C"] ?? "Wood",
         limit: limits["Wood"] || 100000000
     };
     rawResources["Mycelia"] = {
         name: "Mycelia",
+        localName: i18nDictionary["Desc_Mycelia_C"] ?? "Mycelia",
         limit: limits["Mycelia"] || 100000000
     };
 
     //Manually add alien parts to the rawResources list
     rawResources["HatcherParts"] = {
         name: "Hatcher Remains",
+        localName: i18nDictionary["Desc_HatcherParts_C"] ?? "Hatcher Remains",
         limit: 100000000
     };
     rawResources["HogParts"] = {
         name: "Hog Remains",
+        localName: i18nDictionary["Desc_HogParts_C"] ?? "Hog Remains",
         limit: 100000000
     };
     rawResources["SpitterParts"] = {
         name: "Spitter Remains",
+        localName: i18nDictionary["Desc_SpitterParts_C"] ?? "Spitter Remains",
         limit: 100000000
     };
     rawResources["StingerParts"] = {
         name: "Stinger Remains",
+        localName: i18nDictionary["Desc_StingerParts_C"] ?? "Stinger Remains",
         limit: 100000000
     };
 
     //Manually add slugs. Numbers from Satisfactory Calculator map
     rawResources["Crystal"] = {
         name: "Blue Power Slug",
+        localName: i18nDictionary["Desc_Crystal_C"] ?? "Blue Power Slug",
         limit: 596
     };
     rawResources["Crystal_mk2"] = {
         name: "Yellow Power Slug",
+        localName: i18nDictionary["Desc_Crystal_mk2_C"] ?? "Yellow Power Slug",
         limit: 389
     };
     rawResources["Crystal_mk3"] = {
         name: "Purple Power Slug",
+        localName: i18nDictionary["Desc_Crystal_mk3_C"] ?? "Purple Power Slug",
         limit: 257
     };
 
     //Ficmas items
     rawResources["Gift"] = {
         name: "FICSMAS Gift",
+        localName: i18nDictionary["Desc_Gift_C"] ?? "FICSMAS Gift",
         limit: 100000000
     };
 
     // Order the rawResources by key
-    const orderedRawResources: { [key: string]: ParserRawResource } = {};
+    const orderedRawResources: { [key: string]: ParserRawResource; } = {};
     Object.keys(rawResources).sort().forEach(key => {
         orderedRawResources[key] = rawResources[key];
     });
     return orderedRawResources;
 }
 
-function fixItemNames(items: ParserItemDataInterface): void {
+function fixItemNames(items: ParserItemDataInterface, i18nDictionary: I18nDictionary): void {
     // Go through the item names and do some manual fixes, e.g. renaming "Residual Plastic" to "Plastic"
     const fixItems: Record<string, string> = {
-        "AlienProtein": "Alien Protein",
-        "AluminumIngot": "Aluminum Ingot", // the parser uses the recipe display name instead of the part descriptor name. The "Alternate: Pure Aluminum Ingot" recipe produces AluminumIngot, so the part gets that recipe name instead of "Aluminum Ingot"
-        "CompactedCoal": "Compacted Coal",
-        "DarkEnergy": "Dark Matter Residue",
-        "HeavyOilResidue": "Heavy Oil Residue",
-        "LiquidFuel": "Fuel",
-        "Plastic": "Plastic",
-        "PolymerResin": "Polymer Resin",
-        "Rubber": "Rubber",
-        "Silica": "Silica", // the parser uses the recipe display name instead of the part descriptor name. The "Alumina Solution" recipe produces both AluminaSolution and Silica as products — so when Silica was processed as a product of that recipe, it inherited the recipe name "Alumina Solution" instead of its own name "Silica"
-        "Snow": "Snow",
-        "Water": "Water",
+        "AlienProtein": i18nDictionary["AlienProtein"] ?? "Alien Protein",
+        "AluminumIngot": i18nDictionary["Aluminum Ingot"] ?? "Aluminum Ingot", // the parser uses the recipe display name instead of the part descriptor name. The "Alternate: Pure Aluminum Ingot" recipe produces AluminumIngot, so the part gets that recipe name instead of "Aluminum Ingot"
+        "CompactedCoal": i18nDictionary["Compacted Coal"] ?? "Compacted Coal",
+        "DarkEnergy": i18nDictionary["Dark Matter Residue"] ?? "Dark Matter Residue",
+        "HeavyOilResidue": i18nDictionary["Heavy Oil Residue"] ?? "Heavy Oil Residue",
+        "LiquidFuel": i18nDictionary["Fuel"] ?? "Fuel",
+        "PolymerResin": i18nDictionary["Polymer Resin"] ?? "Polymer Resin",
+        "Rubber": i18nDictionary["Rubber"] ?? "Rubber",
+        "Silica": i18nDictionary["Silica"] ?? "Silica", // the parser uses the recipe display name instead of the part descriptor name. The "Alumina Solution" recipe produces both AluminaSolution and Silica as products — so when Silica was processed as a product of that recipe, it inherited the recipe name "Alumina Solution" instead of its own name "Silica"
+        "Snow": i18nDictionary["Snow"] ?? "Snow",
+        "Water": i18nDictionary["Water"] ?? "Water",
     };
 
     for (const search of Object.keys(fixItems)) {
@@ -392,13 +440,14 @@ function fixItemNames(items: ParserItemDataInterface): void {
     }
 }
 
-function fixTurbofuel(items: ParserItemDataInterface, recipes: ParserRecipe[]): void {
+function fixTurbofuel(items: ParserItemDataInterface, recipes: ParserRecipe[], i18nDictionary: I18nDictionary): void {
     // Rename the current "Turbofuel" which is actually "Packaged Turbofuel"
     items.parts["PackagedTurboFuel"] = items.parts["TurboFuel"];
 
     // Add the actual "Turbofuel" as a new item
     items.parts["LiquidTurboFuel"] = {
         name: "Turbofuel",
+        localName: i18nDictionary["LiquidTurboFuel"] ?? "Turbofuel",
         stackSize: 0,
         isFluid: true,
         isFicsmas: false,
@@ -407,6 +456,7 @@ function fixTurbofuel(items: ParserItemDataInterface, recipes: ParserRecipe[]): 
     //rename the packaged item to PackagedTurboFuel
     items.parts["PackagedTurboFuel"] = {
         name: "Packaged Turbofuel",
+        localName: i18nDictionary["PackagedTurboFuel"] ?? "Packaged Turbofuel",
         stackSize: 100, //SS_MEDIUM
         isFluid: false,
         isFicsmas: false,
