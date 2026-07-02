@@ -1366,98 +1366,122 @@
         "rawResources": {
             "Coal": {
                 "name": "Coal",
+                "localName": "Coal",
                 "limit": 42300
             },
             "Crystal": {
                 "name": "Blue Power Slug",
+                "localName": "Blue Power Slug",
                 "limit": 596
             },
             "Crystal_mk2": {
                 "name": "Yellow Power Slug",
+                "localName": "Yellow Power Slug",
                 "limit": 389
             },
             "Crystal_mk3": {
                 "name": "Purple Power Slug",
+                "localName": "Purple Power Slug",
                 "limit": 257
             },
             "Gift": {
                 "name": "FICSMAS Gift",
+                "localName": "FICSMAS Gift",
                 "limit": 100000000
             },
             "HatcherParts": {
                 "name": "Hatcher Remains",
+                "localName": "Hatcher Remains",
                 "limit": 100000000
             },
             "HogParts": {
                 "name": "Hog Remains",
+                "localName": "Hog Remains",
                 "limit": 100000000
             },
             "Leaves": {
                 "name": "Leaves",
+                "localName": "Leaves",
                 "limit": 100000000
             },
             "LiquidOil": {
                 "name": "Crude Oil",
+                "localName": "Crude Oil",
                 "limit": 12600
             },
             "Mycelia": {
                 "name": "Mycelia",
+                "localName": "Mycelia",
                 "limit": 100000000
             },
             "NitrogenGas": {
                 "name": "Nitrogen Gas",
+                "localName": "Nitrogen Gas",
                 "limit": 12000
             },
             "OreBauxite": {
                 "name": "Bauxite",
+                "localName": "Bauxite",
                 "limit": 12300
             },
             "OreCopper": {
                 "name": "Copper Ore",
+                "localName": "Copper Ore",
                 "limit": 36900
             },
             "OreGold": {
                 "name": "Caterium Ore",
+                "localName": "Caterium Ore",
                 "limit": 15000
             },
             "OreIron": {
                 "name": "Iron Ore",
+                "localName": "Iron Ore",
                 "limit": 92100
             },
             "OreUranium": {
                 "name": "Uranium",
+                "localName": "Uranium",
                 "limit": 2100
             },
             "RawQuartz": {
                 "name": "Raw Quartz",
+                "localName": "Raw Quartz",
                 "limit": 13500
             },
             "SAM": {
                 "name": "SAM",
+                "localName": "SAM",
                 "limit": 10200
             },
             "SpitterParts": {
                 "name": "Spitter Remains",
+                "localName": "Spitter Remains",
                 "limit": 100000000
             },
             "StingerParts": {
                 "name": "Stinger Remains",
+                "localName": "Stinger Remains",
                 "limit": 100000000
             },
             "Stone": {
                 "name": "Limestone",
+                "localName": "Limestone",
                 "limit": 69900
             },
             "Sulfur": {
                 "name": "Sulfur",
+                "localName": "Sulfur",
                 "limit": 10800
             },
             "Water": {
                 "name": "Water",
+                "localName": "Water",
                 "limit": 9007199254740991
             },
             "Wood": {
                 "name": "Wood",
+                "localName": "Wood",
                 "limit": 100000000
             }
         }

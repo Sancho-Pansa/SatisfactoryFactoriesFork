@@ -101,7 +101,7 @@ async function processFile(
 
         // Get parts
         const items = getItems(data, i18nDictionary);
-        fixItemNames(items, i18nDictionary);
+        fixItemNames(items);
 
         // Get an array of all buildings that produce something
         const producingBuildings = getProducingBuildings(data);

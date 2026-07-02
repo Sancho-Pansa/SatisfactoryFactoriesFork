@@ -417,20 +417,20 @@ function getRawResources(data: any[], i18nDictionary: I18nDictionary): { [key: s
     return orderedRawResources;
 }
 
-function fixItemNames(items: ParserItemDataInterface, i18nDictionary: I18nDictionary): void {
+function fixItemNames(items: ParserItemDataInterface): void {
     // Go through the item names and do some manual fixes, e.g. renaming "Residual Plastic" to "Plastic"
     const fixItems: Record<string, string> = {
-        "AlienProtein": i18nDictionary["AlienProtein"] ?? "Alien Protein",
-        "AluminumIngot": i18nDictionary["Aluminum Ingot"] ?? "Aluminum Ingot", // the parser uses the recipe display name instead of the part descriptor name. The "Alternate: Pure Aluminum Ingot" recipe produces AluminumIngot, so the part gets that recipe name instead of "Aluminum Ingot"
-        "CompactedCoal": i18nDictionary["Compacted Coal"] ?? "Compacted Coal",
-        "DarkEnergy": i18nDictionary["Dark Matter Residue"] ?? "Dark Matter Residue",
-        "HeavyOilResidue": i18nDictionary["Heavy Oil Residue"] ?? "Heavy Oil Residue",
-        "LiquidFuel": i18nDictionary["Fuel"] ?? "Fuel",
-        "PolymerResin": i18nDictionary["Polymer Resin"] ?? "Polymer Resin",
-        "Rubber": i18nDictionary["Rubber"] ?? "Rubber",
-        "Silica": i18nDictionary["Silica"] ?? "Silica", // the parser uses the recipe display name instead of the part descriptor name. The "Alumina Solution" recipe produces both AluminaSolution and Silica as products — so when Silica was processed as a product of that recipe, it inherited the recipe name "Alumina Solution" instead of its own name "Silica"
-        "Snow": i18nDictionary["Snow"] ?? "Snow",
-        "Water": i18nDictionary["Water"] ?? "Water",
+        "AlienProtein": "Alien Protein",
+        "AluminumIngot": "Aluminum Ingot", // the parser uses the recipe display name instead of the part descriptor name. The "Alternate: Pure Aluminum Ingot" recipe produces AluminumIngot, so the part gets that recipe name instead of "Aluminum Ingot"
+        "CompactedCoal": "Compacted Coal",
+        "DarkEnergy": "Dark Matter Residue",
+        "HeavyOilResidue": "Heavy Oil Residue",
+        "LiquidFuel": "Fuel",
+        "PolymerResin": "Polymer Resin",
+        "Rubber": "Rubber",
+        "Silica": "Silica", // the parser uses the recipe display name instead of the part descriptor name. The "Alumina Solution" recipe produces both AluminaSolution and Silica as products — so when Silica was processed as a product of that recipe, it inherited the recipe name "Alumina Solution" instead of its own name "Silica"
+        "Snow": "Snow",
+        "Water": "Water",
     };
 
     for (const search of Object.keys(fixItems)) {
