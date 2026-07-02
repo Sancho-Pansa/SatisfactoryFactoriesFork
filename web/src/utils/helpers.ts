@@ -12,8 +12,6 @@ export const getPartDisplayName = (part: string | number | null): string => {
     console.error('getPartDisplayName: No game data!!')
     return 'NO DATA!!!'
   }
-  console.debug(`RAW RESORUCE DATA: `)
-  console.dir(gameData.items.rawResources[part])
   return gameData.items.rawResources[part]?.localName ??
     gameData.items.rawResources[part]?.name ??
     gameData.items.parts[part]?.localName ??
