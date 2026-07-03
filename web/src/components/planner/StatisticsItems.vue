@@ -17,7 +17,7 @@
         <game-asset clickable :subject="product.id" type="item" />
       </span>
       <span>
-        <b>{{ getPartDisplayName(product.id) }}</b>: {{ formatNumber(product.amountSupplied) }}/min
+        <b>{{ getPartDisplayName(product.id) }}</b>: {{ formatNumber(product.amountSupplied) }}/{{ $t("common.units.timeMin") }}
       </span>
     </v-chip>
   </div>

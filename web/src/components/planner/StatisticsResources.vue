@@ -11,7 +11,7 @@
       <v-chip class="sf-chip cyan" variant="tonal">
         <game-asset clickable :subject="resource.id.toString()" type="item" />
         <span class="ml-2">
-          <b>{{ getPartDisplayName(resource.id.toString()) }}</b>: {{ formatNumber(resource.totalAmount) }}/min
+          <b>{{ getPartDisplayName(resource.id.toString()) }}</b>: {{ formatNumber(resource.totalAmount) }}/{{ $t("common.units.timeMin") }}
         </span>
       </v-chip>
     </span>
