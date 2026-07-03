@@ -4,7 +4,7 @@
       <v-card class="factory-card">
         <v-row class="header">
           <v-col class="text-h4 flex-grow-1" cols="8">
-            <i class="fas fa-list" /><span class="ml-3">Factories Summary [WIP]</span>
+            <i class="fas fa-list" /><span class="ml-3">{{ $t("summary.header") }} [WIP]</span>
           </v-col>
           <v-col class="text-right" cols="4">
             <v-btn
@@ -13,7 +13,7 @@
               prepend-icon="fas fa-eye-slash"
               variant="outlined"
               @click="toggleVisibility"
-            >Hide
+            >{{ $t("common.hideButton") }}
             </v-btn>
             <v-btn
               v-show="hidden"
@@ -21,14 +21,13 @@
               prepend-icon="fas fa-eye"
               variant="outlined"
               @click="toggleVisibility"
-            >Show
+            >{{ $t("common.showButton") }}
             </v-btn>
           </v-col>
         </v-row>
         <v-card-text v-if="!hidden" class="text-body-1">
           <p v-show="helpText" class="mb-4">
-            <i class="fas fa-info-circle" /> Showing an overview of each factory
-            with the name, buildings and their production.
+            <i class="fas fa-info-circle" /> {{ $t("summary.help") }}
           </p>
 
           <v-table
@@ -40,19 +39,19 @@
             <thead>
               <tr>
                 <th class="text-left text-h6 table-column border-e-md" scope="row">
-                  <i class="fas fa-industry" /><span class="ml-2">Factory Name</span>
+                  <i class="fas fa-industry" /><span class="ml-2">{{ $t("summary.table.factoryName") }}</span>
                 </th>
                 <th class="text-left text-h6 table-column border-e-md" scope="row">
-                  <i class="fas fa-building" /><span class="ml-2">Buildings</span>
+                  <i class="fas fa-building" /><span class="ml-2">{{ $t("summary.table.buildings") }}</span>
                 </th>
                 <th class="text-left text-h6 table-column border-e-md" scope="row">
-                  <i class="fas fa-box" /><span class="ml-2">Items</span>
+                  <i class="fas fa-box" /><span class="ml-2">{{ $t("summary.table.items") }}</span>
                 </th>
                 <th class="text-left text-h6 table-column border-e-md" scope="row">
-                  <i class="fas fa-arrow-to-right" /><span class="ml-2">Imports</span>
+                  <i class="fas fa-arrow-to-right" /><span class="ml-2">{{ $t("summary.table.imports") }}</span>
                 </th>
                 <th class="text-left text-h6 table-column border-e-md" scope="row">
-                  <i class="fas fa-truck-container" /><span class="ml-2">Exports</span>
+                  <i class="fas fa-truck-container" /><span class="ml-2">{{ $t("summary.table.exports") }}</span>
                 </th>
               </tr>
             </thead>
@@ -103,7 +102,7 @@
                       />
                     </span>
                     <span>
-                      <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/min
+                      <b>{{ getPartDisplayName(part.id) }}</b>: {{ formatNumber(part.amount) }}/{{ $t("common.units.timeMin") }}
                     </span>
                     <span
                       v-if="
@@ -141,7 +140,7 @@
                     />
                     <span class="ml-2">
                       <b>{{ getPartDisplayName(totals.outputPart) }}:</b>
-                      {{ formatNumber(totals.totalAmount) }}/min
+                      {{ formatNumber(totals.totalAmount) }}/{{ $t("common.units.timeMin") }}
                     </span>
                   </v-chip>
                 </td>
@@ -165,7 +164,7 @@
                     />
                     <span class="ml-2">
                       <b>{{ getPartDisplayName(totals.part) }}:</b>
-                      {{ formatNumber(totals.totalAmount) }}/min
+                      {{ formatNumber(totals.totalAmount) }}/{{ $t("common.units.timeMin") }}
                     </span>
                   </v-chip>
                 </td>
