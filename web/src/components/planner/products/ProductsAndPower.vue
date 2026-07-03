@@ -5,9 +5,22 @@
       <span class="ml-3">{{ $t("planner.factory.productsAndPower.header") }}</span>
     </h1>
     <p v-show="helpText" class="text-body-2 mb-4">
-      <i class="fas fa-info-circle" /> {{ $t("planner.factory.productsAndPower.help.paragraph") }}
-      An <v-chip color="green">Internal</v-chip> product is one that is used to produce other products. The surplus of which can also be used as an export.<br>
-      An <v-chip color="red">No demand</v-chip> product means the product is not used internally nor exported. It is suggested you delete this.
+      <i18n-t keypath="planner.factory.productsAndPower.help.paragraph" tag="p">
+        <template #mark>
+          <i class="fas fa-info-circle" />
+        </template>
+      </i18n-t>
+      <i18n-t keypath="planner.factory.productsAndPower.help.internal" tag="span">
+        <template #internal>
+          <v-chip color="green"> {{ $t("planner.factory.productsAndPower.product.internal") }}</v-chip>
+        </template>
+      </i18n-t>
+      <br>
+      <i18n-t keypath="planner.factory.productsAndPower.help.noDemand" tag="span">
+        <template #noDemand>
+          <v-chip color="red">{{ $t("planner.factory.productsAndPower.product.noDemand") }}</v-chip>
+        </template>
+      </i18n-t>
     </p>
     <product :factory="factory" :help-text="helpText" />
     <v-btn

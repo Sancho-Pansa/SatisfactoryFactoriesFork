@@ -4,7 +4,9 @@
       "powerMW": "MW",
       "timeMin": "min",
       "powerGW": "GW"
-    }
+    },
+    "hideButton": "Hide",
+    "showButton": "Show"
   },
   "buildings": {
     "assemblermk1": "Assembler",
@@ -60,7 +62,11 @@
       "productsAndPower": {
         "header": "Products &amp; Power Generators",
         "help": {
-          "paragraph": "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export.<br> e.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).<br>"
+          "paragraph": "{mark} Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export. E.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).",
+          "paragraph-1": "Products that are created within the factory. Products are first used to fulfil recipes internally, and any surplus is then available for Export. E.g. if you add 200 Iron Rods and also 100 Screws, you'd have 100 surplus Rods remaining used as an Export (and the Screws as a end product).",
+          "paragraph-2": "An {green} product is one that is used to produce other products. The surplus of which can also be used as an export.",
+          "internal": "An {internal} product is one that is used to produce other products. The surplus of which can also be used as an export.",
+          "noDemand": "An {noDemand} product means the product is not used internally nor exported. It is suggested you delete this."
         },
         "product": {
           "itemLabel": "Item",
@@ -114,7 +120,7 @@
         "empty": "Awaiting product selection or requirements outside of Raw Resources.",
         "item": "Item",
         "satisfaction": "Satisfaction",
-        "help": "Amount of the item that is available after internal production needs and other export requests are taken into account.<br>This amount is available for other factories to import.",
+        "help": "Amount of the item that is available after internal production needs and other export requests are taken into account. This amount is available for other factories to import.",
         "exports": "Exports",
         "product": "Product",
         "byproduct": "Byproduct",
@@ -229,6 +235,17 @@
       "header": "Produced Items",
       "info": "Shows all the items produced by all your factories.",
       "emptyList": "Awaiting Production"
+    }
+  },
+  "summary": {
+    "header": "Factories Summary",
+    "help": "Showing an overview of each factory with the name, buildings and their production.",
+    "table": {
+      "factoryName": "Factory Name",
+      "buildings": "Buildings",
+      "items": "Items",
+      "imports": "Imports",
+      "exports": "Exports"
     }
   }
 }
