@@ -4,7 +4,7 @@
   "author": "Matt Cavanagh",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "vite",
+    "dev": "VITE_ENV=dev VITE_DEVTOOLS=true vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
