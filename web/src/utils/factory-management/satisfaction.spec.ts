@@ -1,18 +1,22 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { Factory } from '@/interfaces/planner/FactoryInterface'
+import { Factory, FactoryPowerChangeType } from '@/interfaces/planner/FactoryInterface'
 import { create220Scenario } from '@/utils/factory-setups/220-byproduct-only-part'
 import { addProductToFactory } from '@/utils/factory-management/products'
 import {
+  addShortageToFactory,
   convertWasteToGeneratorFuel,
   showByProductChip,
   showImportedChip, showInternalChip,
   showProductChip, showRawChip,
+  showRecycledChip,
   showSatisfactionItemButton,
+  showUnpackagedChip,
 } from '@/utils/factory-management/satisfaction'
 import { calculateFactories, newFactory } from '@/utils/factory-management/factory'
 import { gameData } from '@/utils/gameData'
 import { addInputToFactory, getAllInputs, getInput } from '@/utils/factory-management/inputs'
 import { create338Scenario } from '@/utils/factory-setups/338-satisfaction-chips'
+import { create243Scenario } from '@/utils/factory-setups/243-water-recycling'
 import { addPowerProducerToFactory } from '@/utils/factory-management/power'
 
 describe('satisfaction', () => {
@@ -201,7 +205,7 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
         expect(showSatisfactionItemButton(mockFactory, 'NuclearWaste', 'addGenerator')).toBe(false)
@@ -236,7 +240,7 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 100, // Will deffo be satisfied lol
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
 
@@ -249,7 +253,7 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
 
@@ -262,13 +266,13 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         addPowerProducerToFactory(mockFactory, {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
 
@@ -288,7 +292,7 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
       })
@@ -301,14 +305,114 @@ describe('satisfaction', () => {
           building: 'generatornuclear',
           buildingAmount: 1,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'building',
+          updated: FactoryPowerChangeType.Building,
         })
         calculateFactories(factories, gameData)
         expect(showSatisfactionItemButton(mockFactory, 'NuclearWaste', 'fixGeneratorManually')).toBe(true)
       })
     })
+
+    describe('addToFactory', () => {
+      it('should show for a part that is not satisfied', () => {
+        expect(showSatisfactionItemButton(mockFactory, 'SteelPlate', 'addToFactory')).toBe(true)
+      })
+      it('should NOT show for a part that is raw', () => {
+        addProductToFactory(mockFactory, {
+          id: 'IronIngot',
+          amount: 10,
+          recipe: 'IngotIron',
+        })
+        calculateFactories(factories, gameData)
+
+        expect(showSatisfactionItemButton(mockFactory, 'OreIron', 'addToFactory')).toBe(false)
+      })
+      it('should NOT show for a part that is satisfied', () => {
+        const steelFac = newFactory('Steel 2')
+        addProductToFactory(steelFac, {
+          id: 'SteelPlate',
+          amount: 1000,
+          recipe: 'SteelPlate',
+        })
+        factories.push(steelFac)
+        addInputToFactory(mockFactory, {
+          factoryId: steelFac.id,
+          outputPart: 'SteelPlate',
+          amount: 1000,
+        })
+        calculateFactories(factories, gameData)
+
+        expect(showSatisfactionItemButton(mockFactory, 'SteelPlate', 'addToFactory')).toBe(false)
+      })
+      it('should NOT show for nuclear waste', () => {
+        addProductToFactory(mockFactory, {
+          id: 'PlutoniumPellet',
+          amount: 30,
+          recipe: 'Plutonium',
+        })
+        calculateFactories(factories, gameData)
+
+        expect(showSatisfactionItemButton(mockFactory, 'NuclearWaste', 'addToFactory')).toBe(false)
+      })
+    })
   })
+
+  describe('addShortageToFactory', () => {
+    it('should add the shortage as a product on the target factory and import it back', () => {
+      const targetFactory = newFactory('Steel Plates')
+      factories.push(targetFactory)
+
+      const shortage = Math.abs(mockFactory.parts.SteelPlate.amountRemaining)
+      expect(shortage).toBeGreaterThan(0)
+
+      addShortageToFactory(mockFactory, targetFactory, 'SteelPlate', 'SteelPlate')
+      calculateFactories(factories, gameData)
+
+      expect(targetFactory.products.length).toBe(1)
+      expect(targetFactory.products[0].id).toBe('SteelPlate')
+      expect(targetFactory.products[0].amount).toBe(shortage)
+      expect(getInput(mockFactory, 'SteelPlate').amount).toBe(shortage)
+      expect(mockFactory.parts.SteelPlate.satisfied).toBe(true)
+    })
+
+    it('should bump the existing product and input when the target factory already supplies the part', () => {
+      const targetFactory = newFactory('Steel Plates')
+      factories.push(targetFactory)
+      addProductToFactory(targetFactory, {
+        id: 'SteelPlate',
+        amount: 10,
+        recipe: 'SteelPlate',
+      })
+      addInputToFactory(mockFactory, {
+        factoryId: targetFactory.id,
+        outputPart: 'SteelPlate',
+        amount: 10,
+      })
+      calculateFactories(factories, gameData)
+
+      const shortage = Math.abs(mockFactory.parts.SteelPlate.amountRemaining)
+      expect(shortage).toBeGreaterThan(0)
+
+      addShortageToFactory(mockFactory, targetFactory, 'SteelPlate', 'SteelPlate')
+      calculateFactories(factories, gameData)
+
+      expect(targetFactory.products.length).toBe(1)
+      expect(targetFactory.products[0].amount).toBe(10 + shortage)
+      expect(mockFactory.inputs.length).toBe(1)
+      expect(getInput(mockFactory, 'SteelPlate').amount).toBe(10 + shortage)
+      expect(mockFactory.parts.SteelPlate.satisfied).toBe(true)
+    })
+  })
+
   describe('chips', () => {
+    // Adds an Unpackage Oil product covering the factory's entire crude oil demand
+    const addUnpackagedOilToCoverDemand = (factory: Factory) => {
+      addProductToFactory(factory, {
+        id: 'LiquidOil',
+        amount: factory.parts.LiquidOil.amountRequired,
+        recipe: 'UnpackageOil',
+      })
+    }
+
     beforeEach(() => {
       factories = create338Scenario().getFactories()
       mockFactory = factories[0]
@@ -390,6 +494,63 @@ describe('satisfaction', () => {
       })
       it('should NOT show for an imported part', () => {
         expect(showRawChip(mockFactory, 'SteelPlate')).toBe(false)
+      })
+      // #431: unpackaging supplies the raw part, so there is no genuine raw import
+      it('should NOT show for a raw part fully supplied by unpackaging', () => {
+        addUnpackagedOilToCoverDemand(mockFactory)
+        calculateFactories(factories, gameData)
+
+        expect(showRawChip(mockFactory, 'LiquidOil')).toBe(false)
+      })
+      it('should show for a raw part only partially supplied by unpackaging', () => {
+        // Cover only part of the crude oil demand, the rest still comes from raw supply
+        addProductToFactory(mockFactory, {
+          id: 'LiquidOil',
+          amount: 30,
+          recipe: 'UnpackageOil',
+        })
+        calculateFactories(factories, gameData)
+
+        expect(mockFactory.parts.LiquidOil.amountSuppliedViaRaw).toBeGreaterThan(0)
+        expect(showRawChip(mockFactory, 'LiquidOil')).toBe(true)
+      })
+    })
+
+    describe('showUnpackagedChip', () => {
+      it('should show for a raw part supplied by unpackaging', () => {
+        addUnpackagedOilToCoverDemand(mockFactory)
+        calculateFactories(factories, gameData)
+
+        expect(showUnpackagedChip(mockFactory, 'LiquidOil')).toBe(true)
+      })
+      it('should NOT show for a raw part supplied from the world', () => {
+        expect(showUnpackagedChip(mockFactory, 'LiquidOil')).toBe(false)
+      })
+      it('should NOT show for a non-raw product', () => {
+        expect(showUnpackagedChip(mockFactory, 'Plastic')).toBe(false)
+      })
+    })
+
+    describe('showRecycledChip', () => {
+      it('should show for a byproduct consumed within the same factory', () => {
+        // Water byproduct of Aluminum Scrap feeds back into Alumina Solution. #243
+        const recycleFactories = create243Scenario().getFactories()
+        calculateFactories(recycleFactories, gameData)
+
+        expect(showRecycledChip(recycleFactories[0], 'Water')).toBe(true)
+      })
+      it('should NOT show for a byproduct that is not consumed internally', () => {
+        expect(showRecycledChip(mockFactory, 'PolymerResin')).toBe(false)
+      })
+      it('should NOT show for a part that is also a primary product', () => {
+        // HeavyOilResidue is consumed internally but deliberately produced as a product, which is the Internal chip's job
+        expect(showRecycledChip(mockFactory, 'HeavyOilResidue')).toBe(false)
+      })
+      it('should NOT show for a product only', () => {
+        expect(showRecycledChip(mockFactory, 'Plastic')).toBe(false)
+      })
+      it('should NOT show for a raw part', () => {
+        expect(showRecycledChip(mockFactory, 'LiquidOil')).toBe(false)
       })
     })
 

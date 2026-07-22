@@ -1,6 +1,6 @@
 import { Factory, FactoryItem, PartMetrics } from '@/interfaces/planner/FactoryInterface'
-import { getProduct, shouldShowInternal } from '@/utils/factory-management/products'
-import { getAllInputs } from '@/utils/factory-management/inputs'
+import { addProductToFactory, getProduct, shouldShowInternal } from '@/utils/factory-management/products'
+import { addInputToFactory, getAllInputs } from '@/utils/factory-management/inputs'
 import { PowerRecipe } from '@/interfaces/Recipes'
 import { formatNumberFully } from '@/utils/numberFormatter'
 
@@ -32,8 +32,51 @@ export const showSatisfactionItemButton = (
       return showCorrectManually(factory, part, partId)
     case 'fixImport':
       return showFixImport(factory, part, partId)
+    case 'addToFactory':
+      return showAddToFactory(factory, part, partId)
     default:
       return null
+  }
+}
+
+// Shown for any shortage that could be produced by another factory (i.e. not raw, not nuclear waste).
+export const showAddToFactory = (factory: Factory, part: PartMetrics, partId: string) => {
+  if (nuclearParts.includes(partId)) {
+    return false
+  }
+  return !part.isRaw && !part.satisfied
+}
+
+// Adds the shortage of a part as a product on the target factory, and imports it back into the
+// shortage factory so the deficit is actually resolved. Caller is expected to recalculate factories.
+export const addShortageToFactory = (
+  shortageFactory: Factory,
+  targetFactory: Factory,
+  partId: string,
+  recipe: string,
+) => {
+  const shortage = Math.abs(shortageFactory.parts[partId]?.amountRemaining ?? 0)
+
+  const existingProduct = getProduct(targetFactory, partId, true) as FactoryItem | undefined
+  if (existingProduct) {
+    existingProduct.amount += shortage
+  } else {
+    addProductToFactory(targetFactory, {
+      id: partId,
+      amount: shortage,
+      recipe,
+    })
+  }
+
+  const existingInput = getAllInputs(shortageFactory, partId, targetFactory.id)[0]
+  if (existingInput) {
+    existingInput.amount += shortage
+  } else {
+    addInputToFactory(shortageFactory, {
+      factoryId: targetFactory.id,
+      outputPart: partId,
+      amount: shortage,
+    })
   }
 }
 
@@ -109,7 +152,31 @@ export const showImportedChip = (factory: Factory, partId: string) => {
   return getAllInputs(factory, partId).length > 0
 }
 export const showRawChip = (factory: Factory, partId: string) => {
-  return factory.parts[partId].isRaw
+  const part = factory.parts[partId]
+  // Only show when raw supply is actually being drawn from the world. A raw part fully
+  // supplied by unpackaging (e.g. Packaged Oil -> Crude Oil) is not a raw import. #431
+  return part.isRaw && part.amountSuppliedViaRaw > 0
+}
+export const showUnpackagedChip = (factory: Factory, partId: string) => {
+  const part = factory.parts[partId]
+  if (!part.isRaw) {
+    return false
+  }
+  return factory.products.some(product => product.id === partId && product.recipe.startsWith('Unpackage'))
+}
+export const showRecycledChip = (factory: Factory, partId: string) => {
+  // Only byproducts count as recycled; primary products consumed internally get the Internal chip instead.
+  if (!getProduct(factory, partId, false, true) || getProduct(factory, partId, true)) {
+    return false
+  }
+
+  // The byproduct must actually be consumed within the same factory, e.g. Water from
+  // Aluminum Scrap fed back into Alumina Solution. #243
+  const part = factory.parts[partId]
+  if (!part) {
+    return false
+  }
+  return part.amountRequiredProduction + part.amountRequiredPower > 0
 }
 export const showInternalChip = (factory: Factory, partId: string) => {
   const product = getProduct(factory, partId, true) as FactoryItem

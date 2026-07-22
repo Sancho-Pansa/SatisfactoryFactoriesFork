@@ -3,6 +3,8 @@ import {
   getPartDisplayName,
   hasMetricsForPart,
 } from '@/utils/helpers'
+import { getTotalSomersloops } from '@/utils/factory-management/building-groups/somersloops'
+import { getTotalPowerShards } from '@/utils/factory-management/building-groups/common'
 // This function calculates the total number of buildings for each type
 export const calculateTotalBuildingsByType = (factories: Factory[]) => {
   const buildings: Record<
@@ -140,7 +142,7 @@ export const calculateTotalProducedItems = (factories: Factory[]) => {
 }
 
 export const calculateProducedItemsDifference = (factories: Factory[]) => {
-  const differences: Record<string, {id: string, name: string; totalDifference: number }> =
+  const differences: Record<string, { id: string, name: string; totalDifference: number }> =
       {}
 
   factories.forEach(factory => {
@@ -164,43 +166,97 @@ export const calculateProducedItemsDifference = (factories: Factory[]) => {
   )
 }
 
-export const calculateTotalPower = (factories: Factory[]) => {
-  const buildings: Record<
-string,
-{
-  powerConsumed: number;
-  powerProduced: number;
+// Total Power Shards a factory needs across all its building groups (products + power
+// producers).
+export const getFactoryPowerShards = (factory: Factory): number => {
+  let total = 0
+  for (const product of factory.products) {
+    total += getTotalPowerShards(product.buildingGroups)
+  }
+  for (const producer of factory.powerProducers) {
+    total += getTotalPowerShards(producer.buildingGroups)
+  }
+  return total
 }
-> = {} // Explicitly define the type
+
+// Total Somersloops a factory consumes across all its building groups, including
+// build costs (e.g. 10 per Alien Power Augmenter).
+export const getFactorySomersloops = (factory: Factory): number => {
+  let total = 0
+  for (const product of factory.products) {
+    total += getTotalSomersloops(product.buildingGroups, product.buildingRequirements?.name)
+  }
+  for (const producer of factory.powerProducers) {
+    total += getTotalSomersloops(producer.buildingGroups, producer.building)
+  }
+  return total
+}
+
+// Per-factory usage list for the statistics summary — only factories actually using any.
+export const calculateFactoriesUsing = (
+  factories: Factory[],
+  getAmount: (factory: Factory) => number,
+) => factories
+  .map(factory => ({ factory, amount: getAmount(factory) }))
+  .filter(entry => entry.amount > 0)
+
+// Sums the per-factory power figures (which are derived from the building groups, so they
+// account for overclocking and somersloops). Peak differs from consumed only when
+// variable-power buildings (Particle Accelerator etc.) are present. The circuit boost
+// (Alien Power Augmenters) is part of total generation, matching the in-game power graph.
+export const calculateTotalPower = (factories: Factory[]) => {
+  let totalPowerConsumed = 0
+  let totalPowerConsumedMin = 0
+  let totalPowerConsumedMax = 0
+  let totalBasePower = 0
+  let totalBasePowerMin = 0
+  let totalBasePowerMax = 0
+  let totalPowerBoost = 0
+  let totalBoostPercent = 0
+  let totalBoostFueled = 0
+  let totalBoostUnfueled = 0
 
   factories.forEach(factory => {
-    Object.entries(factory.buildingRequirements).forEach(
-      ([key, requirement]) => {
-        if (!buildings[key]) {
-          // Initialize the building entry
-          buildings[key] = {
-            powerConsumed: requirement.powerConsumed || 0,
-            powerProduced: requirement.powerProduced || 0,
-          }
-        } else {
-          // Accumulate power values if the building already exists
-          buildings[key].powerConsumed += requirement.powerConsumed || 0
-          buildings[key].powerProduced += requirement.powerProduced || 0
-        }
-      }
-    )
-  })
-  // Calculate total power consumed and produced
-  let totalPowerConsumed = 0
-  let totalPowerProduced = 0
-  let totalPowerDifference = 0
-
-  Object.values(buildings).forEach(building => {
-    totalPowerConsumed += building.powerConsumed
-    totalPowerProduced += building.powerProduced
+    const consumed = factory.power?.consumed ?? 0
+    const produced = factory.power?.produced ?? 0
+    totalPowerConsumed += consumed
+    totalPowerConsumedMin += factory.power?.consumedMin ?? consumed
+    totalPowerConsumedMax += factory.power?.consumedMax ?? consumed
+    totalBasePower += produced
+    totalBasePowerMin += factory.power?.producedMin ?? produced
+    totalBasePowerMax += factory.power?.producedMax ?? produced
+    totalPowerBoost += factory.power?.boostMw ?? 0
+    totalBoostPercent += factory.power?.boostPercent ?? 0
+    totalBoostFueled += factory.power?.boostFueledBuildings ?? 0
+    totalBoostUnfueled += factory.power?.boostUnfueledBuildings ?? 0
   })
 
-  totalPowerDifference = totalPowerProduced - totalPowerConsumed
+  // The circuit boost is a percentage of whatever the grid is generating, so it swings
+  // with the variable generators.
+  const totalPowerBoostMin = totalBoostPercent * totalBasePowerMin
+  const totalPowerBoostMax = totalBoostPercent * totalBasePowerMax
 
-  return { totalPowerConsumed, totalPowerProduced, totalPowerDifference }
+  const totalPowerProduced = totalBasePower + totalPowerBoost
+  const totalPowerProducedMin = totalBasePowerMin + totalPowerBoostMin
+  const totalPowerProducedMax = totalBasePowerMax + totalPowerBoostMax
+  const totalPowerDifference = totalPowerProduced - totalPowerConsumed
+
+  return {
+    totalPowerConsumed,
+    totalPowerConsumedMin,
+    totalPowerConsumedMax,
+    totalBasePower,
+    totalBasePowerMin,
+    totalBasePowerMax,
+    totalPowerBoost,
+    totalPowerBoostMin,
+    totalPowerBoostMax,
+    totalBoostPercent,
+    totalBoostFueled,
+    totalBoostUnfueled,
+    totalPowerProduced,
+    totalPowerProducedMin,
+    totalPowerProducedMax,
+    totalPowerDifference,
+  }
 }

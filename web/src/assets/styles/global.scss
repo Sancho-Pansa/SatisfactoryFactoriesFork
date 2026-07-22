@@ -24,39 +24,163 @@
     margin: 0 !important;
   }
 
-  &.red {
-    color: #f44336 !important;
-    border-color: #f44336 !important;
+  // All colours below resolve to the --sf-* custom properties published from
+  // src/utils/colors.ts (the single source of truth). Each rule pairs the legacy
+  // colour-name class with its semantic alias so both spellings work; prefer the
+  // semantic one (e.g. `.product` over `.blue`) in new markup.
+  &.nocolor {
+    color: white !important;
+    border-color: var(--sf-grey-border) !important;
   }
 
-  &.blue {
-    color: rgb(33, 150, 243) !important;
-    border-color: rgb(1, 111, 204) !important;
+  // Status
+  &.red, &.error {
+    color: var(--sf-error) !important;
+    border-color: var(--sf-error-border) !important;
   }
 
-  &.cyan {
-    color: rgb(163, 206, 255) !important;
-    border-color: rgb(75, 151, 223) !important;
+  &.green, &.success {
+    color: var(--sf-success) !important;
+    border-color: var(--sf-success-border) !important;
   }
 
-  &.orange {
-    color: #f57f17 !important;
-    border-color: rgb(167, 86, 0) !important
+  // A reference to a factory (import/export links, export requests, summary rows).
+  // Shares its background with the factory card header (--sf-factory-bg) so the two match.
+  &.factory {
+    color: var(--sf-factory) !important;
+    border-color: var(--sf-factory-border) !important;
+    background-color: var(--sf-factory-bg);
+  }
+
+  // Items & flows
+  &.blue, &.product {
+    color: var(--sf-product) !important;
+    border-color: var(--sf-product-border) !important;
+  }
+
+  &.byproduct {
+    color: var(--sf-byproduct) !important;
+    border-color: var(--sf-byproduct-border) !important;
+  }
+
+  &.cyan, &.raw-resource {
+    color: var(--sf-raw-resource) !important;
+    border-color: var(--sf-raw-resource-border) !important;
+  }
+
+  &.orange, &.building {
+    color: var(--sf-building) !important;
+    border-color: var(--sf-building-border) !important;
+  }
+
+  &.import {
+    color: var(--sf-import) !important;
+    border-color: var(--sf-import-border) !important;
   }
 
   &.yellow {
-    color: #fbc02d !important;
-    border-color: rgb(172, 153, 2) !important
+    color: var(--sf-yellow) !important;
+    border-color: var(--sf-yellow-border) !important;
   }
 
-  &.green {
-    color: #4caf50 !important;
-    border-color: #4caf50 !important;
+  &.sloop, &.somersloop {
+    color: var(--sf-somersloop) !important;
+    border-color: var(--sf-somersloop-border) !important;
+  }
+
+  // Power — generation / consumption / peak draw / Alien Power Augmenter boost.
+  &.generation {
+    color: var(--sf-power-generation) !important;
+    border-color: var(--sf-power-generation-border) !important;
+  }
+
+  &.consumption {
+    color: var(--sf-power-consumption) !important;
+    border-color: var(--sf-power-consumption-border) !important;
+  }
+
+  &.boost, &.circuit-boost {
+    color: var(--sf-circuit-boost) !important;
+    border-color: var(--sf-circuit-boost-border) !important;
+  }
+
+  &.max-consumption, &.peak-consumption {
+    color: var(--sf-peak-consumption) !important;
+    border-color: var(--sf-peak-consumption-border) !important;
   }
 
   &.no-border {
     border: 0 !important;
   }
+
+  &.input {
+    border-radius: 5px !important;
+    border-width: 1px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    // Icon gutters live on the image itself, INSIDE the clickable anchor — an
+    // inline-flex box includes its child's margins, so the hover fill covers the
+    // breathing room instead of hugging the image pixels.
+    .v-img {
+      margin: 0 8px !important;
+    }
+
+    // Only the OUTERMOST element carries the gutter: Vuetify nests a sizer and
+    // the real (absolutely positioned) <img> inside .v-img — a margin on those
+    // shifts the picture sideways and clips it against the container.
+    .v-img :is(img, .v-responsive__sizer) {
+      margin: 0 !important;
+    }
+
+    // The wrapper layers around an icon (tooltip spans, activator spans) must not
+    // add gutters of their own — that stacking is what made wrapped icons sit
+    // wider than bare ones, and it kept the spacing outside the hover fill.
+    span:not([class]):has(.v-img, .game-asset-clickable) {
+      margin: 0 !important;
+    }
+
+    // A text label directly followed by an input (e.g. "Oil Refinery" in the
+    // Requires chip): the input brings its own left gutter, so the span's right
+    // margin would double the gap between them.
+    span:not([class]):has(+ .inline-inputs) {
+      margin-right: 0 !important;
+    }
+
+    // A text label directly after an icon: the image already carries its own 8px
+    // gutter (inside the link wrapper when clickable), so the span's left margin
+    // would double it.
+    .game-asset-clickable + span:not([class]),
+    img + span:not([class]),
+    .v-img + span:not([class]) {
+      margin-left: 0 !important;
+    }
+
+    span:not([class]) {
+      margin: 0 8px !important;
+    }
+  }
+}
+
+// Note: this deliberately overrides Vuetify's built-in text-cyan so text and chips
+// share the one raw-resource colour.
+.text-cyan {
+    color: var(--sf-raw-resource) !important;
+}
+
+// Plain-text power figures (e.g. building-group under-chip labels) share the
+// consumption chip colour.
+.text-power-consumption {
+    color: var(--sf-power-consumption) !important;
+}
+
+// Plain-text item labels (building-group under-chip "x / building" lines) share
+// their chip colours so text and chips always agree.
+.text-product {
+    color: var(--sf-product) !important;
+}
+.text-byproduct {
+    color: var(--sf-byproduct) !important;
 }
 
 .selectors {
@@ -113,24 +237,32 @@
     border-bottom: 1px solid rgb(108, 108, 108) !important;
     align-items: center;
     transition: background-color 0.3s;
-    background-color: rgba(43, 43, 43, 0.4);
+    background-color: var(--sf-factory-bg); // Shared with .sf-chip.factory
 
     &.list {
       padding: 0 !important;
       border-bottom: 0;
     }
+
+    // A collapsed card renders the header alone: its divider would sit flush on the
+    // card's own bottom border and read as one extra-thick line, so drop it when no
+    // body follows. (:last-child can't express this — Vuetify appends a
+    // .v-card__underlay after the slot content.)
+    &:not(:has(~ .v-card-text)) {
+      border-bottom: 0 !important;
+    }
   }
 
   &.problem {
-    border: 2px solid #a00 !important;
+    border: 2px solid var(--sf-problem-border) !important;
 
     .header {
-      background-color: rgba(140, 9, 21, 0.4);
+      background-color: var(--sf-problem-bg);
     }
   }
 
   &.needsSync {
-    border: 2px solid rgb(167, 86, 0) !important;
+    border: 2px solid var(--sf-building-border) !important;
 
     .header {
       background-color: rgba(255, 136, 0, 0.16);
@@ -138,7 +270,7 @@
   }
 
   &.inSync {
-    border: 2px solid #4caf50 !important;
+    border: 2px solid var(--sf-success) !important;
 
     .header {
       background-color: rgba(76, 175, 80, 0.16);
@@ -164,10 +296,17 @@
 
 .inline-inputs {
   margin-left: 5px;
+  padding-top: 2px; // Needed to remove the annoying line underneath the input when inactive
+  height: 44px;
+
+  .v-field__overlay {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
 
   input {
     padding: 0;
-    text-align: center
+    text-align: center;
   }
 }
 
@@ -209,4 +348,78 @@
 // Standardize the font weights as they're all over the place
 .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6 {
   font-weight: 400 !important;
+}
+
+// Vuetify's default hover overlay (4%) is invisible on outlined buttons —
+// hovering one should visibly fill it with a tint of its own colour.
+// Doubled class: the button element also carries .v-theme--dark, whose own
+// --v-hover-opacity: 0.04 otherwise wins the cascade at equal specificity.
+.v-btn.v-btn--variant-outlined {
+  --v-hover-opacity: 0.25;
+}
+
+// Solid buttons get the inverse treatment: their overlay is normally
+// currentColor (the white label), which *lightens* on hover — paint it black
+// instead so hovering visibly darkens the fill.
+.v-btn.v-btn--variant-elevated,
+.v-btn.v-btn--variant-flat {
+  --v-hover-opacity: 0.16;
+
+  // Not on :hover — the overlay's opacity fades out AFTER the pointer leaves,
+  // and a hover-scoped rule snaps the colour back to currentColor (white)
+  // mid-fade, flashing the button bright on exit. Excluding disabled buttons
+  // instead keeps Vuetify's high-opacity disabled wash from turning black.
+  &:not(.v-btn--disabled) > .v-btn__overlay {
+    background-color: black;
+  }
+
+  // The overlay is absolutely positioned and so paints above the (static)
+  // label — invisible when it matched the text colour, but a black overlay
+  // dims the text. Lift the content above it; only the background darkens.
+  > .v-btn__content,
+  > .v-btn__prepend,
+  > .v-btn__append {
+    z-index: 1;
+  }
+}
+
+.factory-item {
+  border-left: 5px solid var(--sf-blue) !important;
+  position: relative;
+}
+
+.factory-item-controls{
+  position: absolute;
+  right: 0;
+  top: -1px;
+
+  .v-btn {
+    height: 20px;
+    border-radius: 0;
+    border-right-width: 0 !important;
+
+    &:first-child {
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
+      border-right-width: 0;
+    }
+  }
+
+  .v-btn__content svg {
+    height: 14px !important;
+  }
+}
+
+.buildingGroups {
+  border-left: 5px solid var(--sf-success) !important;
+  padding-left: 10px;
+
+  &.problem {
+    border-left-color: var(--sf-error) !important;
+  }
 }

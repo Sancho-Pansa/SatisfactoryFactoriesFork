@@ -1,4 +1,4 @@
-import { Factory } from '@/interfaces/planner/FactoryInterface'
+import { Factory, FactoryPowerChangeType, ItemType } from '@/interfaces/planner/FactoryInterface'
 import { addProductToFactory } from '@/utils/factory-management/products'
 import { addPowerProducerToFactory } from '@/utils/factory-management/power'
 import { newFactory } from '@/utils/factory-management/factory'
@@ -11,6 +11,8 @@ let circuitBoardsFac: Factory
 let computersFac: Factory
 let uraniumFac: Factory
 let plutoniumFac: Factory
+let alienPowerFac: Factory
+let geothermalFac: Factory
 
 // This is a more complex setup with multiple factories with dependencies going in a straight chain from Computers to Ingots and Oil Processing.
 // This setup is used to test the more complex factory management functions.
@@ -24,8 +26,10 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
   computersFac = newFactory('Computers (end product)', 5, 5)
   uraniumFac = newFactory('☢️ Uranium Power', 6, 6)
   plutoniumFac = newFactory('☢️ Plutonium Processing', 7, 7)
+  alienPowerFac = newFactory('Alien Power', 8, 8)
+  geothermalFac = newFactory('Geothermal Power', 9, 9)
 
-  const factories = [oilFac, copperIngotsFac, copperBasicsFac, circuitBoardsFac, computersFac, uraniumFac, plutoniumFac]
+  const factories = [oilFac, copperIngotsFac, copperBasicsFac, circuitBoardsFac, computersFac, uraniumFac, plutoniumFac, alienPowerFac, geothermalFac]
 
   // Private methods to configure the factories
   const setupFactories = () => {
@@ -35,6 +39,35 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
       amount: 640,
       recipe: 'Plastic',
     })
+    // Overclocking showcase: most of the Plastic line runs at stock clock, with four
+    // refineries pushed to 200% — costing 2 Power Shards per building (8 total), shown
+    // in the Power Shards & Somersloops statistics. 24 + 4x2 = 32 effective buildings.
+    oilFac.products[0].buildingGroups = [
+      {
+        id: 901,
+        type: ItemType.Product,
+        buildingCount: 24,
+        overclockPercent: 100,
+        somersloops: 0,
+        parts: {},
+        powerUsage: 0,
+        powerProduced: 0,
+      },
+      {
+        id: 902,
+        type: ItemType.Product,
+        buildingCount: 4,
+        overclockPercent: 200,
+        somersloops: 0,
+        parts: {},
+        powerUsage: 0,
+        powerProduced: 0,
+      },
+    ]
+    // Mirrors the app: adding a second group turns off item sync so the custom split sticks.
+    oilFac.products[0].buildingGroupItemSync = false
+    // Start with the tray open so the overclock showcase is visible immediately.
+    oilFac.products[0].buildingGroupsTrayOpen = true
     addProductToFactory(oilFac, {
       id: 'LiquidFuel',
       amount: 40,
@@ -44,7 +77,7 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
       building: 'generatorfuel',
       powerAmount: 500,
       recipe: 'GeneratorFuel_LiquidFuel',
-      updated: 'power',
+      updated: FactoryPowerChangeType.Power,
     })
     oilFac.notes = 'This factory is producing fuel which is burned off internally, also demonstrating how power generators work.\n\nIt also purposefully has a surplus of Heavy Oil Residue which unless handled would cause a blockage in the system.'
     oilFac.syncState = {
@@ -99,6 +132,22 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
       amount: 160,
       recipe: 'CopperSheet',
     })
+    // Overclocking showcase: the whole sheet line runs at 200% — half the constructors
+    // for the same output, at 2 Power Shards each (16 total). 8 x 2 = 16 effective.
+    copperBasicsFac.products[2].buildingGroups = [
+      {
+        id: 903,
+        type: ItemType.Product,
+        buildingCount: 8,
+        overclockPercent: 200,
+        somersloops: 0,
+        parts: {},
+        powerUsage: 0,
+        powerProduced: 0,
+      },
+    ]
+    // Start with the tray open so the overclock showcase is visible immediately.
+    copperBasicsFac.products[2].buildingGroupsTrayOpen = true
     addInputToFactory(copperBasicsFac, {
       factoryId: copperIngotsFac.id,
       outputPart: 'CopperIngot',
@@ -179,7 +228,7 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
       building: 'generatornuclear',
       powerAmount: 25000,
       recipe: 'GeneratorNuclear_NuclearFuelRod',
-      updated: 'power',
+      updated: FactoryPowerChangeType.Power,
     })
     uraniumFac.notes = 'This factory is producing nuclear fuel rods and using them via a nuclear power station. This demonstrates how power generators also can generate waste products which need to be handled.'
     uraniumFac.tasks.push(
@@ -200,6 +249,68 @@ export const complexDemoPlan = (): { getFactories: () => Factory[] } => {
       outputPart: 'NuclearWaste',
       amount: 100,
     })
+    // =================
+
+    // === ALIEN POWER FAC ===
+    addPowerProducerToFactory(alienPowerFac, {
+      building: 'alienpoweraugmenter',
+      buildingAmount: 3,
+      recipe: 'AlienPowerAugmenter',
+      updated: FactoryPowerChangeType.Building,
+    })
+    // Two augmenters supplied with Alien Power Matrixes (+30% grid boost each) and one
+    // running unfueled (+10%). Constructing each augmenter costs 10 Somersloops, which
+    // surfaces in the Power Shards & Somersloops statistics.
+    alienPowerFac.powerProducers[0].buildingGroups = [
+      {
+        id: 801,
+        type: ItemType.Power,
+        buildingCount: 2,
+        overclockPercent: 100,
+        somersloops: 0,
+        parts: {},
+        powerUsage: 0,
+        powerProduced: 0,
+        supplyMatrixes: true,
+      },
+      {
+        id: 802,
+        type: ItemType.Power,
+        buildingCount: 1,
+        overclockPercent: 100,
+        somersloops: 0,
+        parts: {},
+        powerUsage: 0,
+        powerProduced: 0,
+      },
+    ]
+    // Start with the tray open so the matrix-supply toggle showcase is visible immediately.
+    alienPowerFac.powerProducers[0].buildingGroupsTrayOpen = true
+    alienPowerFac.notes = 'Alien Power Augmenters generate 500 MW each and boost the whole grid: +10% of total generation per augmenter, or +30% when supplied with Alien Power Matrixes.\n\nThe two fueled augmenters create a deliberate Alien Power Matrix shortage (5/min each) to show how matrix demand lands on the satisfaction ledger. Each augmenter also costs 10 Somersloops to construct — see the Power Shards & Somersloops statistics.'
+    // =================
+
+    // === GEOTHERMAL POWER FAC ===
+    // One producer per geyser purity: Impure 100 MW, Normal 200 MW, Pure 400 MW average
+    // per generator, each oscillating between 0.5x and 1.5x of that.
+    addPowerProducerToFactory(geothermalFac, {
+      building: 'geothermalgenerator',
+      buildingAmount: 4,
+      recipe: 'GeneratorGeoThermal_Impure',
+      updated: FactoryPowerChangeType.Building,
+    })
+    addPowerProducerToFactory(geothermalFac, {
+      building: 'geothermalgenerator',
+      buildingAmount: 3,
+      recipe: 'GeneratorGeoThermal_Normal',
+      updated: FactoryPowerChangeType.Building,
+    })
+    addPowerProducerToFactory(geothermalFac, {
+      building: 'geothermalgenerator',
+      buildingAmount: 2,
+      recipe: 'GeneratorGeoThermal_Pure',
+      updated: FactoryPowerChangeType.Building,
+    })
+    geothermalFac.notes = 'Geothermal Generators are fuel-less — pick the geyser\'s node purity and the planner shows the average output (Impure 100 MW, Normal 200 MW, Pure 400 MW) plus the 0.5x-1.5x oscillation range the game swings between.'
   }
 
   // Apply setup steps

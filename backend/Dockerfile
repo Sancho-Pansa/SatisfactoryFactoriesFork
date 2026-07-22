@@ -1,4 +1,4 @@
-FROM node:20.17
+FROM node:24
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -8,6 +8,6 @@ WORKDIR /app
 
 RUN pnpm install
 
-EXPOSE 3001
+EXPOSE 3010
 
 CMD ["pnpm", "start"]

@@ -23,6 +23,7 @@
         <span class="ml-3">{{ $t("planner.factory.satisfaction.header") }}</span>
       </h2>
       <v-switch
+        :id="`${factory.id}-satisfaction-breakdown-toggle`"
         class="ml-4"
         color="primary"
         hide-details
@@ -38,14 +39,16 @@
         :label="$t('planner.factory.satisfaction.internalLabel')"
       />
     </div>
-    <v-row v-if="hasParts">
-      <v-col class="pb-1" cols="12">
+    <v-row v-if="hasParts || hasPowerProducers">
+      <v-col v-if="hasParts" class="pb-1" cols="12">
         <planner-factory-satisfaction-items
           :factory="factory"
           :help-text="helpText"
           :show-surplus-outputs="hideInternalOutputs"
         />
       </v-col>
+      <!-- Fuel-less generators (Geothermal, unfueled Augmenters) create no part demand,
+           but their power and building figures must still be visible. -->
       <v-col cols="12">
         <planner-factory-satisfaction-buildings
           :factory="factory"
@@ -83,5 +86,6 @@
 
   // Reactive factory parts check
   const hasParts = computed(() => Object.keys(props.factory.parts).length > 0)
+  const hasPowerProducers = computed(() => props.factory.powerProducers.length > 0)
   const hideInternalOutputs = ref(false)
 </script>

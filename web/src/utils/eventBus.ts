@@ -1,7 +1,8 @@
 import mitt from 'mitt'
+import { Factory } from '@/interfaces/planner/FactoryInterface'
 
 type Events = {
-  factoryUpdated: undefined; // No payload for this event
+  factoryUpdated: Factory;
   loggedIn: undefined;
   sessionExpired: undefined;
   dataSynced: undefined;
@@ -24,9 +25,19 @@ type Events = {
 
   // Intro
   introToggle: boolean;
+  splashShow: undefined;
 
   navigationReady: undefined;
-};
+
+  // Building Groups
+  openBuildingGroupTutorial: undefined;
+  buildingGroupUpdated: Factory;
+  toggleSidebar: undefined;
+  sidebarChanged: boolean;
+  openSummaryFullscreen: undefined;
+  // Sidebar jump-links: unhide the target section (by element id) before scrolling to it.
+  openSection: string;
+}
 
 const eventBus = mitt<Events>()
 

@@ -8,7 +8,6 @@
 
   <VueFlow
     :key="nodes.length"
-    ref="vueFlowRef"
     :edges="edges"
     :nodes="nodes"
     @nodes-initialized="onNodesInitialized"
@@ -21,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-  import { defineProps, onMounted, ref } from 'vue'
+  import { onMounted, shallowRef } from 'vue'
   import { Edge, VueFlow } from '@vue-flow/core'
   import { useAppStore } from '@/stores/app-store'
   import FactoryNode from '@/components/graph/FactoryNode.vue'
@@ -39,12 +38,13 @@
   const appStore = useAppStore()
   const factories = appStore.getFactories()
 
-  const nodes = ref<CustomNode[]>([])
-  const edges = ref<Edge[]>([])
+  // shallowRef: nodes/edges are only ever replaced wholesale, and vue-flow's
+  // Node/Edge types are too deep for Vue's UnwrapRef to instantiate (TS2589).
+  const nodes = shallowRef<CustomNode[]>([])
+  const edges = shallowRef<Edge[]>([])
   let renderedNodeCount = 0 // Count to track rendered nodes
 
   const { layout } = useLayout()
-  const vueFlowRef = ref(null)
 
   // Apply the layout to organize nodes after generation
   function initializeGraph () {

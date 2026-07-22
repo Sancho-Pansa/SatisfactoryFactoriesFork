@@ -1,14 +1,21 @@
-import { beforeAll, describe, expect, it } from 'vitest'
-import { Factory } from '@/interfaces/planner/FactoryInterface'
+import { beforeEach, describe, expect, it } from 'vitest'
+import {
+  BuildingGroup,
+  Factory,
+  FactoryPowerChangeType,
+  FactoryPowerProducer,
+} from '@/interfaces/planner/FactoryInterface'
 import { calculateFactories, newFactory } from '@/utils/factory-management/factory'
 import { addProductToFactory } from '@/utils/factory-management/products'
 import { addPowerProducerToFactory } from '@/utils/factory-management/power'
+import { addPowerProducerBuildingGroup } from '@/utils/factory-management/building-groups/power'
+import { calculateTotalPower } from '@/utils/statistics'
 import { gameData } from '@/utils/gameData'
 
-let factory: Factory
-
 describe('power', () => {
-  beforeAll(() => {
+  let factory: Factory
+
+  beforeEach(() => {
     // Initialize the factory
     factory = newFactory('My fuel plant')
     addProductToFactory(factory, { id: 'LiquidFuel', amount: 480, recipe: 'LiquidFuel' })
@@ -16,9 +23,92 @@ describe('power', () => {
       building: 'generatorfuel',
       powerAmount: 480,
       recipe: 'GeneratorFuel_LiquidFuel',
-      updated: 'power',
+      updated: FactoryPowerChangeType.Power,
     })
     calculateFactories([factory], gameData)
+  })
+
+  describe('addPowerProducerToFactory', () => {
+    // Reset it
+    beforeEach(() => {
+      factory = newFactory('My fuel plant clean')
+    })
+    it('should add a power producer to the factory via buildings', () => {
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        buildingAmount: 5,
+        recipe: 'GeneratorFuel_LiquidFuel',
+        updated: FactoryPowerChangeType.Building,
+      })
+
+      expect(factory.powerProducers[0].buildingCount).toBe(5) // Seeded from buildingAmount, refined on calculation
+      expect(factory.powerProducers[0].buildingAmount).toBe(5)
+    })
+
+    it('should add a power producer to the factory via buildings', () => {
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        powerAmount: 250,
+        recipe: 'GeneratorFuel_LiquidFuel',
+        updated: FactoryPowerChangeType.Power,
+      })
+
+      expect(factory.powerProducers[0].buildingCount).toBe(0) // Calculated after
+      expect(factory.powerProducers[0].powerProduced).toBe(0) // Calculated after
+      expect(factory.powerProducers[0].powerAmount).toBe(250)
+    })
+
+    it('should add a building group when added, with the requested buildings', () => {
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        buildingAmount: 5,
+        recipe: 'GeneratorFuel_LiquidFuel',
+        updated: FactoryPowerChangeType.Building,
+      })
+
+      const group = factory.powerProducers[0].buildingGroups[0]
+      expect(group.buildingCount).toBe(5)
+    })
+
+    it('should add a building group when added, with the correct buildings and parts', () => {
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        buildingAmount: 5,
+        recipe: 'GeneratorFuel_LiquidFuel',
+        updated: FactoryPowerChangeType.Building,
+      })
+
+      // The fuel rate is only scaled to the building count during calculation
+      calculateFactories([factory], gameData)
+
+      const buildingGroup = factory.powerProducers[0].buildingGroups[0]
+      expect(buildingGroup.buildingCount).toBe(5)
+      expect(buildingGroup.parts.LiquidFuel).toBe(100)
+    })
+
+    it('should not leak floating point noise into the turbofuel fuel rate', () => {
+      // A single turbofuel generator produces exactly 250 MW and burns 7.5 turbofuel/min.
+      // The fuel rate is powerProduced / mwPerItem (250 / 33.333…), which without rounding
+      // gives 7.499999999999999 — it must be presented as 7.5.
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        buildingAmount: 1,
+        recipe: 'GeneratorFuel_LiquidTurboFuel',
+        updated: FactoryPowerChangeType.Building,
+      })
+
+      calculateFactories([factory], gameData)
+
+      const producer = factory.powerProducers[0]
+      expect(producer.buildingCount).toBe(1)
+      expect(producer.powerProduced).toBe(250)
+      expect(producer.fuelAmount).toBe(7.5)
+      expect(producer.ingredients[0].perMin).toBe(7.5)
+
+      const buildingGroup = producer.buildingGroups[0]
+      expect(buildingGroup.buildingCount).toBe(1)
+      expect(buildingGroup.parts.LiquidTurboFuel).toBe(7.5)
+    })
   })
 
   describe('calculatePowerProducers', () => {
@@ -26,13 +116,13 @@ describe('power', () => {
       expect(factory.powerProducers[0].building).toBe('generatorfuel')
       expect(factory.powerProducers[0].buildingAmount).toBe(1.92)
       expect(factory.powerProducers[0].buildingCount).toBe(1.92)
-      expect(factory.powerProducers[0].ingredientAmount).toBe(38.4)
+      expect(factory.powerProducers[0].fuelAmount).toBe(38.4)
       expect(factory.powerProducers[0].byproduct).toBe(null)
       expect(factory.powerProducers[0].powerAmount).toBe(480)
       expect(factory.powerProducers[0].powerProduced).toBe(480)
       expect(factory.powerProducers[0].recipe).toBe('GeneratorFuel_LiquidFuel')
       expect(factory.powerProducers[0].displayOrder).toBe(0)
-      expect(factory.powerProducers[0].updated).toBe('power')
+      expect(factory.powerProducers[0].updated).toBe(FactoryPowerChangeType.Power)
     })
 
     it('should calculate the correct amount of ingredients', () => {
@@ -61,15 +151,18 @@ describe('power', () => {
     })
 
     describe('Nuclear Power', () => {
-      beforeAll(() => {
+      let powerProducer: FactoryPowerProducer
+
+      beforeEach(() => {
         factory = newFactory('My nuclear plant')
         // Add one nuclear power plant
         addPowerProducerToFactory(factory, {
           building: 'generatornuclear',
           powerAmount: 2500,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'power',
+          updated: FactoryPowerChangeType.Power,
         })
+        powerProducer = factory.powerProducers[0]
         calculateFactories([factory], gameData)
       })
 
@@ -148,6 +241,152 @@ describe('power', () => {
           exportable: false,
         })
       })
+
+      describe('updating', () => {
+        let buildingGroup: BuildingGroup
+
+        beforeEach(() => {
+          buildingGroup = powerProducer.buildingGroups[0]
+          powerProducer.buildingGroupItemSync = true
+        })
+
+        describe('via building', () => {
+          it('should update when the building count is updated', () => {
+            powerProducer.buildingAmount = 2
+            powerProducer.updated = FactoryPowerChangeType.Building
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(2)
+            expect(powerProducer.ingredients[0].perMin).toBe(0.4)
+            expect(powerProducer.ingredients[1].perMin).toBe(480)
+            expect(powerProducer.byproduct?.amount).toBe(20)
+            expect(powerProducer.fuelAmount).toBe(0.4)
+            expect(powerProducer.powerProduced).toBe(5000)
+            expect(buildingGroup.buildingCount).toBe(2)
+            expect(buildingGroup.overclockPercent).toBe(100)
+
+            powerProducer.buildingAmount = 2.5
+            powerProducer.updated = FactoryPowerChangeType.Building
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(2.5)
+            expect(powerProducer.ingredients[0].perMin).toBe(0.5)
+            expect(powerProducer.ingredients[1].perMin).toBe(600)
+            expect(powerProducer.byproduct?.amount).toBe(25)
+            expect(powerProducer.fuelAmount).toBe(0.5)
+            expect(powerProducer.powerProduced).toBe(6250)
+            expect(buildingGroup.buildingCount).toBe(3)
+            expect(buildingGroup.overclockPercent).toBe(83.3333)
+
+            powerProducer.buildingAmount = 2.775
+            powerProducer.updated = FactoryPowerChangeType.Building
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(2.775)
+            expect(powerProducer.ingredients[0].perMin).toBe(0.555)
+            expect(powerProducer.ingredients[1].perMin).toBe(666)
+            expect(powerProducer.byproduct?.amount).toBe(27.75)
+            expect(powerProducer.fuelAmount).toBe(0.555)
+            expect(powerProducer.powerProduced).toBe(6937.5)
+            expect(buildingGroup.buildingCount).toBe(3)
+            expect(buildingGroup.overclockPercent).toBe(92.5)
+          })
+        })
+
+        describe('via ingredient', () => {
+          it('should update when the ingredient amount is updated', () => {
+            powerProducer.ingredients[1].perMin = 2400
+            powerProducer.updated = FactoryPowerChangeType.Ingredient
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(10)
+            expect(powerProducer.ingredients[0].perMin).toBe(2)
+            expect(powerProducer.ingredients[1].perMin).toBe(2400)
+            expect(powerProducer.byproduct?.amount).toBe(100)
+            expect(powerProducer.powerProduced).toBe(25000)
+            expect(buildingGroup.buildingCount).toBe(10)
+            expect(buildingGroup.overclockPercent).toBe(100)
+
+            powerProducer.ingredients[1].perMin = 3060
+            powerProducer.updated = FactoryPowerChangeType.Ingredient // Gets changed back to building at some point in the calculations
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(12.75)
+            expect(powerProducer.ingredients[0].perMin).toBe(2.55)
+            expect(powerProducer.ingredients[1].perMin).toBe(3060)
+            expect(powerProducer.byproduct?.amount).toBe(127.5)
+            expect(powerProducer.powerProduced).toBe(31875)
+            expect(buildingGroup.buildingCount).toBe(13)
+            expect(buildingGroup.overclockPercent).toBe(98.0769)
+          })
+        })
+
+        describe('via fuel', () => {
+          it('should update when the fuel amount is updated', () => {
+            powerProducer.fuelAmount = 1
+            powerProducer.updated = FactoryPowerChangeType.Fuel
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(5)
+            expect(powerProducer.ingredients[0].perMin).toBe(1)
+            expect(powerProducer.ingredients[1].perMin).toBe(1200)
+            expect(powerProducer.byproduct?.amount).toBe(50)
+            expect(powerProducer.powerProduced).toBe(12500)
+            expect(buildingGroup.buildingCount).toBe(5)
+            expect(buildingGroup.overclockPercent).toBe(100)
+
+            powerProducer.fuelAmount = 1.222
+            powerProducer.updated = FactoryPowerChangeType.Fuel // Gets changed back to building at some point after calculations
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(6.11)
+            expect(powerProducer.ingredients[0].perMin).toBe(1.222)
+            expect(powerProducer.ingredients[1].perMin).toBe(1466.4)
+            expect(powerProducer.byproduct?.amount).toBe(61.1)
+            expect(powerProducer.powerProduced).toBe(15275)
+            expect(buildingGroup.buildingCount).toBe(7)
+            expect(buildingGroup.overclockPercent).toBe(87.2857)
+          })
+        })
+
+        describe('via power', () => {
+          it('should update when the power amount is updated', () => {
+            powerProducer.powerAmount = 10000
+            powerProducer.updated = FactoryPowerChangeType.Power
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(4)
+            expect(powerProducer.ingredients[0].perMin).toBe(0.8)
+            expect(powerProducer.ingredients[1].perMin).toBe(960)
+            expect(powerProducer.byproduct?.amount).toBe(40)
+            expect(powerProducer.powerProduced).toBe(10000)
+            expect(buildingGroup.buildingCount).toBe(4)
+            expect(buildingGroup.overclockPercent).toBe(100)
+
+            // More precise version
+            powerProducer.powerAmount = 12345
+            powerProducer.updated = FactoryPowerChangeType.Power // For some reason it gets changed back to building, presumably building group stuff.
+
+            calculateFactories([factory], gameData)
+
+            expect(powerProducer.buildingCount).toBe(4.938)
+            expect(powerProducer.ingredients[0].perMin).toBe(0.988)
+            expect(powerProducer.ingredients[1].perMin).toBe(1185.12)
+            expect(powerProducer.byproduct?.amount).toBe(49.38)
+            expect(powerProducer.powerProduced).toBe(12345)
+            expect(buildingGroup.buildingCount).toBe(5)
+            expect(buildingGroup.overclockPercent).toBe(98.76)
+          })
+        })
+      })
     })
 
     describe('waste to fuel conversion', () => {
@@ -155,12 +394,13 @@ describe('power', () => {
         // Given we calculate that we to consume 25 waste per minute to produce 0.5 fuel rods per minute
 
         factory = newFactory('My nuclear plant')
-        // Add one nuclear power plant
+        // Add one nuclear power plant. ingredientAmount is the fuel (rods) rate,
+        // so the Fuel change type expresses "the user set the rod rate".
         addPowerProducerToFactory(factory, {
           building: 'generatornuclear',
           ingredientAmount: 0.5,
           recipe: 'GeneratorNuclear_NuclearFuelRod',
-          updated: 'ingredient',
+          updated: FactoryPowerChangeType.Fuel,
         })
 
         calculateFactories([factory], gameData)
@@ -168,8 +408,163 @@ describe('power', () => {
         // I know for a fact that given we want to burn 25 nuclear waste it should be 0.5 rods / min or 6250MW.
 
         expect(factory.powerProducers[0].powerProduced).toBe(6250)
-        expect(factory.powerProducers[0].ingredientAmount).toBe(0.5)
+        expect(factory.powerProducers[0].fuelAmount).toBe(0.5)
         expect(factory.powerProducers[0].byproduct?.amount).toBe(25)
+      })
+    })
+  })
+
+  describe('fuel-less generators', () => {
+    beforeEach(() => {
+      factory = newFactory('Power station')
+    })
+
+    describe('geothermal', () => {
+      beforeEach(() => {
+        addPowerProducerToFactory(factory, {
+          building: 'geothermalgenerator',
+          buildingAmount: 2,
+          recipe: 'GeneratorGeoThermal_Pure',
+          updated: FactoryPowerChangeType.Building,
+        })
+        calculateFactories([factory], gameData)
+      })
+
+      it('should produce flat purity-based power with no fuel', () => {
+        const producer = factory.powerProducers[0]
+
+        expect(producer.powerProduced).toBe(800) // 2x 400 MW pure geysers
+        expect(producer.ingredients).toEqual([])
+        expect(producer.fuelAmount).toBe(0)
+        expect(producer.byproduct).toBe(null)
+        expect(factory.power.produced).toBe(800)
+        // The oscillation range flows up to the factory totals.
+        expect(factory.power.producedMin).toBe(400)
+        expect(factory.power.producedMax).toBe(1200)
+      })
+
+      it('should include the oscillation range in the world power totals', () => {
+        const totals = calculateTotalPower([factory])
+
+        expect(totals.totalBasePower).toBe(800)
+        expect(totals.totalBasePowerMin).toBe(400)
+        expect(totals.totalBasePowerMax).toBe(1200)
+        expect(totals.totalPowerProducedMin).toBe(400)
+        expect(totals.totalPowerProducedMax).toBe(1200)
+      })
+
+      it('should expose the oscillation range on the building group', () => {
+        const group = factory.powerProducers[0].buildingGroups[0]
+
+        expect(group.powerProduced).toBe(800)
+        expect(group.powerProducedMin).toBe(400)
+        expect(group.powerProducedMax).toBe(1200)
+      })
+
+      it('should force the clock back to 100% as geothermal cannot be overclocked', () => {
+        const group = factory.powerProducers[0].buildingGroups[0]
+        group.overclockPercent = 150
+
+        calculateFactories([factory], gameData)
+
+        expect(group.overclockPercent).toBe(100)
+        expect(group.powerProduced).toBe(800)
+      })
+
+      it('should support the power-based update direction', () => {
+        const producer = factory.powerProducers[0]
+        producer.powerAmount = 1200
+        producer.updated = FactoryPowerChangeType.Power
+
+        calculateFactories([factory], gameData)
+
+        expect(producer.buildingCount).toBe(3)
+        expect(producer.powerProduced).toBe(1200)
+      })
+    })
+
+    describe('alien power augmenter', () => {
+      let producer: FactoryPowerProducer
+
+      beforeEach(() => {
+        addPowerProducerToFactory(factory, {
+          building: 'alienpoweraugmenter',
+          buildingAmount: 2,
+          recipe: 'AlienPowerAugmenter',
+          updated: FactoryPowerChangeType.Building,
+        })
+        producer = factory.powerProducers[0]
+        calculateFactories([factory], gameData)
+      })
+
+      it('should produce 500 MW static per augmenter and boost the grid by 10% each', () => {
+        expect(producer.powerProduced).toBe(1000)
+        expect(producer.ingredients).toEqual([])
+        expect(factory.power.produced).toBe(1000)
+        expect(factory.power.boostPercent).toBe(0.2)
+        expect(factory.power.boostMw).toBe(200) // 20% of the grid's 1000 MW
+      })
+
+      it('should raise the boost to 30% and demand matrixes when a group supplies them', () => {
+        producer.buildingGroups[0].supplyMatrixes = true
+
+        calculateFactories([factory], gameData)
+
+        expect(factory.power.boostPercent).toBe(0.6) // 2 buildings x 30%
+        expect(factory.power.boostMw).toBe(600)
+        expect(factory.power.boostFueledBuildings).toBe(2)
+        expect(factory.power.boostUnfueledBuildings).toBe(0)
+        expect(producer.ingredients).toEqual([{ part: 'AlienPowerFuel', perMin: 10 }])
+        expect(producer.buildingGroups[0].parts.AlienPowerFuel).toBe(10)
+        expect(factory.parts.AlienPowerFuel.amountRequiredPower).toBe(10)
+        expect(factory.parts.AlienPowerFuel.satisfied).toBe(false)
+      })
+
+      it('should match the in-game example: one fueled and one unfueled augmenter', () => {
+        // Split into two groups of one building each; only one supplied with matrixes.
+        producer.buildingGroupItemSync = false
+        producer.buildingGroups[0].buildingCount = 1
+        addPowerProducerBuildingGroup(producer, factory, false)
+        const group2 = producer.buildingGroups[1]
+        group2.buildingCount = 1
+        group2.supplyMatrixes = true
+
+        calculateFactories([factory], gameData)
+
+        // Static: 2x 500 = 1000. Boost: 10% + 30% = 40% of 1000 = 400. Total 1400.
+        expect(factory.power.produced).toBe(1000)
+        expect(factory.power.boostPercent).toBe(0.4)
+        expect(factory.power.boostMw).toBe(400)
+        expect(factory.power.boostFueledBuildings).toBe(1)
+        expect(factory.power.boostUnfueledBuildings).toBe(1)
+
+        const totals = calculateTotalPower([factory])
+        expect(totals.totalPowerProduced).toBe(1400)
+        expect(totals.totalPowerBoost).toBe(400)
+        expect(totals.totalPowerDifference).toBe(1400)
+
+        // Matrix demand comes only from the fueled group.
+        expect(producer.ingredients).toEqual([{ part: 'AlienPowerFuel', perMin: 5 }])
+        expect(producer.buildingGroups[0].parts.AlienPowerFuel).toBeUndefined()
+        expect(group2.parts.AlienPowerFuel).toBe(5)
+      })
+
+      it('should boost based on the total generation across all factories', () => {
+        const fuelFactory = newFactory('Fuel plant')
+        addPowerProducerToFactory(fuelFactory, {
+          building: 'generatorfuel',
+          powerAmount: 1000,
+          recipe: 'GeneratorFuel_LiquidFuel',
+          updated: FactoryPowerChangeType.Power,
+        })
+
+        calculateFactories([factory, fuelFactory], gameData)
+
+        // Total base generation = 1000 (augmenters) + 1000 (fuel gens) = 2000; 20% = 400.
+        expect(factory.power.boostPercent).toBe(0.2)
+        expect(factory.power.boostMw).toBe(400)
+        expect(fuelFactory.power.boostPercent).toBe(0)
+        expect(fuelFactory.power.boostMw).toBe(0)
       })
     })
   })

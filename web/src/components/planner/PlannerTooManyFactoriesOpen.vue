@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-  import { defineEmits } from 'vue'
   import { Factory } from '@/interfaces/planner/FactoryInterface'
 
   const props = defineProps<{
@@ -20,7 +19,7 @@
   const inputLimit = 30
   const warningDismissed = ref(false)
 
-  const emit = defineEmits<{(event: 'hide-all'): void}>()
+  const emit = defineEmits<{ (event: 'hide-all'): void }>()
   const inputs = computed(() => {
     let count = 0
     props.factories.forEach(factory => {

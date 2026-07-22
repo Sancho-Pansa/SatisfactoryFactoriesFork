@@ -3,47 +3,55 @@
   <world-import :show-import-world-popup @close-world-import="closeWorldImport" />
   <world-data v-if="showWorldData" />
   <planner-too-many-factories-open :factories="getFactories()" @hide-all="showHideAll('hide')" />
+
+  <building-group-tutorial />
   <div class="planner-container">
+    <!-- Navigation Drawer for Mobile -->
     <Teleport v-if="navigationReady" defer to="#navigationDrawer">
-      <planner-factory-list
+      <planner-sidebar-content
         :factories="getFactories()"
-        loaded-from="navigation"
-        :total-factories="getFactories().length"
-        @create-factory="createFactory"
-        @update-factories="updateFactoriesList"
-      />
-      <planner-global-actions
-        class="py-4"
         :help-text-shown="helpText"
+        loaded-from="navigation"
         @clear-all="clearAll"
+        @create-factory="createFactory"
         @hide-all="showHideAll('hide')"
         @import-world="importWorld"
         @show-all="showHideAll('show')"
         @toggle-help-text="toggleHelp()"
+        @update-factories="updateFactoriesList"
       />
     </Teleport>
-    <v-row class="two-pane-container">
+
+    <!-- Main Content Area -->
+    <v-row class="ma-0">
       <!-- Sticky Sidebar for Desktop -->
-      <v-col class="d-none d-lg-flex sticky-sidebar">
-        <v-container class="pa-0">
-          <planner-factory-list
+      <v-col
+        class="d-none d-lg-flex sticky-sidebar"
+        :class="{ collapsed: !showSidebar, peek: sidebarPeek && !showSidebar, nudge: sidebarNudge }"
+        :style="{ width: `${sidebarWidth}px`, minWidth: `${sidebarWidth}px`, maxWidth: `${sidebarWidth}px` }"
+        @animationend.self="onNudgeEnd"
+        @mouseleave="onSidebarMouseLeave"
+      >
+        <v-container class="pa-0 sidebar-content">
+          <planner-sidebar-content
             :factories="getFactories()"
-            loaded-from="planner"
-            :total-factories="getFactories().length"
-            @create-factory="createFactory"
-            @update-factories="updateFactoriesList"
-          />
-          <v-divider color="#ccc" thickness="2px" />
-          <planner-global-actions
-            class="py-2"
             :help-text-shown="helpText"
+            loaded-from="planner"
             @clear-all="clearAll"
+            @create-factory="createFactory"
             @hide-all="showHideAll('hide')"
             @import-world="importWorld"
             @show-all="showHideAll('show')"
             @toggle-help-text="toggleHelp()"
+            @update-factories="updateFactoriesList"
           />
         </v-container>
+        <div
+          v-if="showSidebar || sidebarPeek"
+          class="sidebar-resize-handle"
+          :class="{ resizing: isResizingSidebar }"
+          @mousedown.prevent="startSidebarResize"
+        />
       </v-col>
       <!-- Main Content Area -->
       <v-col v-if="!planVisible" class="border-s-lg-lg pa-3 main-content">
@@ -73,9 +81,9 @@
 </template>
 
 <script setup lang="ts">
-  import { provide, reactive, ref, watch } from 'vue'
+  import { onMounted, onUnmounted, provide, reactive, ref, watch } from 'vue'
+  import { useDisplay } from 'vuetify'
 
-  import PlannerGlobalActions from '@/components/planner/PlannerGlobalActions.vue'
   import {
     Factory,
     WorldRawResource,
@@ -86,12 +94,14 @@
   import {
     calculateFactories,
     calculateFactory,
+    CalculationModes,
     findFac,
     newFactory,
     regenerateSortOrders, reorderFactory,
   } from '@/utils/factory-management/factory'
   import { useGameDataStore } from '@/stores/game-data-store'
   import eventBus from '@/utils/eventBus'
+  import BuildingGroupTutorial from '@/components/planner/products/BuildingGroupTutorial.vue'
 
   const { getGameData } = useGameDataStore()
   const gameData = getGameData()
@@ -107,6 +117,95 @@
   const showImportWorldPopup = ref<boolean>(false)
   const showWorldData = ref<boolean>(false)
 
+  const showSidebar = ref<boolean>(localStorage.getItem('sidebarOpen') !== 'false')
+  const sidebarPeek = ref<boolean>(false)
+
+  // Below the lg breakpoint the docked sidebar doesn't exist (the nav drawer
+  // tray takes over), so peeking is meaningless there.
+  const { lgAndUp } = useDisplay()
+  watch(lgAndUp, isDesktop => {
+    if (!isDesktop) sidebarPeek.value = false
+  })
+
+  // Peek the collapsed sidebar when the cursor travels anywhere near the left
+  // edge. A window-level listener rather than a hover strip: it doesn't sit
+  // over (and steal clicks from) the content, and a wider zone still works in
+  // floating windows where there's no screen edge to catch the cursor.
+  const peekZoneWidth = 48
+  const peekTopOffset = 64 + 50 // Toolbar + tab bar, matching the CSS offsets below
+
+  const onPeekMouseMove = (event: MouseEvent) => {
+    if (showSidebar.value || !lgAndUp.value || isResizingSidebar.value) return
+    if (!sidebarPeek.value && event.clientX <= peekZoneWidth && event.clientY >= peekTopOffset) {
+      sidebarPeek.value = true
+    } else if (sidebarPeek.value && event.clientX > sidebarWidth.value) {
+      sidebarPeek.value = false
+    }
+  }
+
+  // The peeked tray must survive the cursor briefly outrunning the edge while
+  // it's being drag-resized.
+  const onSidebarMouseLeave = () => {
+    if (!isResizingSidebar.value) {
+      sidebarPeek.value = false
+    }
+  }
+
+  // A cursor flung out through the window's left edge never produces a
+  // mousemove inside the zone — catch the exit itself.
+  const onPeekMouseOut = (event: MouseEvent) => {
+    if (showSidebar.value || !lgAndUp.value || event.relatedTarget) return
+    if (event.clientX <= peekZoneWidth && event.clientY >= peekTopOffset) {
+      sidebarPeek.value = true
+    }
+  }
+
+  onMounted(() => {
+    window.addEventListener('mousemove', onPeekMouseMove)
+    window.addEventListener('mouseout', onPeekMouseOut)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('mousemove', onPeekMouseMove)
+    window.removeEventListener('mouseout', onPeekMouseOut)
+  })
+
+  const sidebarNudge = ref<boolean>(false)
+  const onNudgeEnd = () => {
+    sidebarNudge.value = false
+    localStorage.setItem('sidebarNudgeShown', 'true')
+  }
+
+  const defaultSidebarWidth = 375
+  const minSidebarWidth = 150
+  const sidebarWidth = ref<number>(parseInt(localStorage.getItem('sidebarWidth') ?? '', 10) || defaultSidebarWidth)
+  const isResizingSidebar = ref<boolean>(false)
+
+  const startSidebarResize = (event: MouseEvent) => {
+    isResizingSidebar.value = true
+    const startX = event.clientX
+    const startWidth = sidebarWidth.value
+
+    // Lock the cursor and text selection for the duration of the drag
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const newWidth = startWidth + (moveEvent.clientX - startX)
+      sidebarWidth.value = Math.min(Math.max(newWidth, minSidebarWidth), window.innerWidth / 2)
+    }
+    const onMouseUp = () => {
+      isResizingSidebar.value = false
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+      localStorage.setItem('sidebarWidth', String(Math.round(sidebarWidth.value)))
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
+    }
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+  }
+
+  // ### EVENT BUS LISTENERS ###
   // When we are starting a new load we need to unload all the DOM elements
   eventBus.on('plannerShow', (show: boolean) => {
     if (!show) {
@@ -124,24 +223,57 @@
     showPlan()
   })
 
-  // ==== WATCHES
-  watch(helpText, newValue => {
-    localStorage.setItem('helpText', JSON.stringify(newValue))
+  eventBus.on('worldDataShow', (value: boolean) => {
+    showWorldData.value = value
   })
-
-  const showPlan = () => {
-    resyncWorldResources()
-    planVisible.value = true
-  }
-
-  const hidePlan = () => {
-    planVisible.value = false
-  }
 
   eventBus.on('navigationReady', () => {
     console.log('Planner: Received navigationReady event, teleporting factory list')
     navigationReady.value = true
   })
+
+  eventBus.on('toggleSidebar', () => {
+    showSidebar.value = !showSidebar.value
+    sidebarPeek.value = false
+    console.log('Planner: Received toggleSidebar event, toggling sidebar visibility', showSidebar.value)
+
+    if (showSidebar.value) {
+      sidebarNudge.value = false
+    } else if (localStorage.getItem('sidebarNudgeShown') !== 'true') {
+      // First ever hide: once the collapse slide finishes, nudge the sidebar
+      // out briefly so the user learns the hover zone exists.
+      setTimeout(() => {
+        sidebarNudge.value = true
+      }, 300)
+    }
+  })
+  // #############s
+
+  // ==== WATCHES
+  watch(helpText, newValue => {
+    localStorage.setItem('helpText', JSON.stringify(newValue))
+  })
+
+  watch(showSidebar, newValue => {
+    localStorage.setItem('sidebarOpen', JSON.stringify(newValue))
+    eventBus.emit('sidebarChanged', newValue)
+  })
+
+  const showPlan = () => {
+    resyncWorldResources()
+    planVisible.value = true
+
+    // If another page (e.g. Parts & Recipes) requested a jump to a factory, honour it once rendered.
+    const pendingNav = sessionStorage.getItem('navigateToFactory')
+    if (pendingNav) {
+      sessionStorage.removeItem('navigateToFactory')
+      setTimeout(() => navigateToFactory(pendingNav), 250)
+    }
+  }
+
+  const hidePlan = () => {
+    planVisible.value = false
+  }
 
   const createFactory = () => {
     const factory = newFactory()
@@ -202,7 +334,7 @@
     // Return a sorted object by the name property. Key is not correct.
     const sortedOres = Object.values(ores).sort((a, b) => a.name.localeCompare(b.name))
 
-    const sortedOresAsObj: {[key: string]: WorldRawResource } = {}
+    const sortedOresAsObj: { [key: string]: WorldRawResource } = {}
     sortedOres.forEach(ore => {
       sortedOresAsObj[ore.id] = ore
     })
@@ -221,8 +353,8 @@
   }
 
   // Proxy method so we don't have to pass the gameData and getFactories() around to every single subcomponent
-  const updateFactory = (factory: Factory) => {
-    calculateFactory(factory, getFactories(), gameData)
+  const updateFactory = (factory: Factory, modes: CalculationModes = {}) => {
+    calculateFactory(factory, getFactories(), gameData, modes)
   }
 
   const copyFactory = (originalFactory: Factory) => {
@@ -283,10 +415,6 @@
     showImportWorldPopup.value = false
   }
 
-  eventBus.on('worldDataShow', (value: boolean) => {
-    showWorldData.value = value
-  })
-
   const clearAll = () => {
     clearFactories()
     updateWorldRawResources(gameData)
@@ -311,17 +439,50 @@
     factory.hidden = false
 
     // Wait a bit for the factory to unhide fully. Hack but works well.
+    setTimeout(() => scrollToElement(subsection ?? `${factoryId}`), 50)
+  }
+
+  // Scrolls to the element, then corrects for layout shifts: factory cards materialize as they
+  // scroll past the viewport, growing the content above the target and leaving the scroll short.
+  const scrollToElement = (elementId: string, attempt = 0) => {
+    const element = document.getElementById(elementId)
+    if (!element) return
+
+    // Corrections snap instantly - re-running the smooth animation would chase a moving target.
+    element.scrollIntoView({ behavior: attempt === 0 ? 'smooth' : 'auto', block: 'start' })
+
+    if (attempt >= 4) return
     setTimeout(() => {
-      // Navigate to it
-      const factoryElement = document.getElementById(subsection ?? `${factoryId}`)
-      if (factoryElement) {
-        factoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      // Re-query rather than closing over `element` — cards materializing
+      // above can replace the node, and a detached node's rect reads 0,
+      // which silently skips the correction.
+      const current = document.getElementById(elementId)
+      // ~114px is where the top of a scrolled-to element sits (page header + tab bar)
+      if (current && Math.abs(current.getBoundingClientRect().top) > 150) {
+        scrollToElement(elementId, attempt + 1)
       }
-    }, 50)
+    }, 600)
   }
 
   const moveFactory = (factory: Factory, direction: string) => {
     reorderFactory(factory, direction, getFactories())
+  }
+
+  // Scroll to a non-factory section (Statistics, Factories Summary) by its element id.
+  // The section may be collapsed — tell it to show itself first (each listens for its own
+  // id), give the reveal a beat to change the layout, then scroll. scrollToElement's
+  // correction passes absorb any further shifts from content still materializing.
+  // Right after page load the section components may not be mounted yet, so a single
+  // emit can vanish into the void — keep re-emitting until the element exists (bounded).
+  const navigateToSection = (sectionId: string, attempt = 0) => {
+    eventBus.emit('openSection', sectionId)
+    if (!document.getElementById(sectionId)) {
+      if (attempt < 20) {
+        setTimeout(() => navigateToSection(sectionId, attempt + 1), 250)
+      }
+      return
+    }
+    setTimeout(() => scrollToElement(sectionId), 50)
   }
 
   const forceSort = () => {
@@ -341,14 +502,24 @@
   provide('copyFactory', copyFactory)
   provide('deleteFactory', deleteFactory)
   provide('navigateToFactory', navigateToFactory)
+  provide('navigateToSection', navigateToSection)
   provide('moveFactory', moveFactory)
 
 </script>
 
 <style scoped lang="scss">
+// Fixed chrome sitting above the planner. These MUST include the borders, or
+// the content regions overshoot the viewport by a few pixels and the whole
+// document gains a second scrollbar on top of the regions' own overflow.
+//   header  = 64px v-toolbar + 1px bottom border (.main-header)
+//   tab bar = 48px v-tabs + 2px top + 2px bottom border (.tab-bar)
+$header-height: 65px;
+$tab-bar-height: 52px;
+$chrome-height: $header-height + $tab-bar-height; // 117px
+
 .planner-container {
   width: 100%;
-  height: calc(100vh - 64px - 50px);
+  height: calc(100vh - #{$chrome-height});
 
   @media screen and (min-width: 2000px) {
     margin-left: 10vw;
@@ -359,25 +530,58 @@
     margin-left: calc((100vw - 2050px)/2) !important;
   }
 
-  .two-pane-container {
-    margin: 0;
-  }
-
   .sticky-sidebar {
-    width: 375px;
-    max-width: 375px;
-    max-height: calc(100vh - 64px - 50px); // For some reason this is not relative to the planner container
-    overflow-y: auto; /* Make it scrollable */
+    position: relative; // Anchor for the resize handle
+    height: calc(100vh - #{$chrome-height}); // Fill the viewport even when the plan is empty/short
+    overflow: hidden; // Scrolling happens inside .sidebar-content so the handle spans the full height
 
-    @media screen and (max-width: 1500px) {
-      width: 275px;
-      max-width: 275px;
+    .sidebar-content {
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden; // Negative row margins in children must not create a horizontal scrollbar
+    }
+
+    .sidebar-resize-handle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 8px;
+      height: 100%;
+      cursor: col-resize;
+      border-right: 2px solid rgba(255, 255, 255, 0.12);
+
+      &:hover, &.resizing {
+        border-right-color: rgb(var(--v-theme-primary));
+      }
+    }
+
+    // Collapsed: taken out of the layout flow and parked off-screen so the
+    // main content takes the full width. Peek slides it back over the content.
+    &.collapsed {
+      position: fixed;
+      top: $chrome-height;
+      left: 0;
+      height: calc(100vh - #{$chrome-height});
+      background: rgb(var(--v-theme-background));
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      z-index: 100;
+    }
+
+    &.collapsed.peek {
+      transform: translateX(0);
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    // First-hide hint: pop out a little, wiggle, slide back
+    &.collapsed.nudge {
+      animation: sidebar-nudge 1.1s ease-in-out;
     }
   }
 
   .main-content {
     width: 100%;
-    max-height: calc(100vh - 64px - 50px);
+    max-height: calc(100vh - #{$chrome-height});
     overflow-y: auto;
 
     @media screen and (min-width: 2000px) {
@@ -388,5 +592,11 @@
       padding-right: calc(100vw - 1800px - 20vw) !important;
     }
   }
+}
+
+@keyframes sidebar-nudge {
+  0%, 100% { transform: translateX(-100%); }
+  15%, 45%, 75% { transform: translateX(calc(-100% + 56px)); }
+  30%, 60% { transform: translateX(calc(-100% + 32px)); }
 }
 </style>

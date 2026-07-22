@@ -1,8 +1,8 @@
 <template>
-  <h1 class="text-h5">
+  <h4 class="text-h4">
     <i class="fas fa-conveyor-belt-alt" />
-    <span class="ml-3">{{ $t("statistics.items.header") }}</span>
-  </h1>
+    <span class="ml-3">Produced Items</span>
+  </h4>
   <p v-show="helpText" class="mb-4">
     <i class="fas fa-info-circle" /> {{ $t("statistics.items.info") }}
   </p>

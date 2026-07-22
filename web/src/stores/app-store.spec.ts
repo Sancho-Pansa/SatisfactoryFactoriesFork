@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Factory, FactoryTab } from '@/interfaces/planner/FactoryInterface'
-import { calculateFactory, newFactory } from '@/utils/factory-management/factory'
+import { Factory, FactoryPowerChangeType, FactoryTab } from '@/interfaces/planner/FactoryInterface'
 import * as FactoryManager from '@/utils/factory-management/factory'
+import { calculateFactory, newFactory } from '@/utils/factory-management/factory'
 import * as FactoryValidate from '@/utils/factory-management/validation'
 import { useAppStore } from '@/stores/app-store'
 import { addProductToFactory } from '@/utils/factory-management/products'
@@ -9,6 +9,7 @@ import { gameData } from '@/utils/gameData'
 import { createPinia, setActivePinia } from 'pinia'
 import eventBus from '@/utils/eventBus'
 import { useGameDataStore } from '@/stores/game-data-store'
+import { addPowerProducerToFactory } from '@/utils/factory-management/power'
 
 let appStore: ReturnType<typeof useAppStore>
 
@@ -39,6 +40,13 @@ describe('app-store', () => {
         id: 'CopperIngot',
         amount: 1337,
         recipe: 'IngotCopper',
+      })
+
+      addPowerProducerToFactory(factory, {
+        building: 'generatorfuel',
+        buildingAmount: 5,
+        recipe: 'GeneratorFuel_LiquidFuel',
+        updated: FactoryPowerChangeType.Building,
       })
 
       factories = [factory]
@@ -106,6 +114,37 @@ describe('app-store', () => {
       expect(factory.parts.CopperIngot.exportable).toBe(true)
     })
 
+    it('#431: should recalculate factories with double counted raw resource supply', () => {
+      const oilFactory = newFactory('Consumer')
+      addProductToFactory(oilFactory, {
+        id: 'HeavyOilResidue',
+        amount: 400,
+        recipe: 'Alternate_HeavyOilResidue',
+      })
+      addProductToFactory(oilFactory, {
+        id: 'LiquidOil',
+        amount: 300,
+        recipe: 'UnpackageOil',
+      })
+      const oilFactories = [oilFactory]
+      calculateFactory(oilFactory, oilFactories, gameData)
+
+      // Recreate the stale save data where the crude oil supplied by unpackaging was also
+      // counted as supplied via raw extraction, showing a phantom 300 surplus.
+      oilFactory.parts.LiquidOil.amountSuppliedViaRaw = 300
+      oilFactory.parts.LiquidOil.amountSupplied = 600
+      oilFactory.parts.LiquidOil.amountRemaining = 300
+      oilFactory.rawResources.LiquidOil = { id: 'LiquidOil', name: 'Crude Oil', amount: 300 }
+
+      appStore.initFactories(oilFactories)
+
+      // The migration should have detected the over-supply and recalculated
+      expect(oilFactory.parts.LiquidOil.amountSuppliedViaRaw).toBe(0)
+      expect(oilFactory.parts.LiquidOil.amountSupplied).toBe(300)
+      expect(oilFactory.parts.LiquidOil.amountRemaining).toBe(0)
+      expect(oilFactory.rawResources.LiquidOil).toBeUndefined()
+    })
+
     it('#180: should initialize factories with missing power data', () => {
       // @ts-ignore
       delete factory.powerProducers
@@ -168,11 +207,21 @@ describe('app-store', () => {
 
       expect(spy).toHaveBeenCalled()
     })
-    it('should NOT call calculateFactories when not required', () => {
-      // @ts-ignore
-      factory.tasks = undefined
+    it('should use the group-preserving recalculate origin when a migration triggers a recalc', () => {
+      // When a migration backfills a missing field the recalc must run with the 'recalculate'
+      // origin, which treats the user's building groups as sacrosanct.
+      // @ts-ignore - force a migration to trigger the recalc
+      factory.power = undefined
+      const spy = vi.spyOn(FactoryManager, 'calculateFactories')
 
-      // Spy on the calculateFactories function
+      appStore.initFactories(factories)
+
+      expect(spy).toHaveBeenCalledWith(expect.anything(), expect.anything(), { origin: 'recalculate' })
+    })
+
+    it('should NOT call calculateFactories when the plan is already fully calculated', () => {
+      // A plan whose derived data is already current (e.g. switching between tabs) is stored
+      // fully calculated. Recalculating it is wasted work that blanks the screen, so init skips it.
       const spy = vi.spyOn(FactoryManager, 'calculateFactories')
 
       appStore.initFactories(factories)
@@ -197,6 +246,88 @@ describe('app-store', () => {
 
       // Expect alerto to have thrown
       expect(window.alert).toHaveBeenCalledWith('Error validating factories: ' + error.message)
+    })
+
+    describe('building groups', () => {
+      it('should ensure factories have product building groups and it has initialized it correctly when undefined', () => {
+      // @ts-ignore
+        factory.products[0].buildingGroups = undefined
+
+        appStore.initFactories(factories)
+
+        const buildingGroup = factory.products[0].buildingGroups[0]
+        expect(buildingGroup).toBeDefined()
+        expect(buildingGroup.buildingCount).toBe(45)
+        expect(buildingGroup.overclockPercent).toBe(99.037)
+        expect(factory.products[0].buildingGroupsHaveProblem).toBe(false)
+        expect(factory.products[0].buildingGroupsTrayOpen).toBe(false)
+      })
+
+      it('should ensure factories have product building groups and it has initialized it correctly when on an empty array', () => {
+      // @ts-ignore
+        factory.products[0].buildingGroups = []
+
+        appStore.initFactories(factories)
+
+        const buildingGroup = factory.products[0].buildingGroups[0]
+        expect(buildingGroup).toBeDefined()
+        expect(buildingGroup.buildingCount).toBe(45)
+        expect(buildingGroup.overclockPercent).toBe(99.037)
+        expect(factory.products[0].buildingGroupsHaveProblem).toBe(false)
+        expect(factory.products[0].buildingGroupsTrayOpen).toBe(false)
+      })
+
+      it('should ensure factories have power producer building groups and it has initialized it correctly when undefined', () => {
+      // @ts-ignore
+        factory.powerProducers[0].buildingGroups = undefined
+
+        appStore.initFactories(factories)
+
+        const producer = factory.powerProducers[0]
+        const buildingGroup = producer.buildingGroups[0]
+        expect(buildingGroup.buildingCount).toBe(5)
+        expect(producer.buildingGroupsTrayOpen).toBe(false)
+      })
+
+      it('should ensure factories have power producer building groups and it has initialized it correctly with a blank array', () => {
+      // @ts-ignore
+        factory.powerProducers[0].buildingGroups = []
+
+        appStore.initFactories(factories)
+
+        const producer = factory.powerProducers[0]
+        const buildingGroup = producer.buildingGroups[0]
+        expect(buildingGroup).toBeDefined()
+        expect(buildingGroup.buildingCount).toBe(5)
+        expect(producer.buildingGroupsTrayOpen).toBe(false)
+      })
+    })
+
+    it('should add id to powerProducers', () => {
+      // @ts-ignore
+      delete factory.powerProducers[0].id
+
+      appStore.initFactories(factories)
+
+      expect(factory.powerProducers[0].id).toBeDefined()
+    })
+
+    it('should add buildingGroupsHaveProblem to power producers', () => {
+      // @ts-ignore
+      delete factory.powerProducers[0].buildingGroupsHaveProblem
+
+      appStore.initFactories(factories)
+
+      expect(factory.powerProducers[0].buildingGroupsHaveProblem).toBeDefined()
+    })
+
+    it('should add buildingGroupsHaveProblem to products', () => {
+      // @ts-ignore
+      delete factory.products[0].buildingGroupsHaveProblem
+
+      appStore.initFactories(factories)
+
+      expect(factory.products[0].buildingGroupsHaveProblem).toBeDefined()
     })
   })
 
@@ -290,7 +421,9 @@ describe('app-store', () => {
       })
 
       it('should finish early if there are no factories to load', async () => {
-        vi.spyOn(eventBus, 'emit')
+        // Clear emissions recorded during state init: since Vitest 3, resetAllMocks
+        // restores the real eventBus.emit, so init-time events land in the history.
+        vi.spyOn(eventBus, 'emit').mockClear()
 
         await appStore.beginLoading([])
 
@@ -340,11 +473,16 @@ describe('app-store', () => {
         })
 
         it('should have emitted the incrementLoad,increment event the correct number of times', async () => {
+          // Only count emissions from the load flow itself, not from state init
+          vi.mocked(eventBus.emit).mockClear()
           await appStore.prepareLoader(factories)
 
           await appStore.beginLoading(factories)
 
-          expect(eventBus.emit).toHaveBeenCalledTimes(7) // 5 other times, annoyingly we can't check the payload
+          // Fresh factories need no migration, so no recalc fires. The 7 events are:
+          // plannerShow(false), prepareForLoad ×2, incrementLoad ×2 (one per factory),
+          // the render increment, and loadingCompleted. Annoyingly we can't check the payload.
+          expect(eventBus.emit).toHaveBeenCalledTimes(7)
           expect(eventBus.emit).toHaveBeenCalledWith('incrementLoad', {
             step: 'increment',
           })
@@ -413,8 +551,8 @@ describe('app-store', () => {
         // Wait a bit for the state to load
         await new Promise(resolve => setTimeout(resolve, 100))
 
-        // Start spying
-        vi.spyOn(eventBus, 'emit')
+        // Start spying, discarding anything the init above already emitted
+        vi.spyOn(eventBus, 'emit').mockClear()
 
         // Call it again, at this point it should be inited
         appStore.getFactories()
@@ -545,6 +683,18 @@ describe('app-store', () => {
         // Expect the current tab to be the newly created tab
         expect(appStore.currentFactoryTabIndex).toBe(1)
         expect(appStore.getCurrentTab().id).toBe(newTab.id)
+      })
+
+      it('should preserve the power target when importing a tab', () => {
+        const newTab: FactoryTab = {
+          id: '67890',
+          name: 'Imported Tab',
+          factories: [],
+          powerTarget: 5000,
+        }
+        appStore.addTab(newTab)
+
+        expect(appStore.getCurrentTab().powerTarget).toBe(5000)
       })
     })
     describe('removeCurrentTab', () => {

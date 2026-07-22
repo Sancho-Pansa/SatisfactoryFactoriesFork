@@ -1,12 +1,15 @@
 // Utilities
 import { defineStore } from 'pinia'
 import { Factory, FactoryPower, FactoryTab } from '@/interfaces/planner/FactoryInterface'
-import { ref, watch } from 'vue'
+import { ref, toRaw, watch } from 'vue'
 import { calculateFactories, regenerateSortOrders } from '@/utils/factory-management/factory'
 import { useGameDataStore } from '@/stores/game-data-store'
 import { validateFactories } from '@/utils/factory-management/validation'
 import eventBus from '@/utils/eventBus'
 import { complexDemoPlan } from '@/utils/factory-setups/complex-demo-plan'
+import { addProductBuildingGroup } from '@/utils/factory-management/building-groups/product'
+import { addPowerProducerBuildingGroup } from '@/utils/factory-management/building-groups/power'
+import { formatNumberFully } from '@/utils/numberFormatter'
 
 export const useAppStore = defineStore('app', () => {
   const gameDataStore = useGameDataStore()
@@ -95,11 +98,90 @@ export const useAppStore = defineStore('app', () => {
     })
   })
 
-  // Watch the factories array for changes
-  watch(factoryTabs.value, () => {
-    localStorage.setItem('factoryTabs', JSON.stringify(factoryTabs.value))
+  // ==== PLAN PERSISTENCE
+  // Previously a deep watcher persisted factoryTabs on every reactive flush — on large
+  // plans that meant a full-plan traversal per flush plus a multi-second JSON.stringify
+  // through the reactive proxies, the dominant per-edit cost. Persistence is now
+  // event-driven: calculation commits emit factoryUpdated / calculationsCompleted
+  // (debounced into one save), explicit store mutations schedule a save directly, and a
+  // periodic compare-and-save plus a flush on tab-hide/close catches direct mutations
+  // that bypass the calculator (factory/tab renames, hidden toggles, tasks and such).
+  let persistTimer: ReturnType<typeof setTimeout> | undefined
+  let lastPersistedPlan = ''
+
+  const persistPlan = () => {
+    clearTimeout(persistTimer)
+    // Stringify the raw tree — stringifying through the reactive proxies is many times slower.
+    const json = JSON.stringify(toRaw(factoryTabs.value))
+    if (json === lastPersistedPlan) return
+    lastPersistedPlan = json
+    localStorage.setItem('factoryTabs', json)
     setLastEdit() // Update last edit time whenever the data changes, from any source.
-  }, { deep: true })
+  }
+
+  const schedulePersist = () => {
+    clearTimeout(persistTimer)
+    persistTimer = setTimeout(persistPlan, 500)
+  }
+
+  eventBus.on('factoryUpdated', schedulePersist)
+  eventBus.on('calculationsCompleted', schedulePersist)
+
+  if (typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
+    setInterval(persistPlan, 5_000)
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') persistPlan()
+    })
+    window.addEventListener('pagehide', persistPlan)
+  }
+
+  // Dev-only test hook: lets browser tests measure reactive churn during interactions.
+  // Installing it adds a deep sync watcher over the whole plan — the same (expensive)
+  // shape Vue Devtools uses — so it is never active unless a test installs it.
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    let watchFires = 0
+    let stopCounter: (() => void) | null = null
+    interface SfWatchCounter {
+      install: () => void
+      count: () => number
+      reset: () => void
+      stop: () => void
+    }
+    (window as unknown as { __sfWatchCounter: SfWatchCounter }).__sfWatchCounter = {
+      install: () => {
+        stopCounter?.()
+        watchFires = 0
+        const handle = watch(factoryTabs.value, () => {
+          watchFires++
+        }, { deep: true, flush: 'sync' })
+        stopCounter = () => handle()
+      },
+      count: () => watchFires,
+      reset: () => {
+        watchFires = 0
+      },
+      stop: () => {
+        stopCounter?.()
+        stopCounter = null
+      },
+    }
+
+    // Dev-only: load the ~124-factory stress plan (browser perf harness). Dynamic import
+    // so the fixture stays out of the entry chunk.
+    ;(window as unknown as { __sfLoadStressPlan: (copies?: number) => Promise<number> }).__sfLoadStressPlan = async (copies = 4) => {
+      const { createStressPlan } = await import('@/utils/factory-setups/stress-plan')
+      const plan = createStressPlan(copies)
+      await prepareLoader(plan, true)
+      return plan.length
+    }
+
+    // Dev-only: lets tests await "all factories rendered" instead of polling the DOM.
+    const loadsWindow = window as unknown as { __sfLoadsCompleted: number }
+    loadsWindow.__sfLoadsCompleted = 0
+    eventBus.on('loadingCompleted', () => {
+      loadsWindow.__sfLoadsCompleted++
+    })
+  }
 
   const getLastEdit = (): Date => {
     return lastEdit.value
@@ -256,6 +338,22 @@ export const useAppStore = defineStore('app', () => {
           factory.parts[part].exportable = true
           needsCalculation = true
         }
+
+        // Patch for #431
+        // Raw resource supply used to be double counted when the part was also supplied via
+        // inputs or production (e.g. unpackaging Packaged Oil into Crude Oil). Detect the
+        // stale over-supply in saved plans and force a recalculation.
+        const partData = factory.parts[part]
+        if (partData.isRaw && partData.amountSuppliedViaRaw > 0) {
+          const rawShortfall = Math.max(0,
+            (partData.amountRequired ?? 0) -
+            (partData.amountSuppliedViaInput ?? 0) -
+            (partData.amountSuppliedViaProduction ?? 0)
+          )
+          if (partData.amountSuppliedViaRaw > rawShortfall) {
+            needsCalculation = true
+          }
+        }
       })
 
       // Patch for #250
@@ -284,6 +382,72 @@ export const useAppStore = defineStore('app', () => {
         factory.syncStatePower = {}
       }
 
+      factory.products.forEach(product => {
+        // Patch for #11
+        if (product.buildingGroups === undefined || product.buildingGroups.length === 0) {
+          product.buildingGroups = []
+          product.buildingGroupsTrayOpen = false
+          product.buildingGroupsHaveProblem = false
+          product.buildingGroupItemSync = true
+
+          addProductBuildingGroup(product, factory, true)
+        }
+
+        if (product.buildingGroupsHaveProblem === undefined) {
+          product.buildingGroupsHaveProblem = false
+        }
+
+        if (product.buildingGroupsTrayOpen === undefined) {
+          product.buildingGroupsTrayOpen = false
+        }
+
+        // Patch for quantity precision. The game does not go more precise than 3 decimal
+        // places, but older saves can hold amounts like 1.6666666667. Force a
+        // recalculation, which now rounds product quantities.
+        if (product.amount !== formatNumberFully(product.amount)) {
+          needsCalculation = true
+        }
+      })
+
+      factory.powerProducers.forEach(producer => {
+        // Patch for #11
+        if (producer.buildingGroups === undefined || producer.buildingGroups.length === 0) {
+          producer.buildingGroups = []
+          producer.buildingGroupsTrayOpen = false
+          producer.buildingGroupsHaveProblem = false
+          producer.buildingGroupItemSync = true
+
+          // Only backfill a group when the producer has calculated buildings to mirror.
+          // An uncalculated producer (e.g. a plan template defined via powerAmount) would
+          // get a 0-building group, which the sacrosanct-groups recalculation then syncs
+          // the producer down to — zeroing its generation. Let the calculation create it.
+          if (producer.buildingCount > 0) {
+            addPowerProducerBuildingGroup(producer, factory, true)
+          } else {
+            needsCalculation = true
+          }
+        }
+
+        // Patch for #11 renaming ingredientAmount to fuelAmount
+        // @ts-ignore
+        if (producer.ingredientAmount !== undefined) {
+          // @ts-ignore
+          producer.fuelAmount = producer.ingredientAmount
+          // @ts-ignore
+          delete producer.ingredientAmount
+        }
+
+        // Patch for #11 adding IDs
+        if (producer.id === undefined) {
+          producer.id = Math.floor(Math.random() * 10000).toString()
+        }
+
+        // Patch for #11 adding Building Groups have problems
+        if (producer.buildingGroupsHaveProblem === undefined) {
+          producer.buildingGroupsHaveProblem = false
+        }
+      })
+
       // Delete keys that no longer exist
       // @ts-ignore
       if (factory.internalProducts) delete factory.internalProducts
@@ -295,12 +459,18 @@ export const useAppStore = defineStore('app', () => {
       if (factory.exports) delete factory.exports
 
       // Update data version
-      factory.dataVersion = '2025-01-22'
+      factory.dataVersion = '2025-02-20'
     })
 
+    // Only recalculate when a data migration actually backfilled a missing field. A plan
+    // whose derived data is already current — the common case, e.g. switching between tabs —
+    // is stored fully calculated, so recalculating it is pure wasted work that blocks the main
+    // thread (and blanks the screen) for several seconds on large plans. Callers that genuinely
+    // need a recalc pass forceRecalc to setFactories or use forceCalculation. The 'recalculate'
+    // origin treats the user's building groups as sacrosanct, so the backfill is safe.
     if (needsCalculation) {
-      console.log('appStore: initFactories: Forcing calculation of factories due to data migration')
-      calculateFactories(newFactories, gameDataStore.getGameData())
+      console.log('appStore: initFactories: Data migrations were applied, recalculating')
+      calculateFactories(newFactories, gameDataStore.getGameData(), { origin: 'recalculate' })
     }
 
     console.log('appStore: initFactories - completed')
@@ -343,15 +513,19 @@ export const useAppStore = defineStore('app', () => {
 
     if (forceRecalc) {
       // Trigger calculations
-      calculateFactories(newFactories, gameData)
+      calculateFactories(newFactories, gameData, { origin: 'recalculate' })
     }
 
-    // For each factory, set the previous inputs to the current inputs.
+    // For each factory, snapshot the current inputs as the previous inputs. Must be a
+    // copy — aliasing the live array would make the "previous" state track the current
+    // one (and corrupts the in-place diff commit in calculateFactories).
     newFactories.forEach(factory => {
-      factory.previousInputs = factory.inputs
+      factory.previousInputs = factory.inputs.map(input => ({ ...input }))
     })
 
     factories.value = newFactories
+    // Loads without a recalc emit no calculation events, so persist explicitly.
+    schedulePersist()
     // Will also call the watcher, which sets the current tab data.
 
     console.log('appStore: setFactories: Factories set.', factories.value)
@@ -362,12 +536,20 @@ export const useAppStore = defineStore('app', () => {
     factory.displayOrder = factories.value.length
     factories.value.push(factory)
     console.log('appStore: addFactory: Factory added', factories.value)
+
+    // Adding a factory doesn't necessarily run a calculation, so announce and persist
+    // explicitly — otherwise the new factory isn't saved (or seen by sync) until the
+    // periodic safety net catches it.
+    eventBus.emit('factoryUpdated', factory)
+    schedulePersist()
   }
 
   const removeFactory = (id: number) => {
     const index = factories.value.findIndex(factory => factory.id === id)
     if (index !== -1) {
-      factories.value.splice(index, 1)
+      const [removed] = factories.value.splice(index, 1)
+      eventBus.emit('factoryUpdated', removed)
+      schedulePersist()
     }
 
     regenerateSortOrders(getFactories())
@@ -394,14 +576,18 @@ export const useAppStore = defineStore('app', () => {
     id = crypto.randomUUID(),
     name = 'New Tab',
     factories = [],
+    powerTarget,
   } = {} as Partial<FactoryTab>) => {
     factoryTabs.value.push({
       id,
       name,
       factories,
+      // Preserve the plan's power target when importing a tab (e.g. from a share link).
+      powerTarget,
     })
 
     currentFactoryTabIndex.value = factoryTabs.value.length - 1
+    schedulePersist()
   }
 
   const removeCurrentTab = async () => {
@@ -409,6 +595,7 @@ export const useAppStore = defineStore('app', () => {
 
     factoryTabs.value.splice(currentFactoryTabIndex.value, 1)
     currentFactoryTabIndex.value = Math.min(currentFactoryTabIndex.value, factoryTabs.value.length - 1)
+    schedulePersist()
 
     // We now need to force a load of the factories, because the tab index may not change, but the factories will have.
     console.log('appStore: removeCurrentTab: Tab removed, preparing loader.')
@@ -454,7 +641,9 @@ export const useAppStore = defineStore('app', () => {
       return
     }
 
-    calculateFactories(factories.value, gameData)
+    // Building groups are sacrosanct on a recalculation — they are never rebalanced;
+    // item quantities are adjusted to match the groups instead.
+    calculateFactories(factories.value, gameData, { origin: 'recalculate' })
   }
 
   return {

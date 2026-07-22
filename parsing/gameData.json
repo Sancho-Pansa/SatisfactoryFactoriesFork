@@ -1,5 +1,6 @@
 {
     "buildings": {
+        "alienpoweraugmenter": 0,
         "assemblermk1": 15,
         "blender": 75,
         "constructormk1": 4,
@@ -9,6 +10,7 @@
         "generatorcoal": 0,
         "generatorfuel": 0,
         "generatornuclear": 0,
+        "geothermalgenerator": 0,
         "hadroncollider": 0.1,
         "manufacturermk1": 55,
         "oilrefinery": 30,
@@ -234,30 +236,6 @@
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
             },
-            "Crystal": {
-                "name": "Blue Power Slug",
-                "localName": "Blue Power Slug",
-                "stackSize": 50,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
-            "Crystal_mk2": {
-                "name": "Yellow Power Slug",
-                "localName": "Yellow Power Slug",
-                "stackSize": 50,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
-            "Crystal_mk3": {
-                "name": "Purple Power Slug",
-                "localName": "Purple Power Slug",
-                "stackSize": 50,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
             "CrystalOscillator": {
                 "name": "Crystal Oscillator",
                 "localName": "Crystal Oscillator",
@@ -418,14 +396,6 @@
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 180
             },
-            "Gift": {
-                "name": "FICSMAS Gift",
-                "localName": "FICSMAS Gift",
-                "stackSize": 200,
-                "isFluid": false,
-                "isFicsmas": true,
-                "energyGeneratedInMJ": 0
-            },
             "GoldIngot": {
                 "name": "Caterium Ingot",
                 "localName": "Caterium Ingot",
@@ -446,14 +416,6 @@
                 "name": "Smokeless Powder",
                 "localName": "Smokeless Powder",
                 "stackSize": 100,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
-            "HatcherParts": {
-                "name": "Hatcher Remains",
-                "localName": "Hatcher Remains",
-                "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
@@ -486,14 +448,6 @@
                 "name": "Quickwire",
                 "localName": "Quickwire",
                 "stackSize": 500,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
-            "HogParts": {
-                "name": "Hog Remains",
-                "localName": "Hog Remains",
-                "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
@@ -545,14 +499,6 @@
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
-            },
-            "Leaves": {
-                "name": "Leaves",
-                "localName": "Leaves",
-                "stackSize": 500,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 15
             },
             "LiquidBiofuel": {
                 "name": "Liquid Biofuel",
@@ -633,14 +579,6 @@
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
-            },
-            "Mycelia": {
-                "name": "Mycelia",
-                "localName": "Mycelia",
-                "stackSize": 200,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 20
             },
             "NitricAcid": {
                 "name": "Nitric Acid",
@@ -1002,14 +940,6 @@
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
             },
-            "SAM": {
-                "name": "SAM",
-                "localName": "SAM",
-                "stackSize": 100,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
             "SAMFluctuator": {
                 "name": "SAM Fluctuator",
                 "localName": "SAM Fluctuator",
@@ -1162,14 +1092,6 @@
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
             },
-            "SpitterParts": {
-                "name": "Spitter Remains",
-                "localName": "Spitter Remains",
-                "stackSize": 50,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
             "Stator": {
                 "name": "Stator",
                 "localName": "Stator",
@@ -1206,14 +1128,6 @@
                 "name": "Encased Industrial Beam",
                 "localName": "Encased Industrial Beam",
                 "stackSize": 100,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 0
-            },
-            "StingerParts": {
-                "name": "Stinger Remains",
-                "localName": "Stinger Remains",
-                "stackSize": 50,
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
@@ -1281,14 +1195,6 @@
                 "isFluid": false,
                 "isFicsmas": false,
                 "energyGeneratedInMJ": 0
-            },
-            "Wood": {
-                "name": "Wood",
-                "localName": "Wood",
-                "stackSize": 200,
-                "isFluid": false,
-                "isFicsmas": false,
-                "energyGeneratedInMJ": 100
             },
             "XmasBall1": {
                 "name": "Red FICSMAS Ornament",
@@ -2233,9 +2139,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -2565,9 +2471,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 750,
+                "power": 1000,
                 "minPower": 500,
-                "maxPower": 1000
+                "maxPower": 1500
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -2597,9 +2503,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 750,
+                "power": 1000,
                 "minPower": 500,
-                "maxPower": 1000
+                "maxPower": 1500
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -2635,9 +2541,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -3376,9 +3282,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -3820,9 +3726,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -3847,9 +3753,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -3879,9 +3785,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -4998,9 +4904,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": true,
             "isFicsmas": false
@@ -5478,9 +5384,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -5510,9 +5416,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -5807,9 +5713,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -5839,9 +5745,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -5931,9 +5837,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -5963,9 +5869,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6150,9 +6056,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6182,9 +6088,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6299,9 +6205,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 750,
+                "power": 1000,
                 "minPower": 500,
-                "maxPower": 1000
+                "maxPower": 1500
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6326,9 +6232,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6353,9 +6259,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6555,9 +6461,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6682,9 +6588,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6714,9 +6620,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6746,9 +6652,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -6973,9 +6879,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 750,
+                "power": 1000,
                 "minPower": 500,
-                "maxPower": 1000
+                "maxPower": 1500
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -7495,9 +7401,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -7602,9 +7508,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -7872,9 +7778,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -7904,9 +7810,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -8012,9 +7918,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 750,
+                "power": 1000,
                 "minPower": 500,
-                "maxPower": 1000
+                "maxPower": 1500
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -8540,9 +8446,9 @@
             ],
             "building": {
                 "name": "hadroncollider",
-                "power": 375,
+                "power": 500,
                 "minPower": 250,
-                "maxPower": 500
+                "maxPower": 750
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -8792,9 +8698,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -8824,9 +8730,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -9633,9 +9539,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -9665,9 +9571,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -9928,9 +9834,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -10507,9 +10413,9 @@
             ],
             "building": {
                 "name": "converter",
-                "power": 200,
+                "power": 250,
                 "minPower": 100,
-                "maxPower": 300
+                "maxPower": 400
             },
             "isAlternate": false,
             "isFicsmas": false
@@ -10571,6 +10477,22 @@
         }
     ],
     "powerGenerationRecipes": [
+        {
+            "id": "AlienPowerAugmenter",
+            "displayName": "Alien Power Augmenter",
+            "ingredients": [],
+            "byproduct": null,
+            "building": {
+                "name": "alienpoweraugmenter",
+                "power": 500
+            },
+            "boost": {
+                "base": 0.1,
+                "fueled": 0.3,
+                "fuelPart": "AlienPowerFuel",
+                "fuelRatePerMin": 5
+            }
+        },
         {
             "id": "GeneratorBiomass_Automated_GenericBiomass",
             "displayName": "Biomass Burner (Biomass)",
@@ -10808,6 +10730,42 @@
             "building": {
                 "name": "generatorfuel",
                 "power": 250
+            }
+        },
+        {
+            "id": "GeneratorGeoThermal_Impure",
+            "displayName": "Geothermal Generator (Impure)",
+            "ingredients": [],
+            "byproduct": null,
+            "building": {
+                "name": "geothermalgenerator",
+                "power": 100,
+                "minPower": 50,
+                "maxPower": 150
+            }
+        },
+        {
+            "id": "GeneratorGeoThermal_Normal",
+            "displayName": "Geothermal Generator (Normal)",
+            "ingredients": [],
+            "byproduct": null,
+            "building": {
+                "name": "geothermalgenerator",
+                "power": 200,
+                "minPower": 100,
+                "maxPower": 300
+            }
+        },
+        {
+            "id": "GeneratorGeoThermal_Pure",
+            "displayName": "Geothermal Generator (Pure)",
+            "ingredients": [],
+            "byproduct": null,
+            "building": {
+                "name": "geothermalgenerator",
+                "power": 400,
+                "minPower": 200,
+                "maxPower": 600
             }
         },
         {

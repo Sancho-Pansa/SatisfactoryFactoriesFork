@@ -13,11 +13,16 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 import '@/assets/styles/global.scss'
+import { applySfColorVars } from '@/utils/colors'
 import { inject } from '@vercel/analytics'
 import { injectSpeedInsights } from '@vercel/speed-insights'
 import { createI18n } from 'vue-i18n'
 import en from './i18n/en.json'
 import ru from './i18n/ru.json'
+
+// Publish the semantic colour tokens as --sf-* CSS variables before mount so the
+// first paint already resolves them (global.scss references var(--sf-*)).
+applySfColorVars()
 
 inject()
 injectSpeedInsights()

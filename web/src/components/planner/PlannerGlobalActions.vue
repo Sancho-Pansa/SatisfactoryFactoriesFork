@@ -97,19 +97,19 @@
 </template>
 
 <script setup lang="ts">
-  import { defineEmits, defineProps } from 'vue'
   import { useAppStore } from '@/stores/app-store'
+  import { usePowerTarget } from '@/composables/usePowerTarget'
   import { confirmDialog } from '@/utils/helpers'
   import { useI18n } from 'vue-i18n'
   import eventBus from '@/utils/eventBus'
 
-  const { getFactories, prepareLoader, forceCalculation } = useAppStore()
-  const { t } = useI18n()
+  const { getFactories, getCurrentTab, prepareLoader, forceCalculation } = useAppStore()
+  const { powerTarget } = usePowerTarget()
 
   const disableRecalc = ref(false)
 
   defineProps<{ helpTextShown: boolean }>()
-  // eslint-disable-next-line func-call-spacing
+
   const emit = defineEmits<{
     (event: 'hide-all'): void;
     (event: 'show-all'): void;
@@ -140,7 +140,16 @@
   }
 
   const copyPlanToClipboard = () => {
-    const plan = JSON.stringify(getFactories())
+    // Holistic full-tab copy: the tab name, power target and the entire factories
+    // array (which itself carries products, building groups, export calculator
+    // settings, tasks, notes, collapse state, sync state, etc). The tab id is
+    // intentionally omitted — a paste replaces the current tab and keeps its own id.
+    // Older exports were a bare Factory[] array, which paste still accepts.
+    const plan = JSON.stringify({
+      name: getCurrentTab()?.name,
+      factories: getFactories(),
+      powerTarget: powerTarget.value,
+    })
     navigator.clipboard.writeText(plan)
     eventBus.emit('toast', { message: 'Plan copied to clipboard! You can save it to a file if you like, or paste it.' })
   }
@@ -149,10 +158,25 @@
     navigator.clipboard.readText().then(plan => {
       try {
         const parsedPlan = JSON.parse(plan)
+        // Legacy blobs are a bare Factory[] array; new ones are a full tab
+        // { name, factories, powerTarget }.
+        const isLegacy = Array.isArray(parsedPlan)
+        const factoriesToLoad = isLegacy ? parsedPlan : parsedPlan.factories
+        if (!Array.isArray(factoriesToLoad)) {
+          throw new Error('Plan does not contain a factories array.')
+        }
         emit('clear-all')
 
         setTimeout(() => {
-          prepareLoader(parsedPlan)
+          prepareLoader(factoriesToLoad)
+          // Replace the current tab's settings with the pasted plan's (keeps its id).
+          if (!isLegacy) {
+            powerTarget.value = Number(parsedPlan.powerTarget) || 0
+            const tab = getCurrentTab()
+            if (tab && parsedPlan.name) {
+              tab.name = parsedPlan.name
+            }
+          }
         }, 250)
       } catch (err) {
         if (err instanceof Error) {

@@ -1,10 +1,25 @@
 {
   "name": "satisfactory-factories",
-  "version": "0.2.1",
+  "version": "0.5.0",
   "description": "A tool for planning production chains with dependency management within the game Satisfactory.",
   "author": "Matt Cavanagh",
   "license": "AGPL-3.0-or-later",
+  "packageManager": "pnpm@11.3.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.3.0"
+  },
   "scripts": {
+    "dev": "pnpm db:up && pnpm --parallel --filter web --filter backend run dev",
+    "dev:web": "pnpm --filter web run dev",
+    "dev:backend": "pnpm db:up && pnpm --filter backend run dev",
+    "dev:parsing": "pnpm --filter parsing run dev",
+    "db:up": "pnpm --filter backend run db:up",
+    "db:down": "pnpm --filter backend run db:down",
+    "build": "pnpm --recursive run build",
+    "lint": "pnpm --recursive run lint",
+    "lint-check": "pnpm --recursive run lint-check",
+    "test": "pnpm --recursive run test",
     "release": "commit-and-tag-version",
     "release-dry": "commit-and-tag-version --dry-run",
     "release-patch": "commit-and-tag-version --release-as patch",

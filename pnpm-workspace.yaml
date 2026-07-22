@@ -1,0 +1,24 @@
+packages:
+  - 'web'
+  - 'backend'
+  - 'parsing'
+
+# Single source of truth for versions shared across all workspace packages.
+# Reference these in a package.json with e.g. "typescript": "catalog:".
+# Pinned exactly so every package resolves to one identical version
+# (workspace lockfiles are per-package, so caret ranges would drift apart).
+catalog:
+  typescript: 6.0.3
+  ts-node: 10.9.2
+  eslint: 9.39.5
+  eslint-import-resolver-typescript: 4.4.5
+  eslint-plugin-import-x: 4.17.1
+  typescript-eslint: 8.64.0
+
+sharedWorkspaceLockfile: false
+
+onlyBuiltDependencies:
+  - core-js
+  - esbuild
+  - unrs-resolver
+  - vue-demi

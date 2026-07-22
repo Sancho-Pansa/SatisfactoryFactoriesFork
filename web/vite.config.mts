@@ -2,19 +2,20 @@
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Fonts from 'unplugin-fonts/vite'
-import Layouts from 'vite-plugin-vue-layouts'
+import Layouts from 'vite-plugin-vue-layouts-next'
 import Vue from '@vitejs/plugin-vue'
-import VueRouter from 'unplugin-vue-router/vite'
+import VueRouter from 'vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // Utilities
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   build: {
+    target: 'esnext', // Adds support for top level awaits
     minify: false,
     terserOptions: {
       compress: false,
@@ -30,7 +31,7 @@ export default defineConfig(() => ({
       imports: [
         'vue',
         {
-          'vue-router/auto': ['useRoute', 'useRouter'],
+          'vue-router': ['useRoute', 'useRouter'],
         },
       ],
       dts: 'src/auto-imports.d.ts',
@@ -45,7 +46,12 @@ export default defineConfig(() => ({
     Vue({
       template: { transformAssetUrls },
     }),
-    vueDevTools(),
+    // The devtools overlay embeds the full devtools backend (@vue/devtools-kit) into
+    // every dev page — including pinia's deep + sync store subscription, which
+    // re-traverses the entire plan on every reactive write. On large plans that alone
+    // makes edits multi-second in dev, browser extension or not. Opt in when needed:
+    //   VITE_DEVTOOLS=true pnpm dev:web
+    ...(process.env.VITE_DEVTOOLS === 'true' ? [vueDevTools()] : []),
     Vuetify({
       autoImport: true,
     }),
@@ -81,9 +87,13 @@ export default defineConfig(() => ({
     environment: 'jsdom',
     pool: 'forks',
     setupFiles: ['src/setup-vitest.ts'],
+    globalSetup: './testing/global-setup.ts',
+    globalTeardown: './testing/global-teardown.ts',
     css: true,
-    deps: {
-      inline: ['vuetify'],
+    server: {
+      deps: {
+        inline: ['vuetify'],
+      },
     },
   },
 }))

@@ -16,6 +16,10 @@ export interface Recipe {
   building: {
     name: string;
     power: number;
+    // Variable-power buildings (Particle Accelerator, Converter, Quantum Encoder) oscillate
+    // between minPower and maxPower over the recipe cycle; `power` is the average draw.
+    minPower?: number;
+    maxPower?: number;
   }
   isAlternate: boolean;
   isFicsmas: boolean;
@@ -38,5 +42,17 @@ export interface PowerRecipe {
   building: {
     name: string;
     power: number;
+    // Variable output generators (Geothermal) oscillate between minPower and maxPower;
+    // `power` is the average.
+    minPower?: number;
+    maxPower?: number;
+  }
+  // Alien Power Augmenter: grid-wide circuit boost metadata. `base` applies unfueled,
+  // `fueled` applies while fed `fuelPart` at `fuelRatePerMin` per building. Fractions (0.1 = 10%).
+  boost?: {
+    base: number;
+    fueled: number;
+    fuelPart: string;
+    fuelRatePerMin: number;
   }
 }

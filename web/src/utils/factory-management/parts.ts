@@ -2,7 +2,7 @@
 import { Factory } from '@/interfaces/planner/FactoryInterface'
 import { getRequestsForFactory } from '@/utils/factory-management/exports'
 import { DataInterface } from '@/interfaces/DataInterface'
-import { createNewPart } from '@/utils/factory-management/common'
+import { createNewPart, getPowerRecipe } from '@/utils/factory-management/common'
 
 export const calculateParts = (factory: Factory, gameData: DataInterface) => {
   calculatePartMetrics(factory, gameData)
@@ -34,7 +34,7 @@ export const calculatePartMetrics = (factory: Factory, gameData: DataInterface) 
   factory.parts = {}
   factory.rawResources = {}
 
-  calculatePartRequirements(factory)
+  calculatePartRequirements(factory, gameData)
   calculatePartSupply(factory)
   calculatePartRaw(factory, gameData)
   calculateExportable(factory)
@@ -58,7 +58,7 @@ export const calculatePartMetrics = (factory: Factory, gameData: DataInterface) 
   }
 }
 
-export const calculatePartRequirements = (factory: Factory) => {
+export const calculatePartRequirements = (factory: Factory, gameData: DataInterface) => {
   // Get the amount required by production
   factory.products.forEach(product => {
     createNewPart(factory, product.id)
@@ -80,7 +80,12 @@ export const calculatePartRequirements = (factory: Factory) => {
   // Get the amount required by power production
   factory.powerProducers.forEach(producer => {
     if (producer.ingredients.length === 0) {
-      console.error('calculatePartRequirements - powerProducers: Ingredients are missing from producer!', producer)
+      // Fuel-less generators (Geothermal, unfueled Alien Power Augmenters) legitimately
+      // have no ingredients; only fuel-based recipes missing theirs indicate data damage.
+      const recipe = getPowerRecipe(producer.recipe, gameData)
+      if (recipe && recipe.ingredients.length > 0) {
+        console.error('calculatePartRequirements - powerProducers: Ingredients are missing from producer!', producer)
+      }
       return
     }
 
@@ -180,23 +185,31 @@ export const calculatePartRaw = (factory: Factory, gameData: DataInterface) => {
       continue // Nothing else to do
     }
 
-    partData.amountSuppliedViaRaw = partData.amountRequired
+    // Raw resources are assumed to be supplied by the user, but only for the shortfall left after
+    // inputs and internal production (e.g. unpackaging Packaged Oil into Crude Oil) are accounted for.
+    // Otherwise the same supply would be counted twice. Fixes #431.
+    partData.amountSuppliedViaRaw = Math.max(0,
+      partData.amountRequired -
+      partData.amountSuppliedViaInput -
+      partData.amountSuppliedViaProduction
+    )
 
-    // This is purposefully additive, allows us to enable inputs from other factories should we need to.
     partData.amountSupplied =
       partData.amountSuppliedViaInput +
       partData.amountSuppliedViaProduction +
       partData.amountSuppliedViaRaw
 
-    // Also fill the rawResources array
-    if (!factory.rawResources[part]) {
-      factory.rawResources[part] = {
-        id: part,
-        name: rawItem.name,
-        amount: 0,
+    // Also fill the rawResources array, only with the amount actually needed from raw supply
+    if (partData.amountSuppliedViaRaw > 0) {
+      if (!factory.rawResources[part]) {
+        factory.rawResources[part] = {
+          id: part,
+          name: rawItem.name,
+          amount: 0,
+        }
       }
+      factory.rawResources[part].amount += partData.amountSuppliedViaRaw
     }
-    factory.rawResources[part].amount += partData.amountRequired
   }
 }
 

@@ -1,4 +1,4 @@
-import { Factory } from '@/interfaces/planner/FactoryInterface'
+import { Factory, ItemType } from '@/interfaces/planner/FactoryInterface'
 import { DataInterface } from '@/interfaces/DataInterface'
 import { PowerRecipe, Recipe } from '@/interfaces/Recipes'
 import { useI18n } from 'vue-i18n'
@@ -35,6 +35,21 @@ export const getRecipe = (recipeId: any, gameData: DataInterface): Recipe | unde
   return recipe
 }
 
+export const getPowerRecipe = (id: string, gameData: DataInterface): PowerRecipe | undefined => {
+  if (!gameData || !id) {
+    return
+  }
+
+  const recipeData = gameData.powerGenerationRecipes.find(recipe => recipe.id === id) ?? undefined
+
+  if (!recipeData) {
+    return undefined // JSON.parse would otherwise crash on "undefined"
+  }
+
+  // Create a structured clone of the recipe so no changes are made to the original data
+  return JSON.parse(JSON.stringify(recipeData))
+}
+
 export const getPartDisplayNameWithoutDataStore = (part: string, gameData: DataInterface): string => {
   if (!part) {
     return 'NO PART!!!'
@@ -48,12 +63,20 @@ export const getPartDisplayNameWithoutDataStore = (part: string, gameData: DataI
     `UNKNOWN PART ${part}!`
 }
 
-export const getPowerRecipeById = (id: string, gameData: DataInterface): PowerRecipe | null => {
-  if (!gameData || !id) {
-    return null
-  }
+// Buildings without Power Shard slots — their clock is locked at 100%.
+const NON_OVERCLOCKABLE_BUILDINGS = new Set(['geothermalgenerator', 'alienpoweraugmenter'])
 
-  return gameData.powerGenerationRecipes.find(recipe => recipe.id === id) ?? null
+export const canBuildingOverclock = (building: string): boolean => {
+  return !NON_OVERCLOCKABLE_BUILDINGS.has(building)
+}
+
+// Buildings whose building groups are always kept in sync with the item: with no clocks
+// or fuel to fine-tune, unsynced groups offer nothing but confusion (Alien Power
+// Augmenter groups exist only to split fueled from unfueled buildings).
+const ALWAYS_SYNCED_BUILDINGS = new Set(['geothermalgenerator', 'alienpoweraugmenter'])
+
+export const isAlwaysSyncedBuilding = (building: string): boolean => {
+  return ALWAYS_SYNCED_BUILDINGS.has(building)
 }
 
 export const getBuildingDisplayName = (building: string) => {
@@ -65,9 +88,11 @@ export const getBuildingDisplayName = (building: string) => {
     ['converter', t('buildings.converter')],
     ['foundrymk1', t('buildings.foundrymk1')],
     ['hadroncollider', t('buildings.hadroncollider')],
+    ['alienpoweraugmenter', 'Alien Power Augmenter'],
     ['generatorbiomass', t('buildings.generatorbiomass')],
     ['generatorcoal', t('buildings.generatorcoal')],
     ['generatorfuel', t('buildings.generatorfuel')],
+    ['geothermalgenerator', 'Geothermal Generator'],
     ['generatornuclear', t('buildings.generatornuclear')],
     ['manufacturermk1', t('buildings.manufacturermk1')],
     ['oilrefinery', t('buildings.oilrefinery')],
@@ -78,4 +103,24 @@ export const getBuildingDisplayName = (building: string) => {
   ])
 
   return buildingFriendly.get(building) ?? `UNKNOWN BUILDING: ${building}`
+}
+
+export const deleteItem = (index: number, type: ItemType, factory: Factory) => {
+  if (type === ItemType.Product) {
+    factory.products.splice(index, 1)
+
+    // We need to loop through each one in order and fix their ordering with the running count
+    factory.products.forEach((product, index) => {
+      product.displayOrder = index
+    })
+  } else if (type === ItemType.Power) {
+    factory.powerProducers.splice(index, 1)
+
+    // We need to loop through each one in order and fix their ordering with the running count
+    factory.powerProducers.forEach((producer, index) => {
+      producer.displayOrder = index
+    })
+  }
+
+  // Must call updateFactory!
 }

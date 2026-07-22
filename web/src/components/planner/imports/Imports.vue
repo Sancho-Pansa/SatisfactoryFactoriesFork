@@ -30,6 +30,7 @@
           <span v-if="input.outputPart" class="mr-2">
             <game-asset
               :key="input.outputPart"
+              clickable
               height="32px"
               :subject="input.outputPart"
               type="item"
@@ -50,7 +51,7 @@
         </div>
         <div class="input-row d-flex align-center">
           <v-number-input
-            v-model.number="input.amount"
+            v-model="input.amount"
             control-variant="stacked"
             :disabled="!input.outputPart"
             hide-details
@@ -59,8 +60,9 @@
             :min-width="smAndDown ? undefined : '130px'"
             :name="`${input.factoryId}-${input.outputPart}.amount`"
             variant="outlined"
-            @update:model-value="updateFactories(factory, input)"
+            @update:model-value="updateFactoriesDebounced(factory, input)"
           />
+          <debounce-spinner :active="pendingRecalc === `${input.factoryId}-${input.outputPart}`" />
         </div>
         <div class="input-row d-flex align-center">
           <v-btn
@@ -140,15 +142,17 @@
     satisfyImport,
     validateInput,
   } from '@/utils/factory-management/inputs'
-  import { defineProps } from 'vue'
   import { Factory, FactoryInput } from '@/interfaces/planner/FactoryInterface'
   import { useDisplay } from 'vuetify'
   import { getPartDisplayName } from '@/utils/helpers'
   import { useAppStore } from '@/stores/app-store'
   import { useGameDataStore } from '@/stores/game-data-store'
   import { getExportableFactories } from '@/utils/factory-management/exports'
+  import { useDebouncedAction } from '@/composables/useDebouncedAction'
 
   const { getFactories } = useAppStore()
+  // Qty edits mutate the input instantly; only the recalculation is debounced.
+  const { debouncing: pendingRecalc, runDebounced } = useDebouncedAction()
   const { getGameData } = useGameDataStore()
   const { smAndDown } = useDisplay()
 
@@ -204,7 +208,7 @@
     )
   }
 
-  const getImportPartSelections = (inputIndex: number): { title: string, value: string}[] => {
+  const getImportPartSelections = (inputIndex: number): { title: string, value: string }[] => {
     // Get selected factory from input
     const input = props.factory.inputs[inputIndex]
     if (!input.factoryId) {
@@ -287,6 +291,18 @@
     return calculateImportCandidates(props.factory, possibleImports.value)
   })
 
+  // Debounced variant for the Qty input, which fires per keystroke. validateInput also
+  // waits — it clamps 0 to 1 with a toast, which would fight the user mid-typing.
+  const updateFactoriesDebounced = (factory: Factory, input: FactoryInput) => {
+    runDebounced(`${input.factoryId}-${input.outputPart}`, () => {
+      validateInput(input)
+      updateFactory(factory)
+      if (input.factoryId) {
+        updateFactory(findFactory(input.factoryId))
+      }
+    })
+  }
+
   const updateFactories = (factory: Factory, input: FactoryInput) => {
     validateInput(input)
     updateFactory(factory)
@@ -296,8 +312,6 @@
   }
 </script>
 
-<script setup lang="ts">
-</script>
 <style lang="scss" scoped>
   .input-row {
     max-width: 100%;

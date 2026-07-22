@@ -41,14 +41,25 @@
                   <v-chip v-if="showProductChip(factory, partId.toString())" class="sf-chip blue x-small mr-2">
                     {{ $t("planner.factory.satisfaction.product") }}
                   </v-chip>
-                  <v-chip v-if="showByProductChip(factory, partId.toString())" class="sf-chip gray x-small mr-2">
-                    {{ $t("planner.factory.satisfaction.byproduct") }}
+                  <v-chip v-if="showByProductChip(factory, partId.toString())" class="sf-chip byproduct x-small mr-2">
+                    Byproduct
                   </v-chip>
-                  <v-chip v-if="showImportedChip(factory, partId.toString())" class="sf-chip gray x-small mr-2">
-                    {{ $t("planner.factory.satisfaction.imported") }}
+                  <v-tooltip v-if="showRecycledChip(factory, partId.toString())" bottom>
+                    <template #activator="{ props: activatorProps }">
+                      <v-chip v-bind="activatorProps" class="sf-chip green x-small mr-2">
+                        <span class="mr-1">Recycled</span> <i class="fas fa-info-circle" />
+                      </v-chip>
+                    </template>
+                    <span>This byproduct is used as an ingredient by other products within the same factory.<br>The planner subtracts it from the amount you need to supply via Imports, so you don't over-feed the system.</span>
+                  </v-tooltip>
+                  <v-chip v-if="showImportedChip(factory, partId.toString())" class="sf-chip import x-small mr-2">
+                    Imported
                   </v-chip>
                   <v-chip v-if="showRawChip(factory, partId.toString())" class="sf-chip cyan x-small mr-2">
-                    {{ $t("planner.factory.satisfaction.raw") }}
+                    Raw
+                  </v-chip>
+                  <v-chip v-if="showUnpackagedChip(factory, partId.toString())" class="sf-chip cyan x-small mr-2">
+                    Unpackaged
                   </v-chip>
                   <v-chip v-if="showInternalChip(factory, partId.toString())" class="sf-chip green x-small mr-2">
                     {{ $t("planner.factory.satisfaction.internal") }}
@@ -97,9 +108,9 @@
                     variant="outlined"
                   >
                     <v-tooltip bottom>
-                      <template #activator="{ props }">
-                        <div v-bind="props">
-                          <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixManually") }}</span>
+                      <template #activator="{ props: activatorProps }">
+                        <div v-bind="activatorProps">
+                          <i class="fas fa-exclamation-circle" /><span class="ml-1">FIX GENS MANUALLY</span>
                         </div>
                       </template>
                       <span>{{ $t("planner.factory.satisfaction.fixManuallyTooltip") }}</span>
@@ -125,9 +136,9 @@
                   variant="outlined"
                 >
                   <v-tooltip bottom>
-                    <template #activator="{ props }">
-                      <div v-bind="props">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.correctManually") }}</span>
+                    <template #activator="{ props: activatorProps }">
+                      <div v-bind="activatorProps">
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">CORRECT MANUALLY</span>
                       </div>
                     </template>
                     <span>{{ $t("planner.factory.satisfaction.correctManuallyTooltip") }}</span>
@@ -151,9 +162,9 @@
                   variant="outlined"
                 >
                   <v-tooltip bottom>
-                    <template #activator="{ props }">
-                      <div v-bind="props">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixImport") }}</span>
+                    <template #activator="{ props: activatorProps }">
+                      <div v-bind="activatorProps">
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">Fix Import</span>
                       </div>
                     </template>
                     <span>{{ $t("planner.factory.satisfaction.fixImportTooltip") }}</span>
@@ -165,34 +176,48 @@
           <td class="border-e-md satisfaction" :class="satisfactionShading(part)">
             <div v-if="satisfactionBreakdowns">
               <div class="text-green d-flex justify-space-between align-center">
-                <span>{{ $t("planner.factory.satisfaction.breakdown.production") }}</span>
-                <span class="align-self-end text-right">
-                  <!-- "+" instead of plain plus is needed due to JS convertion to number in case of preceeding plus in string -->
-                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaProduction)}) }}
+                <span>Production</span>
+                <span
+                  :id="`${ factory.id }-satisfaction-${partId.toString()}-production`"
+                  class="align-self-end text-right"
+                >
+                  +{{ formatNumber(part.amountSuppliedViaProduction) }}/min
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>{{ $t("planner.factory.satisfaction.breakdown.fromImports") }}</span>
-                <span class="align-self-end text-right">
-                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaInput)}) }}
+                <span>Supply from Imports</span>
+                <span
+                  :id="`${ factory.id }-satisfaction-${partId.toString()}-supply-input`"
+                  class="align-self-end text-right"
+                >
+                  +{{ formatNumber(part.amountSuppliedViaInput ) }}/min
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>{{ $t("planner.factory.satisfaction.breakdown.fromRaw") }}</span>
-                <span class="align-self-end text-right">
-                  {{ "+" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountSuppliedViaRaw)}) }}
+                <span>Supply from Raw</span>
+                <span
+                  :id="`${ factory.id }-satisfaction-${partId.toString()}-supply-raw`"
+                  class="align-self-end text-right"
+                >
+                  +{{ formatNumber(part.amountSuppliedViaRaw ) }}/min
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>{{ $t("planner.factory.satisfaction.breakdown.internalConsumption") }}</span>
-                <span class="align-self-end text-right">
-                  {{ "-" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber((part.amountRequiredProduction + part.amountRequiredPower))}) }}
+                <span>Internal Consumption</span>
+                <span
+                  :id="`${ factory.id }-satisfaction-${partId.toString()}-required-production`"
+                  class="align-self-end text-right"
+                >
+                  -{{ formatNumber((part.amountRequiredProduction + part.amountRequiredPower)) }}/min
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>{{ $t("planner.factory.satisfaction.breakdown.export") }}</span>
-                <span class="align-self-end text-right">
-                  {{ "-" + $t("planner.factory.satisfaction.breakdown.itemUnit", {number: formatNumber(part.amountRequiredExports)}) }}
+                <span>Exports</span>
+                <span
+                  :id="`${ factory.id }-satisfaction-${partId.toString()}-required-exports`"
+                  class="align-self-end text-right"
+                >
+                  -{{ formatNumber(part.amountRequiredExports ) }}/min
                 </span>
               </div>
               <v-divider class="my-2" color="#ccc" />
@@ -202,18 +227,68 @@
                 class="sf-chip small"
                 :class="part.satisfied ? 'green' : 'red'"
               >
-                <b>{{ formatNumber(part.amountRemaining) }}/{{ $t("common.units.timeMin") }} {{ getSatisfactionLabel(part.amountRemaining) }}</b>
+                <b>
+                  <span :id="`${factory.id}-satisfaction-${partId.toString()}-remaining`">{{ formatNumber(part.amountRemaining) }}</span>/min {{ getSatisfactionLabel(part.amountRemaining) }}
+                </b>
               </v-chip>
               <template v-if="showRawChip(factory, partId.toString())">
                 <v-tooltip bottom>
-                  <template #activator="{ props }">
-                    <v-chip v-bind="props" class="sf-chip cyan small">
-                      <span class="mr-2">{{ $t("planner.factory.satisfaction.raw") }}</span> <i class="fas fa-info-circle" />
+                  <template #activator="{ props: activatorProps }">
+                    <v-chip v-bind="activatorProps" class="sf-chip cyan small">
+                      <span class="mr-2">Raw</span> <i class="fas fa-info-circle" />
                     </v-chip>
                   </template>
-                  <span>{{ $t("planner.factory.satisfaction.breakdown.rawTooltip") }}</span>
+                  <span>Raw Items e.g. Iron Ore are always satisfied. Expand the Satisfaction Breakdowns or look at the Imports section for details of how much is needed.</span>
                 </v-tooltip>
               </template>
+              <template v-if="showUnpackagedChip(factory, partId.toString())">
+                <v-tooltip bottom>
+                  <template #activator="{ props: activatorProps }">
+                    <v-chip v-bind="activatorProps" class="sf-chip cyan small">
+                      <span class="mr-2">Unpackaged</span> <i class="fas fa-info-circle" />
+                    </v-chip>
+                  </template>
+                  <span>This fluid is supplied by unpackaging within this factory rather than being drawn from raw resources.</span>
+                </v-tooltip>
+              </template>
+              <div v-if="showSatisfactionItemButton(factory, partId.toString(), 'addToFactory')" class="mt-1">
+                <v-tooltip bottom>
+                  <template #activator="{ props: activatorProps }">
+                    <v-btn
+                      v-bind="activatorProps"
+                      class="mr-1"
+                      color="secondary"
+                      :disabled="addingShortagePart === partId.toString()"
+                      size="small"
+                      variant="outlined"
+                      @click="addShortageToNewFactory(factory, partId.toString())"
+                    >
+                      <template v-if="addingShortagePart === partId.toString()">
+                        <v-progress-circular class="mr-1" indeterminate size="14" width="2" />
+                        <span>Adding...</span>
+                      </template>
+                      <template v-else>
+                        +&nbsp;<i class="fas fa-industry" /><span class="ml-1">New</span>
+                      </template>
+                    </v-btn>
+                  </template>
+                  <span>Adds this shortage as a product of a brand new factory,<br>and imports it into this factory.</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="{ props: activatorProps }">
+                    <v-btn
+                      v-bind="activatorProps"
+                      color="secondary"
+                      size="small"
+                      variant="outlined"
+                      @click="openAddShortageDialog(partId.toString())"
+                    >
+                      +&nbsp;<i class="fas fa-industry" /><span class="ml-1">Existing</span>
+                    </v-btn>
+                  </template>
+                  <span>Adds this shortage as a product of an existing factory of your choice,<br>and imports it into this factory.</span>
+                </v-tooltip>
+              </div>
             </div>
           </td>
           <td :class="satisfactionShading(part)">
@@ -225,7 +300,7 @@
                 <v-chip
                   v-for="(request) in getPartExportRequests(factory, partId.toString())"
                   :key="`${partId}-${request.requestingFactoryId}`"
-                  class="sf-chip small"
+                  class="sf-chip small factory"
                   :color="isRequestSelected(factory, request.requestingFactoryId.toString(), partId.toString()) ? 'primary' : ''"
                   :style="isRequestSelected(factory, request.requestingFactoryId.toString(), partId.toString()) ? 'border-color: rgb(0, 123, 255) !important' : ''"
                   @click="initCalculator(factory, partId.toString(), request.requestingFactoryId)"
@@ -277,13 +352,19 @@
       </template>
     </tbody>
   </v-table>
+  <add-shortage-dialog
+    v-if="shortageDialogPart"
+    v-model="shortageDialogOpen"
+    :factory="factory"
+    :part-id="shortageDialogPart"
+  />
 </template>
 
 <script setup lang="ts">
   import { computed, inject } from 'vue'
   import { getPartDisplayName } from '@/utils/helpers'
   import {
-    Factory,
+    Factory, FactoryItem, FactoryPowerChangeType,
     PartMetrics,
   } from '@/interfaces/planner/FactoryInterface'
   import { addProductToFactory, fixProduct, getProduct } from '@/utils/factory-management/products'
@@ -293,17 +374,23 @@
   import { useAppStore } from '@/stores/app-store'
   import { useI18n } from 'vue-i18n'
   import {
+    addShortageToFactory,
     convertWasteToGeneratorFuel,
     showByProductChip,
     showImportedChip,
     showInternalChip,
     showProductChip,
     showRawChip,
+    showRecycledChip,
     showSatisfactionItemButton,
+    showUnpackagedChip,
   } from '@/utils/factory-management/satisfaction'
   import { getInput } from '@/utils/factory-management/inputs'
   import { addPowerProducerToFactory } from '@/utils/factory-management/power'
+  import { calculateFactories, newFactory } from '@/utils/factory-management/factory'
+  import eventBus from '@/utils/eventBus'
   import ExportCalculator from '@/components/planner/satisfaction/calculator/ExportCalculator.vue'
+  import AddShortageDialog from '@/components/planner/satisfaction/AddShortageDialog.vue'
   import {
     initializeCalculatorFactoryPart,
     initializeCalculatorFactorySettings,
@@ -311,12 +398,16 @@
 
   const updateFactory = inject('updateFactory') as (factory: Factory) => void
   const findFactory = inject('findFactory') as (factoryId: string | number) => Factory
+  const navigateToFactory = inject('navigateToFactory') as (id: string | number) => void
 
   const appStore = useAppStore()
   const { t } = useI18n()
 
-  const { getDefaultRecipeForPart, getGeneratorFuelRecipeByPart } = useGameDataStore()
+  const { getDefaultRecipeForPart, getGeneratorFuelRecipeByPart, getGameData } = useGameDataStore()
   const openedCalculator = ref('')
+  const shortageDialogPart = ref('')
+  const shortageDialogOpen = ref(false)
+  const addingShortagePart = ref('')
   const satisfactionBreakdowns = appStore.getSatisfactionBreakdowns()
   const calculatorShow = ref(false)
 
@@ -366,6 +457,37 @@
     updateFactory(factory)
   }
 
+  const addShortageToNewFactory = async (factory: Factory, part: string): Promise<void> => {
+    if (addingShortagePart.value) return
+    addingShortagePart.value = part
+
+    // Let the browser paint the "Adding..." button state before the synchronous recalculation blocks the thread.
+    await new Promise(resolve => setTimeout(resolve, 50))
+
+    try {
+      const targetFactory = newFactory(`${getPartDisplayName(part)} Factory`)
+      appStore.addFactory(targetFactory)
+
+      addShortageToFactory(factory, targetFactory, part, getDefaultRecipeForPart(part))
+      calculateFactories(appStore.getFactories(), getGameData())
+      eventBus.emit('toast', { message: `Created "${targetFactory.name}" producing "${getPartDisplayName(part)}"!` })
+
+      // The dialog owns this setting; respect it here too so users can add multiple shortages without being jumped around.
+      if (localStorage.getItem('shortageJumpToFactory') !== 'false') {
+        // The new factory must be in the DOM before we can scroll to it.
+        await nextTick()
+        navigateToFactory(targetFactory.id)
+      }
+    } finally {
+      addingShortagePart.value = ''
+    }
+  }
+
+  const openAddShortageDialog = (part: string): void => {
+    shortageDialogPart.value = part
+    shortageDialogOpen.value = true
+  }
+
   const addGenerator = (factory: Factory, part: string, amount: number): void => {
     const recipe = getGeneratorFuelRecipeByPart(part)
 
@@ -380,7 +502,7 @@
       building: 'generatornuclear',
       ingredientAmount: 1,
       recipe: recipe.id,
-      updated: 'ingredient',
+      updated: FactoryPowerChangeType.Ingredient,
     })
 
     updateFactory(factory)
@@ -388,7 +510,7 @@
     // Get the producer which should be the latest one in the array
     const producer = factory.powerProducers[factory.powerProducers.length - 1]
 
-    producer.ingredientAmount = convertWasteToGeneratorFuel(recipe, Math.abs(amount))
+    producer.fuelAmount = convertWasteToGeneratorFuel(recipe, Math.abs(amount))
     updateFactory(factory)
   }
 
@@ -477,7 +599,7 @@
   }
 
   const doFixProduct = (partId: string, factory: Factory) => {
-    const product = getProduct(factory, partId)
+    const product = getProduct(factory, partId) as FactoryItem
 
     if (!product) {
       alert('Could not fix the product due to there not being a product! Please report this to Discord with a share link, quoting the factory in question.')
@@ -503,7 +625,7 @@
       return
     }
 
-    generator.ingredientAmount = convertWasteToGeneratorFuel(recipe, Math.abs(amount))
+    generator.fuelAmount = convertWasteToGeneratorFuel(recipe, Math.abs(amount))
     updateFactory(factory)
   }
 
@@ -545,8 +667,8 @@ table {
         border-block: thin solid #4b4b4b !important;
 
         &.border-red {
-          background: rgba(128, 0, 0, 0.50) !important;
-          border-block: thin solid #b50000 !important;
+          background: var(--sf-problem-bg) !important;
+          border-block: thin solid var(--sf-problem-border) !important;
         }
 
         &.name {

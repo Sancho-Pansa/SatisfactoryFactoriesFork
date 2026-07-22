@@ -2,8 +2,34 @@
   <div
     v-for="(product, productIndex) in factory.products"
     :key="productIndex"
-    class="product px-4 my-2 border-md rounded sub-card"
+    class="factory-item px-4 my-2 border-md rounded sub-card"
   >
+    <div class="factory-item-controls">
+      <v-btn
+        :color="product.displayOrder === 0 ? 'grey-darken-3' : 'primary'"
+        :disabled="product.displayOrder === 0"
+        icon="fas fa-arrow-up"
+        size="small"
+        variant="flat"
+        @click="updateProductOrder('up', product)"
+      />
+      <v-btn
+        :color="product.displayOrder === factory.products.length - 1 ? 'grey-darken-3' : 'primary'"
+        :disabled="product.displayOrder === factory.products.length - 1"
+        icon="fas fa-arrow-down"
+        size="small"
+        variant="flat"
+        @click="updateProductOrder('down', product)"
+      />
+      <v-btn
+        :id="`${factory.id}-item-${productIndex}-delete`"
+        color="red"
+        icon="fas fa-trash"
+        size="small"
+        variant="flat"
+        @click="deleteProduct(productIndex, factory)"
+      />
+    </div>
     <div class="selectors mt-3 mb-2 d-flex flex-column flex-md-row ga-3">
       <div class="input-row d-flex align-center">
         <span v-show="!product.id" class="mr-2">
@@ -20,13 +46,14 @@
           />
         </span>
         <v-autocomplete
+          :id="`${factory.id}-${product.id}-item`"
           v-model="product.id"
           hide-details
           :items="autocompletePartItems"
-          :label="$t('planner.factory.productsAndPower.product.itemLabel')"
-          max-width="300px"
+          label="Item"
+          :max-width="productSelectionWidth"
           variant="outlined"
-          width="300px"
+          :width="productSelectionWidth"
           @update:model-value="updateProductSelection(product, factory)"
         />
       </div>
@@ -37,75 +64,47 @@
           :disabled="!product.id"
           hide-details
           :items="getRecipesForPartSelector(product.id)"
-          :label="$t('planner.factory.productsAndPower.product.recipeLabel')"
-          max-width="350px"
+          label="Recipe"
+          :max-width="recipeSelectionWidth"
           variant="outlined"
-          width="350px"
+          :width="recipeSelectionWidth"
           @update:model-value="updateRecipe(product, factory)"
         />
       </div>
       <div class="input-row d-flex align-center">
         <v-number-input
+          :id="`${factory.id}-${product.id}-amount`"
           v-model="product.amount"
           control-variant="stacked"
           hide-details
-          :label="$t('planner.factory.productsAndPower.product.qtyLabel')"
-          :max-width="smAndDown ? undefined : '130px'"
-          :min-width="smAndDown ? undefined : '130px'"
-          :name="`${product.id}.amount`"
+          label="Qty /min"
           variant="outlined"
-          @update:model-value="updateFactory(factory)"
+          :width="smAndDown ? undefined : '130px'"
+          @update:model-value="updateProductQty(product, factory)"
         />
+        <debounce-spinner :active="debouncingProduct === product.id && debouncing === 'amount'" />
       </div>
-      <div class="input-row d-flex align-center">
-        <v-btn
-          v-show="shouldShowFix(product, factory) == 'deficit'"
-          class="rounded mr-2"
-          color="green"
-          prepend-icon="fas fa-arrow-up"
-          @click="doFixProduct(product, factory)"
-        >{{ $t("planner.factory.productsAndPower.product.satisfy") }}</v-btn>
-        <v-btn
-          v-show="shouldShowFix(product, factory) == 'surplus'"
-          class="rounded mr-2"
-          color="yellow"
-          prepend-icon="fas fa-arrow-down"
-          size="default"
-          @click="doFixProduct(product, factory)"
-        >{{ $t("planner.factory.productsAndPower.product.trim") }}</v-btn>
-        <v-btn
-          class="rounded mr-2"
-          color="blue"
-          :disabled="product.displayOrder === 0"
-          icon="fas fa-arrow-up"
-          size="small"
-          variant="outlined"
-          @click="updateProductOrder('up', product)"
-        />
-        <v-btn
-          class="rounded mr-2"
-          color="blue"
-          :disabled="product.displayOrder === factory.products.length - 1"
-          icon="fas fa-arrow-down"
-          size="small"
-          variant="outlined"
-          @click="updateProductOrder('down', product)"
-        />
-        <v-btn
-          class="rounded"
-          color="red"
-          icon="fas fa-trash"
-          size="small"
-          variant="outlined"
-          @click="deleteProduct(productIndex, factory)"
-        />
-        <v-chip v-if="shouldShowInternal(product, factory)" class="ml-2 sf-chip small green">
-          {{ $t("planner.factory.productsAndPower.product.internal") }}
-        </v-chip>
-        <v-chip v-if="shouldShowNotInDemand(product, factory)" class="ml-2 sf-chip small orange">
-          {{ $t("planner.factory.productsAndPower.product.noDemand") }}
-        </v-chip>
-      </div>
+      <v-btn
+        v-show="shouldShowFix(product, factory) == 'deficit'"
+        class="rounded align-self-center"
+        color="green"
+        prepend-icon="fas fa-arrow-up"
+        @click="doFixProduct(product, factory)"
+      >Satisfy</v-btn>
+      <v-btn
+        v-show="shouldShowFix(product, factory) == 'surplus'"
+        class="rounded align-self-center"
+        color="yellow"
+        prepend-icon="fas fa-arrow-down"
+        size="default"
+        @click="doFixProduct(product, factory)"
+      >Trim</v-btn>
+      <v-chip v-if="shouldShowInternal(product, factory)" class="align-self-center sf-chip small green">
+        Internal
+      </v-chip>
+      <v-chip v-if="shouldShowNotInDemand(product, factory)" class="align-self-center sf-chip small orange">
+        No demand!
+      </v-chip>
     </div>
     <div
       v-if="product.recipe"
@@ -120,26 +119,25 @@
           v-for="byProduct in product.byProducts"
           :key="byProduct.id"
         >
-          <v-chip class="sf-chip">
-            <game-asset clickable :subject="byProduct.id" type="item" />
-            <span class="ml-2">
-              <b>{{ getPartDisplayName(byProduct.id) }}</b>:
-            </span>
-
-            <v-text-field
-              v-model.number="byProduct.amount"
-              class="inline-inputs product-secondary-input"
-              flat
+          <v-chip class="sf-chip input unit byproduct">
+            <tooltip :text="getPartDisplayName(byProduct.id)">
+              <game-asset clickable :subject="String(byProduct.id)" type="item" />
+            </tooltip>
+            <v-number-input
+              v-model="byProduct.amount"
+              class="inline-inputs ml-0"
+              control-variant="stacked"
+              density="compact"
               hide-details
               hide-spin-buttons
-              min="0"
+              :min="0"
               :name="`${product.id}.byProducts.${byProduct.id}`"
               :product="product.id"
-              type="number"
-              width="60px"
-              @input="setProductQtyByByproduct(product, byProduct.id)"
+              width="120px"
+              @update:model-value="setProductQtyByByproduct(product, byProduct.id)"
             />
-            <span>/{{ $t("common.units.timeMin") }}</span>
+            <span>/min</span>
+            <debounce-spinner :active="pendingRecalc === `${product.id}-bp-${byProduct.id}`" />
           </v-chip>
           <v-chip v-if="shouldShowInternal(byProduct, factory)" class="sf-chip small green">
             {{ $t("planner.factory.productsAndPower.product.internal") }}
@@ -148,67 +146,81 @@
       </div>
       <div
         v-if="Object.keys(product.requirements).length > 0 || product.buildingRequirements"
-        class="d-flex flex-sm-wrap align-center"
+        class="d-flex flex-wrap align-center mb-1"
       >
         <p class="mr-2">{{ $t("planner.factory.productsAndPower.product.requires") }}</p>
         <v-chip
-          v-for="(requirement, part) in product.requirements"
-          :key="`ingredients-${part}`"
-          class="sf-chip"
-          :class="factory.parts[part].isRaw ? 'cyan': 'blue'"
-          variant="tonal"
-        >
-          <game-asset clickable :subject="part.toString()" type="item" />
-          <span class="ml-2">
-            <b>{{ getPartDisplayName(part.toString()) }}</b>:
-          </span>
-          <v-text-field
-            v-model.number="requirement.amount"
-            class="inline-inputs product-secondary-input"
-            flat
-            hide-details
-            hide-spin-buttons
-            min="0"
-            :name="`${product.id}.ingredients.${part}`"
-            :product="product.id"
-            type="number"
-            width="60px"
-            @input="setProductQtyByRequirement(product, part.toString())"
-          />
-          <span>/{{ $t("common.units.timeMin") }}</span>
-        </v-chip>
-        <v-chip
-          class="sf-chip orange"
+          class="sf-chip orange input"
           variant="tonal"
         >
           <game-asset :key="`${product.id}-${product.buildingRequirements.name}`" clickable :subject="product.buildingRequirements.name" type="building" />
-          <span class="ml-2">
-            <b>{{ getBuildingDisplayName(product.buildingRequirements.name) }}</b>:
+          <span>
+            <b>{{ getBuildingDisplayName(product.buildingRequirements.name) }}</b>
           </span>
-          <v-text-field
-            v-model.number="product.buildingRequirements.amount"
-            class="inline-inputs"
-            flat
+          <v-number-input
+            :id="`${factory.id}-${product.id}-building-count`"
+            class="inline-inputs ml-2"
+            control-variant="stacked"
+            density="compact"
             hide-details
             hide-spin-buttons
-            min="0"
-            :name="`${product.id}.buildingAmount`"
+            :model-value="formatNumberFully(product.buildingRequirements.amount)"
             :product="product.id"
-            type="number"
-            width="60px"
-            @input="increaseProductQtyByBuilding(product)"
+            width="120px"
+            @update:model-value="changeBuildingAmountInput(product, $event)"
           />
+          <debounce-spinner :active="pendingRecalc === `${product.id}-buildings`" />
         </v-chip>
         <v-chip
-          class="sf-chip yellow"
+          class="sf-chip consumption"
           variant="tonal"
         >
           <i class="fas fa-bolt" />
           <i class="fas fa-minus" />
-          <span class="ml-2">{{ formatPower(product.buildingRequirements.powerConsumed ?? 0).value }} {{ formatPower(product.buildingRequirements.powerConsumed ?? 0).unit }}</span>
+          <span class="ml-2">{{ productPowerConsumed(product) }}</span>
+          <template v-if="productHasVariablePower(product)">
+            <span class="ml-1">({{ formatMw(productPowerRange(product).min) }} – {{ formatMw(productPowerRange(product).max) }})</span>
+            <tooltip-info text="This building's power draw oscillates between a minimum and maximum over the recipe cycle. The main figure is the average." />
+          </template>
+        </v-chip>
+        <v-chip
+          v-for="(requirement, part) in product.requirements"
+          :key="`ingredients-${part}`"
+          class="sf-chip input unit"
+          :class="factory.parts[part].isRaw ? 'cyan': 'blue'"
+          variant="tonal"
+        >
+          <tooltip :text="getPartDisplayName(part)">
+            <game-asset clickable :subject="String(part)" type="item" />
+          </tooltip>
+          <v-number-input
+            :id="`${factory.id}-${product.id}-${part}-amount`"
+            v-model="requirement.amount"
+            class="inline-inputs ml-0"
+            control-variant="stacked"
+            density="compact"
+            hide-details
+            hide-spin-buttons
+            :min="0"
+            :product="product.id"
+            width="120px"
+            @update:model-value="setProductQtyByRequirement(product, part.toString())"
+          />
+          <span>/min</span>
+          <debounce-spinner :active="pendingRecalc === `${product.id}-req-${part}`" />
         </v-chip>
       </div>
     </div>
+    <!-- Hidden entirely until the product has a valid item + recipe — an
+         inert bar for a half-configured product is just noise. -->
+    <building-groups-section
+      v-if="product.id && product.recipe"
+      :building="product.buildingRequirements.name"
+      :factory="factory"
+      :id-prefix="`${factory.id}-${product.id}`"
+      :item="product"
+      :type="ItemType.Product"
+    />
   </div>
 </template>
 
@@ -216,6 +228,7 @@
   import {
     byProductAsProductCheck,
     fixProduct,
+    increaseProductQtyViaBuilding,
     shouldShowFix,
     shouldShowInternal,
     shouldShowNotInDemand,
@@ -223,38 +236,65 @@
     updateProductAmountViaRequirement,
   } from '@/utils/factory-management/products'
   import { getPartDisplayName } from '@/utils/helpers'
-  import { formatPower } from '@/utils/numberFormatter'
-  import { Factory, FactoryItem } from '@/interfaces/planner/FactoryInterface'
+  import { formatMw, formatNumberFully } from '@/utils/numberFormatter'
+  import { Factory, FactoryItem, ItemType } from '@/interfaces/planner/FactoryInterface'
   import { useGameDataStore } from '@/stores/game-data-store'
   import { useDisplay } from 'vuetify'
-  import { getBuildingDisplayName } from '@/utils/factory-management/common'
+  import { deleteItem, getBuildingDisplayName, getRecipe } from '@/utils/factory-management/common'
   import { inject } from 'vue'
-
-  const gameData = useGameDataStore().getGameData()
+  import { debounce } from '@/components/planner/products/ItemCommon'
+  import { afterRender, useDebouncedAction } from '@/composables/useDebouncedAction'
+  import eventBus from '@/utils/eventBus'
 
   const updateFactory = inject('updateFactory') as (factory: Factory) => void
   const updateOrder = inject('updateOrder') as (list: any[], direction: string, item: any) => void
 
-  const { smAndDown } = useDisplay()
+  const debouncing = ref('')
+  const debouncingProduct = ref('')
+  // Secondary inputs (ingredients, byproducts, building count): the value mutation
+  // lands instantly, only the whole-plan recalculation is debounced behind this.
+  const { debouncing: pendingRecalc, runDebounced } = useDebouncedAction()
+
+  const { smAndDown, mdAndDown } = useDisplay()
   const {
     getRecipesForPart,
     getDefaultRecipeForPart,
-    getRecipeById,
     getGameData,
   } = useGameDataStore()
+
+  const gameData = getGameData()
 
   const props = defineProps<{
     factory: Factory;
     helpText: boolean;
   }>()
 
-  const deleteProduct = (outputIndex: number, factory: Factory) => {
-    factory.products.splice(outputIndex, 1)
+  const productSelectionWidth = computed(() => {
+    let width = '300px'
+    if (mdAndDown.value) {
+      width = '275px'
+    }
+    if (smAndDown.value) {
+      width = '200px'
+    }
 
-    // We need to loop through each one in order and fix their ordering with the running count
-    factory.products.forEach((product, index) => {
-      product.displayOrder = index
-    })
+    return width
+  })
+
+  const recipeSelectionWidth = computed(() => {
+    let width = '300px'
+    if (mdAndDown.value) {
+      width = '275px'
+    }
+    if (smAndDown.value) {
+      width = '200px'
+    }
+
+    return width
+  })
+
+  const deleteProduct = (index: number, factory: Factory) => {
+    deleteItem(index, ItemType.Product, factory)
     updateFactory(factory)
   }
 
@@ -276,12 +316,23 @@
       alert('Uranium and Plutonium Waste are created by adding a Power Generator (and adding a Nuclear Power Plant). This product will now be cleared.')
       product.recipe = ''
       product.id = ''
-      updateFactory(factory)
       return
     }
 
     product.recipe = getDefaultRecipeForPart(product.id)
-    product.amount = 1
+
+    if (product.recipe) {
+      const recipe = getRecipe(product.recipe, gameData)
+      if (!recipe) {
+        console.warn(`Product: Unable to get recipe for ${product.id}!`)
+        product.amount = 1
+      } else {
+        product.amount = recipe.products[0].perMin
+      }
+    }
+
+    // Blow the building groups away, updateFactory will regenerate them
+    product.buildingGroups = []
 
     byProductAsProductCheck(product, gameData)
 
@@ -290,7 +341,65 @@
 
   const updateRecipe = (product: FactoryItem, factory: Factory) => {
     byProductAsProductCheck(product, gameData)
+
+    // Blow the building groups away, updateFactory will regenerate them
+    product.buildingGroups = []
+
     updateFactory(factory)
+  }
+
+  let updateQtyCallCounter = 0
+  const updateProductQty = async (product: FactoryItem, factory: Factory) => {
+    if (product.amount === 0) {
+      // The user may be typing a decimal point starting with zero, so leave them alone
+      return
+    }
+
+    // Negative amounts break the calculations, clamp them to a sane minimum.
+    if (product.amount < 0) {
+      product.amount = 1
+    }
+
+    // Get a unique call ID for the update
+    const callId = ++updateQtyCallCounter
+    console.log('updateProductQty: callId', callId)
+
+    // Show debouncing to user
+    debouncingProduct.value = product.id
+    debouncing.value = 'amount'
+
+    // Copy the input value
+    const oldAmount = formatNumberFully(JSON.parse(JSON.stringify(product.amount)))
+
+    await debounce()
+
+    // If the call ID is not the latest, ignore this call
+    if (callId !== updateQtyCallCounter) {
+      console.log('updateProductQty: ignoring call as not latest', callId)
+      return
+    }
+
+    updateFactory(factory)
+    // Hold the spinner until the recalc's DOM updates have painted so its exit
+    // animation runs on an idle frame instead of mid-jank.
+    await afterRender()
+    if (callId === updateQtyCallCounter) {
+      debouncing.value = ''
+      debouncingProduct.value = ''
+    }
+
+    const newAmount = formatNumberFully(product.amount)
+
+    console.log('amounts', oldAmount, newAmount, oldAmount !== newAmount)
+
+    // If the amount was not what the user entered, show a toast
+    if (oldAmount !== newAmount) {
+      eventBus.emit('toast', {
+        message: `Amount you entered is incalculable under current conditions e.g. building group could not be split evenly. Updated to closest possible.`,
+        type: 'warning',
+        timeout: 3000,
+      })
+    }
   }
 
   // Enables the user to move the order of the byproduct up or down
@@ -299,36 +408,47 @@
   }
 
   const setProductQtyByByproduct = (product: FactoryItem, part: string) => {
-    updateProductAmountViaByproduct(product, part, gameData)
-    updateFactory(props.factory)
+    const productAmount = product.byProducts?.find(bp => bp.id === part)?.amount ?? 0
+    if (productAmount === 0) {
+      // The user may be typing a decimal point starting with zero, so leave them alone
+      return
+    }
+    // Even the local reverse-solve waits for the debounce — running it per keystroke
+    // updates dependent displays (and triggers renders) while the user is still typing.
+    runDebounced(`${product.id}-bp-${part}`, () => {
+      updateProductAmountViaByproduct(product, part, gameData)
+      updateFactory(props.factory)
+    })
   }
 
   const setProductQtyByRequirement = (product: FactoryItem, part: string) => {
-    updateProductAmountViaRequirement(product, part, gameData)
-    updateFactory(props.factory)
+    if (product.requirements[part].amount === 0) {
+      // The user may be typing a decimal point starting with zero, so leave them alone
+      return
+    }
+    runDebounced(`${product.id}-req-${part}`, () => {
+      updateProductAmountViaRequirement(product, part)
+      updateFactory(props.factory)
+    })
   }
 
-  const increaseProductQtyByBuilding = (product: FactoryItem) => {
-    // Get what is now the new buildingRequirement for the product
-    const newVal = product.buildingRequirements.amount
-
-    if (newVal < 0 || !newVal) {
-      product.buildingRequirements.amount = 0 // Prevents the product being totally deleted
+  const changeBuildingAmount = (product: FactoryItem) => {
+    if (product.buildingRequirements.amount === 0) {
+      // The user may be typing a decimal point starting with zero, so leave them alone
       return
     }
 
-    // Get the recipe for the product in order to get the new quantity
-    const recipe = getRecipeById(product.recipe)
+    runDebounced(`${product.id}-buildings`, () => {
+      increaseProductQtyViaBuilding(product, props.factory, gameData)
+      updateFactory(props.factory)
+    })
+  }
 
-    if (!recipe) {
-      console.error('No recipe found for product!', product)
-      throw new Error('No recipe found for product!')
-    }
-
-    // Set the new quantity of the product
-    product.amount = recipe.products[0].perMin * newVal
-
-    updateFactory(props.factory)
+  // The input displays a formatted value (the raw one carries float noise like
+  // 1.3333333333333333), so user edits must be written back to the data here.
+  const changeBuildingAmountInput = (product: FactoryItem, value: number | string) => {
+    product.buildingRequirements.amount = Number(value)
+    changeBuildingAmount(product)
   }
 
   const doFixProduct = (product: FactoryItem, factory: Factory) => {
@@ -351,14 +471,32 @@
 
   const autocompletePartItems = autocompletePartItemsGenerator()
 
-</script>
+  const productPowerConsumed = (product: FactoryItem) => {
+    let totalPower = 0
 
-<style lang="scss" scoped>
-  .product {
-    border-left: 5px solid #2196f3 !important
+    // Loop all of the building groups and sum the power consumed
+    product.buildingGroups.forEach(group => {
+      totalPower += group.powerUsage
+    })
+
+    return formatMw(totalPower ?? 0)
   }
-  div.product-secondary-input:deep(input) {
-    // Match input's font size to the rest of the requirement chip
-    font-size: 0.875rem;
+
+  // Min/max draw across the groups for variable-power buildings (equal to the average otherwise).
+  const productPowerRange = (product: FactoryItem) => {
+    let min = 0
+    let max = 0
+
+    product.buildingGroups.forEach(group => {
+      min += group.powerUsageMin ?? group.powerUsage
+      max += group.powerUsageMax ?? group.powerUsage
+    })
+
+    return { min, max }
   }
-</style>
+
+  const productHasVariablePower = (product: FactoryItem) => {
+    const range = productPowerRange(product)
+    return range.max !== range.min
+  }
+</script>
