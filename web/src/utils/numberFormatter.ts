@@ -55,12 +55,14 @@ export function formatNumberFully (value: any, precision = 3, snap = false): num
 // Matches the in-game power screens: MW with thousands separators (e.g. "5,100 MW").
 // The non-breaking space stops the value wrapping onto a new line before the unit.
 export function formatMw (value: number): string {
-  return `${Number(formatNumber(value, 1)).toLocaleString('en-US')}\u00A0MW`
+  const { t } = useI18n()
+  return `${Number(formatNumber(value, 1)).toLocaleString('en-US')}\u00A0${t('common.units.powerGW')}`
 }
 
 // Always renders in gigawatts (value supplied in MW). Reserved for the statistics
 // side tray, which is too space-constrained for full MW figures — everywhere else
 // shows MW via formatMw to match the game's power screens.
 export function formatGw (value: number): string {
-  return `${Number(formatNumber(value / 1000, 2)).toLocaleString('en-US')}\u00A0GW`
+  const { t } = useI18n()
+  return `${Number(formatNumber(value / 1000, 2)).toLocaleString('en-US')}\u00A0${t('common.units.powerGW')}`
 }
