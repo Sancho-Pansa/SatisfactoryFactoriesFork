@@ -34,10 +34,7 @@
     "graph": "Graph (WIP)",
     "recipes": "Recipes",
     "changelog": "Change Log",
-    "sidebar": {
-      "show": "Show Sidebar",
-      "hide": "Hide Sidebar"
-    }
+    "sidebar": {}
   },
   "planner": {
     "add": "Add Factory",
@@ -202,6 +199,15 @@
       "placeholder": "Add some notes!",
       "clear": "Clear Notes",
       "limitMessage": "Max character length {charLimit} reached, condense your notes, pioneer!"
+    },
+    "sidebar": {
+      "hide": "Hide Sidebar",
+      "show": "Show Sidebar",
+      "difference": "Difference vs",
+      "differenceTarget": "target",
+      "differencePlan": "plan",
+      "seeNotes": "See notes",
+      "tasks": "Tasks"
     }
   },
   "tabnavigation": {

@@ -10,22 +10,22 @@
         <v-row class="d-flex flex-wrap ma-0 align-center">
           <v-spacer class="d-flex align-center text-body-1 pa-2">
             <i class="fas fa-chart-line mr-2" />
-            <span>Statistics</span>
+            <span>{{ $t('planner.sidebar.statistics') }}</span>
           </v-spacer>
           <v-col class="d-flex align-center flex-wrap justify-end ga-1 py-1 px-2" cols="auto">
-            <tooltip :text="`Power generated: ${formatMw(totalPower.totalPowerProduced)}`">
+            <tooltip :text="`${$t('planner.sidebar.powerGenerated')}: ${formatMw(totalPower.totalPowerProduced)}`">
               <v-chip class="sf-chip x-small no-margin generation" variant="tonal">
                 <i class="fas fa-bolt mr-1" /><i class="fas fa-plus" />
                 <span class="ml-1">{{ formatGw(totalPower.totalPowerProduced) }}</span>
               </v-chip>
             </tooltip>
-            <tooltip :text="`Power consumed: ${formatMw(totalPower.totalPowerConsumed)}`">
+            <tooltip :text="`${$t('planner.sidebar.powerConsumed')}: ${formatMw(totalPower.totalPowerConsumed)}`">
               <v-chip class="sf-chip x-small no-margin consumption" variant="tonal">
                 <i class="fas fa-bolt mr-1" /><i class="fas fa-minus" />
                 <span class="ml-1">{{ formatGw(totalPower.totalPowerConsumed) }}</span>
               </v-chip>
             </tooltip>
-            <tooltip :text="`Difference vs ${hasTarget ? 'target' : 'plan'}: ${formatMw(powerDifference)}`">
+            <tooltip :text="`${$t('planner.sidebar.difference')} ${hasTarget ? $t('planner.sidebar.differenceTarget') : $t('planner.sidebar.differencePlan')}: ${formatMw(powerDifference)}`">
               <v-chip
                 class="sf-chip x-small no-margin"
                 :class="powerDeficit ? 'error' : 'success'"
@@ -53,10 +53,10 @@
         <v-row class="d-flex flex-nowrap ma-0 align-center">
           <v-spacer class="d-flex align-center text-body-1 pa-2">
             <i class="fas fa-list mr-2" />
-            <span>Factories Summary</span>
+            <span>{{ $t('planner.sidebar.summary') }}</span>
           </v-spacer>
           <v-col class="d-flex align-center justify-end ga-1 py-1 px-2" cols="auto">
-            <tooltip text="Open fullscreen summary">
+            <tooltip :text="$t('planner.sidebar.openFullscreen')">
               <v-btn
                 class="expand-summary-btn"
                 color="primary"
@@ -68,7 +68,7 @@
                 <i class="fas fa-expand-alt" />
               </v-btn>
             </tooltip>
-            <tooltip :text="`Factories in plan: ${factories.length}`">
+            <tooltip :text="`${$t('planner.sidebar.factoriesInPlan')}: ${factories.length}`">
               <v-chip class="sf-chip x-small no-margin factory" variant="tonal">
                 <i class="fas fa-industry" />
                 <span class="ml-1">{{ factories.length }}</span>
@@ -113,7 +113,7 @@
                   <span>{{ countActiveTasks(element as Factory) }}</span>
                 </v-col>
               </template>
-              <span>Tasks: {{ countActiveTasks(element as Factory) }}</span>
+              <span>{{ `${$t('planner.sidebar.tasks')}: ${countActiveTasks(element as Factory)}` }}</span>
             </v-tooltip>
             <v-tooltip right>
               <template #activator="{ props }">
@@ -128,7 +128,7 @@
                   <i class="d-inline fas fa-sticky-note" />
                 </v-col>
               </template>
-              <span>See notes</span>
+              <span>{{ $t('planner.sidebar.seeNotes') }}</span>
             </v-tooltip>
             <v-tooltip right>
               <template #activator="{ props }">

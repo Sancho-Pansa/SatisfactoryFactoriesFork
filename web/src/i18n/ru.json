@@ -17,11 +17,7 @@
     "recipes": "Рецепты",
     "changelog": "История изменений",
     "showChanges": "Изменения",
-    "parts": "Детали и рецепты",
-    "sidebar": {
-      "hide": "Скрыть",
-      "show": "Показать"
-    }
+    "parts": "Детали и рецепты"
   },
   "planner": {
     "add": "Добавить завод",
@@ -186,6 +182,22 @@
       "placeholder": "Добавьте сюда свои заметки!",
       "clear": "Очистить заметки",
       "limitMessage": "Достигнута максимальная длина заметок ({charLimit}). Сократите свои записи, первопроходец!"
+    },
+    "statistics": {},
+    "sidebar": {
+      "statistics": "Статистика",
+      "summary": "Сводка по заводам",
+      "openFullscreen": "Открыть отчет в полноэкранном виде",
+      "factoriesInPlan": "Заводов в планировщике",
+      "powerGenerated": "Производимая мощность",
+      "powerConsumed": "Потребляемая мощность",
+      "hide": "Скрыть",
+      "show": "Показать",
+      "difference": "Разница с",
+      "differenceTarget": "целевым значением",
+      "differencePlan": "планом",
+      "seeNotes": "См. заметки",
+      "tasks": "Задач"
     }
   },
   "tabnavigation": {
