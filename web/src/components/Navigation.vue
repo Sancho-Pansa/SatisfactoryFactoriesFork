@@ -12,7 +12,7 @@
         <v-chip class="sf-chip small beta-chip">
           BETA v0.5
           <span class="mx-1">•</span>
-          <a class="show-changes" href="#" @click.prevent="showChanges">Show changes</a>
+          <a class="show-changes" href="#" @click.prevent="showChanges">{{ $t("navigation.showChanges") }}</a>
         </v-chip>
       </span>
     </template>
@@ -129,10 +129,10 @@
   })
 
   const tabItems = [
-    { title: t("navigation.planner"), icon: 'fas fa-ruler-triangle', href: '/' },
-    { title: t("navigation.graph"), icon: 'fas fa-project-diagram', href: '/graph' },
-    { title: 'Parts & Recipes', icon: 'fas fa-hat-chef', href: '/parts' },
-    { title: t("navigation.changelog"), icon: 'fas fa-scroll', href: '/changelog' },
+    { title: t('navigation.planner'), icon: 'fas fa-ruler-triangle', href: '/' },
+    { title: t('navigation.graph'), icon: 'fas fa-project-diagram', href: '/graph' },
+    { title: t('navigation.parts'), icon: 'fas fa-hat-chef', href: '/parts' },
+    { title: t('navigation.changelog'), icon: 'fas fa-scroll', href: '/changelog' },
   ]
 
   onMounted(async () => {
