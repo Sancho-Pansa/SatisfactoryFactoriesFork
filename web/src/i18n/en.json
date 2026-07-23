@@ -33,7 +33,11 @@
     "planner": "Planner",
     "graph": "Graph (WIP)",
     "recipes": "Recipes",
-    "changelog": "Change Log"
+    "changelog": "Change Log",
+    "sidebar": {
+      "show": "Show Sidebar",
+      "hide": "Hide Sidebar"
+    }
   },
   "planner": {
     "add": "Add Factory",

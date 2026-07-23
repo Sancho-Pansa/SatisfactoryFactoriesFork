@@ -7,7 +7,7 @@
         prepend-icon="fas fa-bars"
         variant="flat"
         @click="toggleSidebar()"
-      >{{ sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar' }}</v-btn>
+      >{{ sidebarOpen ? $t('navigation.sidebar.hide') : $t('navigation.sidebar.show') }}</v-btn>
       <div class="d-flex align-center" style="min-width: 0">
         <v-tabs
           v-model="appStore.currentFactoryTabIndex"
