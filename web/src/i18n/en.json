@@ -72,13 +72,14 @@
         "product": {
           "itemLabel": "Item",
           "recipeLabel": "Recipe",
-          "qtyLabel": "Qty /min",
+          "qtyLabel": "Qty /@:common.units.timeMin",
           "satisfy": "Satisfy",
           "trim": "Trim",
           "internal": "Internal",
           "noDemand": "No demand!",
           "byproduct": "Byproduct:",
-          "requires": "Requires:"
+          "requires": "Requires:",
+          "nuclearAlert": "Uranium and Plutonium Waste are created by adding a Power Generator (and adding a Nuclear Power Plant). This product will now be cleared."
         },
         "addProduct": "Add Product",
         "addGenerator": "Add Power Generator",

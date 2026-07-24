@@ -50,7 +50,7 @@
           v-model="product.id"
           hide-details
           :items="autocompletePartItems"
-          label="Item"
+          :label="$t('planner.factory.productsAndPower.product.itemLabel')"
           :max-width="productSelectionWidth"
           variant="outlined"
           :width="productSelectionWidth"
@@ -64,7 +64,7 @@
           :disabled="!product.id"
           hide-details
           :items="getRecipesForPartSelector(product.id)"
-          label="Recipe"
+          :label="$t('planner.factory.productsAndPower.product.recipeLabel')"
           :max-width="recipeSelectionWidth"
           variant="outlined"
           :width="recipeSelectionWidth"
@@ -77,7 +77,7 @@
           v-model="product.amount"
           control-variant="stacked"
           hide-details
-          label="Qty /min"
+          :label="$t('planner.factory.productsAndPower.product.qtyLabel')"
           variant="outlined"
           :width="smAndDown ? undefined : '130px'"
           @update:model-value="updateProductQty(product, factory)"
@@ -90,7 +90,7 @@
         color="green"
         prepend-icon="fas fa-arrow-up"
         @click="doFixProduct(product, factory)"
-      >Satisfy</v-btn>
+      >{{ $t('planner.factory.productsAndPower.product.satisfy') }}</v-btn>
       <v-btn
         v-show="shouldShowFix(product, factory) == 'surplus'"
         class="rounded align-self-center"
@@ -98,12 +98,12 @@
         prepend-icon="fas fa-arrow-down"
         size="default"
         @click="doFixProduct(product, factory)"
-      >Trim</v-btn>
+      >{{ $t('planner.factory.productsAndPower.product.trim') }}</v-btn>
       <v-chip v-if="shouldShowInternal(product, factory)" class="align-self-center sf-chip small green">
-        Internal
+        {{ $t('planner.factory.productsAndPower.product.internal') }}
       </v-chip>
       <v-chip v-if="shouldShowNotInDemand(product, factory)" class="align-self-center sf-chip small orange">
-        No demand!
+        {{ $t('planner.factory.productsAndPower.product.noDemand') }}
       </v-chip>
     </div>
     <div
@@ -136,7 +136,7 @@
               width="120px"
               @update:model-value="setProductQtyByByproduct(product, byProduct.id)"
             />
-            <span>/min</span>
+            <span>{{ `/${$t('common.units.timeMin')}` }}</span>
             <debounce-spinner :active="pendingRecalc === `${product.id}-bp-${byProduct.id}`" />
           </v-chip>
           <v-chip v-if="shouldShowInternal(byProduct, factory)" class="sf-chip small green">
@@ -180,7 +180,9 @@
           <span class="ml-2">{{ productPowerConsumed(product) }}</span>
           <template v-if="productHasVariablePower(product)">
             <span class="ml-1">({{ formatMw(productPowerRange(product).min) }} – {{ formatMw(productPowerRange(product).max) }})</span>
-            <tooltip-info text="This building's power draw oscillates between a minimum and maximum over the recipe cycle. The main figure is the average." />
+            <tooltip-info
+              :text="$t('planner.factory.productsAndPower.powerTooltip')"
+            />
           </template>
         </v-chip>
         <v-chip
@@ -206,7 +208,7 @@
             width="120px"
             @update:model-value="setProductQtyByRequirement(product, part.toString())"
           />
-          <span>/min</span>
+          <span>{{ `/${$t('common.units.timeMin')}` }}</span>
           <debounce-spinner :active="pendingRecalc === `${product.id}-req-${part}`" />
         </v-chip>
       </div>
@@ -245,6 +247,7 @@
   import { debounce } from '@/components/planner/products/ItemCommon'
   import { afterRender, useDebouncedAction } from '@/composables/useDebouncedAction'
   import eventBus from '@/utils/eventBus'
+  import { useI18n } from 'vue-i18n'
 
   const updateFactory = inject('updateFactory') as (factory: Factory) => void
   const updateOrder = inject('updateOrder') as (list: any[], direction: string, item: any) => void
@@ -254,6 +257,8 @@
   // Secondary inputs (ingredients, byproducts, building count): the value mutation
   // lands instantly, only the whole-plan recalculation is debounced behind this.
   const { debouncing: pendingRecalc, runDebounced } = useDebouncedAction()
+
+  const { t } = useI18n()
 
   const { smAndDown, mdAndDown } = useDisplay()
   const {
@@ -313,7 +318,8 @@
     // If Uranium Waste or Plutonium Waste are selected, alert the user, and remove it.
 
     if (product.id === 'NuclearWaste' || product.id === 'PlutoniumWaste') {
-      alert('Uranium and Plutonium Waste are created by adding a Power Generator (and adding a Nuclear Power Plant). This product will now be cleared.')
+      const message = t('planner.factory.productsAndPower.product.nuclearAlert')
+      alert(message)
       product.recipe = ''
       product.id = ''
       return
