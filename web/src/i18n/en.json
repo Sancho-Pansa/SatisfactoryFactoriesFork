@@ -72,6 +72,19 @@
           "internal": "An {internal} product is one that is used to produce other products. The surplus of which can also be used as an export.",
           "noDemand": "An {noDemand} product means the product is not used internally nor exported. It is suggested you delete this."
         },
+        "buildingGroups": {
+          "header": "{action} Building Groups ({num})",
+          "headerClose": "Close",
+          "headerOpen": "Open",
+          "somersloopsTotal": "Total Somersloops used by this product's Building Groups",
+          "somersloopsToBuild": "Total Somersloops consumed constructing this producer's buildings ({num} each)",
+          "problem": "Building Groups have a problem!",
+          "productIntroTooltip": "Building Groups turn this product's abstract building count into the real machines you'd build in-game: sets of identical buildings, each group with its own building count, overclock % and Somersloops.<br>Use them to plan your exact layout and see true per-group part rates and power usage.",
+          "powerShardsTooltip": "Total Power Shards needed by this {noun}'s Building Groups (1 per building per 50% clock above 100%",
+          "tooltipNounProducer": "producer",
+          "tooltipNounProduct": "product",
+          "producerIntroTooltip": "Building Groups turn this producer's abstract building count into the real generators you'd build in-game: sets of identical buildings, each group with its own building count and overclock %.<br>Use them to plan your exact layout and see true per-group fuel rates and power output."
+        },
         "product": {
           "itemLabel": "Item",
           "recipeLabel": "Recipe",
