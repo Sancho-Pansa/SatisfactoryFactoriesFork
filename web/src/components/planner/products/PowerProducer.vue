@@ -76,7 +76,7 @@
           :disabled="!producer.building"
           hide-details
           :items="getRecipesForPowerProducerSelector(producer.building)"
-          :label="producer.building === 'geothermalgenerator' ? 'Node Purity' : 'Fuel'"
+          :label="producer.building === 'geothermalgenerator' ? $t('planner.factory.productsAndPower.power.purityLabel') : $t('planner.factory.productsAndPower.power.fuelLabel')"
           max-width="235px"
           variant="outlined"
           width="235px"
@@ -90,7 +90,7 @@
           control-variant="stacked"
           :disabled="!producer.recipe"
           hide-details
-          label="Fuel Qty/min"
+          :label="$t('planner.factory.productsAndPower.power.qtyLabel')"
           :min="0"
           type="number"
           variant="outlined"
@@ -99,7 +99,7 @@
         />
         <debounce-spinner :active="pendingRecalc === `${producer.id}-${FactoryPowerChangeType.Fuel}`" />
       </div>
-      <div v-if="!isFuellessProducer(producer)" class="d-flex align-center font-weight-bold"><span>OR</span></div>
+      <div v-if="!isFuellessProducer(producer)" class="d-flex align-center font-weight-bold"><span>{{ $t('common.or') }}</span></div>
       <div class="input-row d-flex align-center">
         <!-- Fuel-less generators output fixed steps of power per building, so the MW value
              cannot be freely dialled in — it is display-only for them. -->
@@ -109,7 +109,7 @@
           control-variant="stacked"
           :disabled="!producer.recipe || isFuellessProducer(producer)"
           hide-details
-          label="MW"
+          :label="$t('common.units.powerMW')"
           :min="0"
           type="number"
           variant="outlined"
@@ -127,7 +127,9 @@
         <span class="ml-2">{{ formatMw(producer.powerAmount) }}</span>
         <template v-if="producerHasVariablePower(producer)">
           <span class="ml-1">({{ formatMw(producerPowerRange(producer).min) }} – {{ formatMw(producerPowerRange(producer).max) }})</span>
-          <tooltip-info text="This generator's output oscillates between a minimum and maximum over a one-minute cycle. The main figure is the average." />
+          <tooltip-info
+            :text="$t('planner.factory.productsAndPower.generatorTooltip')"
+          />
         </template>
       </v-chip>
     </div>
@@ -139,7 +141,7 @@
         v-if="producer.byproduct"
         class="d-flex align-center"
       >
-        <p class="mr-2">Byproduct:</p>
+        <p class="mr-2">{{ $t('planner.factory.productsAndPower.power.byproduct') }}</p>
         <v-chip class="sf-chip input byproduct">
           <tooltip :text="getPartDisplayName(producer.byproduct.part)">
             <game-asset clickable :subject="producer.byproduct.part" type="item" />
@@ -157,11 +159,11 @@
             width="120px"
             @update:model-value="updatePowerProducerFigures(FactoryPowerChangeType.Ingredient, producer, factory)"
           />
-          <span>/min</span>
+          <span>{{ `/${$t('common.units.timeMin')}` }}</span>
         </v-chip>
       </div>
       <div class="d-flex align-center">
-        <p class="mr-2">Requires:</p>
+        <p class="mr-2">{{ $t('planner.factory.productsAndPower.power.requires') }}</p>
         <v-chip
           v-if="isFuellessProducer(producer) && producer.ingredients[0]"
           :id="`${factory.id}-${producer.id}-matrix-demand`"
@@ -171,7 +173,7 @@
           <tooltip :text="getPartDisplayName(producer.ingredients[0].part)">
             <game-asset clickable :subject="producer.ingredients[0].part" type="item" />
           </tooltip>
-          <span class="ml-2 mr-4"><b>{{ formatNumber(producer.ingredients[0].perMin) }}</b>/min</span>
+          <span class="ml-2 mr-4"><b>{{ formatNumber(producer.ingredients[0].perMin) }}</b>{{ `/${$t('common.units.timeMin')}` }}</span>
         </v-chip>
         <v-chip
           v-if="producer.ingredients[1]"
@@ -195,7 +197,7 @@
             width="120px"
             @update:model-value="updatePowerProducerFigures(FactoryPowerChangeType.Ingredient, producer, factory)"
           />
-          <span>/min</span>
+          <span>{{ `/${$t('common.units.timeMin')}` }}</span>
         </v-chip>
         <span>
           <v-chip

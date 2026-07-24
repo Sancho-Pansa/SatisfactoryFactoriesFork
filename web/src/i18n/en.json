@@ -6,7 +6,8 @@
       "powerGW": "GW"
     },
     "hideButton": "Hide",
-    "showButton": "Show"
+    "showButton": "Show",
+    "or": "OR"
   },
   "buildings": {
     "assemblermk1": "Assembler",
@@ -24,7 +25,9 @@
     "packager": "Packager",
     "quantumencoder": "Quantum Encoder",
     "smeltermk1": "Smelter",
-    "waterExtractor": "Water Extractor"
+    "waterExtractor": "Water Extractor",
+    "alienpoweraugmenter": "Alien Power Augmenter",
+    "geothermalgenerator": "Geothermal Generator"
   },
   "language": {
     "self": "Language"
@@ -89,8 +92,11 @@
           "buildingLabel": "Generator",
           "byproduct": "Byproduct",
           "requires": "Requires",
-          "ingredientQty": "{ingredient}: {qty}/@:common.units.timeMin"
-        }
+          "ingredientQty": "{ingredient}: {qty}/@:common.units.timeMin",
+          "purityLabel": "Node Purity"
+        },
+        "powerTooltip": "This building's power draw oscillates between a minimum and maximum over the recipe cycle. The main figure is the average.",
+        "generatorTooltip": "This generator's output oscillates between a minimum and maximum over a one-minute cycle. The main figure is the average."
       },
       "import": {
         "header": "Imports",
@@ -208,7 +214,13 @@
       "differenceTarget": "target",
       "differencePlan": "plan",
       "seeNotes": "See notes",
-      "tasks": "Tasks"
+      "tasks": "Tasks",
+      "statistics": "Statistics",
+      "summary": "Factories Summary",
+      "powerGenerated": "Power generated",
+      "powerConsumed": "Power consumed",
+      "factoriesInPlan": "Factories in plan",
+      "openFullscreen": "Open fullscreen summary"
     }
   },
   "tabnavigation": {
