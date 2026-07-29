@@ -11,7 +11,7 @@
       @click="rebalance()"
     >
       <i class="fas fa-balance-scale" />
-      <span class="ml-2">Evenly balance <tooltip-info :is-caption="false" text="Attempts to evenly balance all groups for their buildings and clock speeds." /></span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.evenlyBalance') }} <tooltip-info :is-caption="false" :text="$t('planner.factory.productsAndPower.buildingGroups.evenlyBalanceTooltip')" /></span>
     </v-btn>
     <v-btn
       class="ml-2"
@@ -22,7 +22,7 @@
       @click="remainderToLast(item, type, factory)"
     >
       <i class="fas fa-balance-scale-right" />
-      <span class="ml-2">Remainder to last <tooltip-info :is-caption="false" text="Attempts to apply the Effective Buildings remainder to the last group.<br>This is useful if you cannot change existing groups and want to make a new one and fulfil changes in demands." /></span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.remainderToLast') }} <tooltip-info :is-caption="false" :text="$t('planner.factory.productsAndPower.buildingGroups.remainderToLastTooltip')" /></span>
     </v-btn>
     <v-btn
       class="ml-2"
@@ -33,7 +33,7 @@
       @click="remainderToNewGroup(item, type, factory)"
     >
       <i class="fas fa-stream" />
-      <span class="ml-2">Remainder to new group <tooltip-info :is-caption="false" text="Creates a new group and automatically applies the Effective Buildings remainder to it." /></span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.remainderToNew') }} <tooltip-info :is-caption="false" :text="$t('planner.factory.productsAndPower.buildingGroups.remainderToNewTooltip')" /></span>
     </v-btn>
     <v-btn
       class="ml-2"
@@ -45,7 +45,7 @@
       @click="resetClocks(item.buildingGroups)"
     >
       <i class="fas fa-history" />
-      <span class="ml-2">OC @ 100% <tooltip-info :is-caption="false" text="Sets all clocks in all groups to 100%." /></span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.reset') }} <tooltip-info :is-caption="false" :text="$t('planner.factory.productsAndPower.buildingGroups.resetTooltip')" /></span>
     </v-btn>
     <v-btn
       class="ml-auto"
@@ -55,43 +55,48 @@
       @click="showTutorial"
     >
       <v-icon icon="fas fa-graduation-cap" />
-      <span class="ml-2">Help</span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.help') }}</span>
     </v-btn>
   </div>
   <div v-if="!isAlwaysSynced" class="mb-2 d-flex align-center">
     <div class="mr-2">
       <span :id="`${factory.id}-${item.id}-buildings-status`" :class="{ 'text-green': correct, 'text-red': !correct }">
         <i class="fas fa-building" />
-        <span class="ml-1">
-          Effective Buildings: <b><span :id="`${factory.id}-${item.id}-effective-buildings`">
-            {{ effectiveBuildings.toFixed(2) }}
-          </span></b>
-          |
-          <span
-            :id="`${factory.id}-${item.id}-remaining-buildings`"
-            :key="`${factory.id}-${item.id}-remaining-buildings-${buildingsRemaining}`"
-          >
-            {{ Math.abs(buildingsRemaining).toFixed(2) }}
-          </span>
-          <span v-if="buildingsRemaining > 0" :id="`${factory.id}-${item.id}-remaining-buildings-verb`"> short</span>
-          <span v-if="buildingsRemaining < 0" :id="`${factory.id}-${item.id}-remaining-buildings-verb`"> over</span>
-        </span>
+        <i18n-t class="ml-1" keypath="planner.factory.productsAndPower.buildingGroups.effectiveBuildings" tag="span">
+          <template #number>
+            <span :id="`${factory.id}-${item.id}-effective-buildings`" class="font-weight-bold">
+              {{ effectiveBuildings.toFixed(2) }}
+            </span>
+          </template>
+          <template #remained>
+            <span
+              :id="`${factory.id}-${item.id}-remaining-buildings`"
+              :key="`${factory.id}-${item.id}-remaining-buildings-${buildingsRemaining}`"
+            >
+              {{ Math.abs(buildingsRemaining).toFixed(2) }}
+            </span>
+          </template>
+          <template #verb>
+            <span v-if="buildingsRemaining > 0" :id="`${factory.id}-${item.id}-remaining-buildings-verb`"> {{ $t('planner.factory.productsAndPower.buildingGroups.effectiveBuildingsShort') }}</span>
+            <span v-if="buildingsRemaining < 0" :id="`${factory.id}-${item.id}-remaining-buildings-verb`"> {{ $t('planner.factory.productsAndPower.buildingGroups.effectiveBuildingsOver') }}</span>
+          </template>
+        </i18n-t>
       </span>
     </div>
     <div :id="`${factory.id}-${item.id}-buildings-status-indicator`" class="ml-2" :isRed="over || under">
       <v-chip v-if="over" class="sf-chip red small">
-        <i class="fas fa-exclamation-triangle" /><span class="ml-2">Over producing!</span>
+        <i class="fas fa-exclamation-triangle" /><span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.overProducing') }}</span>
       </v-chip>
       <v-chip v-if="under" class="sf-chip red small">
-        <i class="fas fa-exclamation-triangle" /><span class="ml-2">Under producing!</span>
+        <i class="fas fa-exclamation-triangle" /><span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.underProducing') }}</span>
       </v-chip>
       <v-chip v-if="!under && !over" class="sf-chip green small">
-        <i class="fas fa-check" /><span class="ml-2">Balanced</span>
+        <i class="fas fa-check" /><span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.balanced') }}</span>
       </v-chip>
     </div>
     <div class="mr-2">|</div>
     <div class="mr-2">
-      <span class="mr-2">Sync:</span>
+      <span class="mr-2">{{ $t('planner.factory.productsAndPower.buildingGroups.syncText') }}</span>
       <v-btn
         :id="`${factory.id}-${item.id}-toggle-sync`"
         :color="item.buildingGroupItemSync ? 'green' : 'amber'"
@@ -99,12 +104,17 @@
         variant="flat"
         @click="item.buildingGroupItemSync = !item.buildingGroupItemSync"
       >
-        {{ item.buildingGroupItemSync ? 'Enabled' : 'Disabled' }}
+        {{ syncButtonText }}
       </v-btn>
-      <span><tooltip-info
-        :is-caption="true"
-        text="Sync keeps this item and its Building Groups aligned:<br>• Editing the <b>item</b> rebalances the groups evenly.<br>• Editing a <b>group</b> updates the item's totals.<br><br>Adding a second group turns sync off so your manual adjustments aren't overwritten (it stays off after deleting groups).<br>Re-enable it any time to restore automatic syncing."
-      /></span>
+      <tooltip-info :is-caption="true">
+        <template #default>
+          <i18n-t keypath="planner.factory.productsAndPower.buildingGroups.syncTooltip" tag="span">
+            <template #br>
+              <br>
+            </template>
+          </i18n-t>
+        </template>
+      </tooltip-info>
     </div>
   </div>
   <div
@@ -127,7 +137,7 @@
       @click="addBuildingGroup(item, type, factory)"
     >
       <i class="fas fa-plus" />
-      <span class="ml-2">Add Building Group</span>
+      <span class="ml-2">{{ $t('planner.factory.productsAndPower.buildingGroups.add') }}</span>
     </v-btn>
   </div>
 </template>
@@ -152,6 +162,7 @@
     syncBuildingGroups,
   } from '@/utils/factory-management/building-groups/common'
   import BuildingGroupComponent from '@/components/planner/products/BuildingGroup.vue'
+  import { useI18n } from 'vue-i18n'
 
   const props = defineProps<{
     factory: Factory
@@ -159,6 +170,8 @@
     building: string
     type: ItemType
   }>()
+
+  const { t } = useI18n()
 
   const buildingsRemaining = ref(0)
   const effectiveBuildings = ref(0)
@@ -195,6 +208,12 @@
 
   const under = computed(() => {
     return buildingsRemaining.value > 0.1
+  })
+
+  const syncButtonText = computed(() => {
+    return props.item.buildingGroupItemSync
+      ? t('planner.factory.productsAndPower.buildingGroups.syncEnabled')
+      : t('planner.factory.productsAndPower.buildingGroups.syncDisabled')
   })
 
   const rebalance = () => {

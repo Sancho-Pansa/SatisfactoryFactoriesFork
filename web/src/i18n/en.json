@@ -83,7 +83,27 @@
           "powerShardsTooltip": "Total Power Shards needed by this {noun}'s Building Groups (1 per building per 50% clock above 100%",
           "tooltipNounProducer": "producer",
           "tooltipNounProduct": "product",
-          "producerIntroTooltip": "Building Groups turn this producer's abstract building count into the real generators you'd build in-game: sets of identical buildings, each group with its own building count and overclock %.<br>Use them to plan your exact layout and see true per-group fuel rates and power output."
+          "producerIntroTooltip": "Building Groups turn this producer's abstract building count into the real generators you'd build in-game: sets of identical buildings, each group with its own building count and overclock %.<br>Use them to plan your exact layout and see true per-group fuel rates and power output.",
+          "evenlyBalance": "Evenly balance",
+          "evenlyBalanceTooltip": "Attempts to evenly balance all groups for their buildings and clock speeds.",
+          "remainderToLast": "Remainder to last",
+          "remainderToLastTooltip": "Attempts to apply the Effective Buildings remainder to the last group.<br>This is useful if you cannot change existing groups and want to make a new one and fulfil changes in demands.",
+          "remainderToNew": "Remainder to new group",
+          "remainderToNewTooltip": "Creates a new group and automatically applies the Effective Buildings remainder to it.",
+          "reset": "OC @ 100%",
+          "resetTooltip": "Sets all clocks in all groups to 100%.",
+          "effectiveBuildings": "Effective buildings: {number} {'|'} {remained}{verb}",
+          "effectiveBuildingsOver": "over",
+          "effectiveBuildingsShort": "short",
+          "overProducing": "Over producing!",
+          "underProducing": "Underproducing!",
+          "balanced": "Balanced",
+          "syncText": "Sync",
+          "syncTooltip": "Sync keeps this item and its Building Groups aligned:{br}\n• Editing the item rebalances the groups evenly.{br}\n• Editing a group updates the item's totals.{br}{br}\nAdding a second group turns sync off so your manual adjustments aren't overwritten (it stays off after deleting groups).{br}\nRe-enable it any time to restore automatic syncing.",
+          "syncEnabled": "Enabled",
+          "syncDisabled": "Disabled",
+          "add": "Add Building Group",
+          "help": "Help"
         },
         "product": {
           "itemLabel": "Item",
@@ -234,6 +254,11 @@
       "powerConsumed": "Power consumed",
       "factoriesInPlan": "Factories in plan",
       "openFullscreen": "Open fullscreen summary"
+    },
+    "factoy": {
+      "productsAndPower": {
+        "buildingGroups": {}
+      }
     }
   },
   "tabnavigation": {
