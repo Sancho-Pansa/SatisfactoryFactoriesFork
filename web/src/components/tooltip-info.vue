@@ -8,7 +8,9 @@
           />
         </span>
       </template>
-      <span v-html="text" />
+      <slot>
+        <span v-html="text" />
+      </slot>
     </v-tooltip>
   </span>
 </template>
@@ -16,7 +18,7 @@
 <script setup lang="ts">
 
   const propsComp = withDefaults(defineProps<{
-    text: string
+    text?: string
     classes?: string
     isCaption?: boolean
   }>(), {
