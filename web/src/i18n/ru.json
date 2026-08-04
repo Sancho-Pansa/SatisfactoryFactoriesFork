@@ -7,7 +7,10 @@
     },
     "hideButton": "Скрыть",
     "showButton": "Показать",
-    "or": "ИЛИ"
+    "or": "ИЛИ",
+    "items": {
+      "somersloop": "Петлевик"
+    }
   },
   "language": {
     "self": "Язык"
@@ -77,7 +80,19 @@
           "syncEnabled": "Вкл.",
           "syncDisabled": "Выкл.",
           "add": "Добавить группу строений",
-          "help": "Помощь"
+          "help": "Помощь",
+          "delete": "Удалить группу строений",
+          "overclockTooltip": "Разгон",
+          "extractorTooltip": "Снабдить эту группу Экстракторов Инопланетными энергоматрицами (5 штук на строение), подняв их коэффициент усиления энергосети с 10% до 30%.",
+          "supplyMatrices": "Включить матрицы",
+          "circuitBoost": "усиления сети за здание",
+          "somersloopsConsumedTooltip": "Возведение этой группы Экстракторов потребует",
+          "somersloopsConsumedTooltipCount": "{num} Петлевиков",
+          "somersloopsConsumbedPerBuilding": "{num} шт. на строение",
+          "cannotAmplify": "Нельзя умножать",
+          "somersloopPercentPerBuilding": "+{num}% выхода",
+          "somersloopSlotsPerBuilding": "{n} слот | {n} слота | {n} слотов",
+          "partsPerBuilding": "{num} на строение"
         },
         "product": {
           "itemLabel": "Предмет",

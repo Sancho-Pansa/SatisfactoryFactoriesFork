@@ -7,7 +7,10 @@
     },
     "hideButton": "Hide",
     "showButton": "Show",
-    "or": "OR"
+    "or": "OR",
+    "items": {
+      "somersloop": "Somersloop"
+    }
   },
   "buildings": {
     "assemblermk1": "Assembler",
@@ -103,7 +106,19 @@
           "syncEnabled": "Enabled",
           "syncDisabled": "Disabled",
           "add": "Add Building Group",
-          "help": "Help"
+          "help": "Help",
+          "delete": "Delete Building Group",
+          "overclockTooltip": "Overclock",
+          "extractorTooltip": "Supply this group's augmenters with Alien Power Matrixes (5/min each), raising their circuit boost from 10% to 30% of the grid's generation.",
+          "supplyMatrices": "Inject Matrices",
+          "circuitBoost": "circuit boost / building",
+          "somersloopsConsumedTooltip": "Constructing each Alien Power Augmenter consumes",
+          "somersloopsConsumedTooltipCount": "{num} Somersloops",
+          "somersloopsConsumbedPerBuilding": "{num} / building",
+          "cannotAmplify": "Cannot be amplified",
+          "somersloopPercentPerBuilding": "+{num}% output / building",
+          "somersloopSlotsPerBuilding": "{n} slot | {n} slots",
+          "partsPerBuilding": "{num} / building"
         },
         "product": {
           "itemLabel": "Item",
@@ -254,11 +269,6 @@
       "powerConsumed": "Power consumed",
       "factoriesInPlan": "Factories in plan",
       "openFullscreen": "Open fullscreen summary"
-    },
-    "factoy": {
-      "productsAndPower": {
-        "buildingGroups": {}
-      }
     }
   },
   "tabnavigation": {

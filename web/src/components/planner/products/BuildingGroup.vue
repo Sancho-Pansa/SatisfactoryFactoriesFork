@@ -11,7 +11,7 @@
         :disabled="item.buildingGroups.length === 1"
         icon="fas fa-trash"
         size="small"
-        title="Delete Building Group"
+        :title="$t('planner.factory.productsAndPower.buildingGroups.delete')"
         variant="outlined"
         @click="deleteGroup(group)"
       />
@@ -53,7 +53,7 @@
           class="sf-chip input unit yellow mx-1"
           variant="tonal"
         >
-          <tooltip text="Overclock">
+          <tooltip :text="$t('planner.factory.productsAndPower.buildingGroups.overclockTooltip')">
             <game-asset clickable subject="overclock-production" type="item_id" wiki-name="Clock speed" />
           </tooltip>
           <v-number-input
@@ -102,7 +102,7 @@
           class="sf-chip input mx-1"
           variant="tonal"
         >
-          <tooltip text="Supply this group's augmenters with Alien Power Matrixes (5/min each), raising their circuit boost from 10% to 30% of the grid's generation.">
+          <tooltip :text="$t('planner.factory.productsAndPower.buildingGroups.extractorTooltip')">
             <game-asset subject="AlienPowerFuel" type="item" />
           </tooltip>
           <v-switch
@@ -112,12 +112,14 @@
             :color="sfColors.circuitBoost.color"
             density="compact"
             hide-details
-            label="Inject Matrices"
+            :label="$t('planner.factory.productsAndPower.buildingGroups.supplyMatrices')"
             @update:model-value="updateGroup(group)"
           />
         </v-chip>
         <div class="underchip text-boost">
-          <span :id="`${factory.id}-${group.id}-boost-percent`">+{{ group.supplyMatrixes ? '30' : '10' }}% circuit boost / building</span>
+          <span :id="`${factory.id}-${group.id}-boost-percent`">
+            {{ `+${group.supplyMatrixes ? '30' : '10' }% ${$t('planner.factory.productsAndPower.buildingGroups.circuitBoost')}` }}
+          </span>
         </div>
       </div>
       <div>
@@ -125,7 +127,9 @@
           class="sf-chip input sloop mx-1"
           variant="tonal"
         >
-          <tooltip :text="`Constructing each Alien Power Augmenter consumes ${somersloopBuildCost} Somersloops`">
+          <tooltip
+            :text="`${$t('planner.factory.productsAndPower.buildingGroups.somersloopsConsumedTooltip')} ${$t('planner.factory.productsAndPower.buildingGroups.somersloopsConsumedTooltipCount', { num: somersloopBuildCost })}`"
+          >
             <game-asset clickable subject="somersloop" type="item_id" wiki-name="Somersloop" />
           </tooltip>
           <v-number-input
@@ -141,7 +145,9 @@
             width="80px"
           />
         </v-chip>
-        <div class="underchip text-purple-lighten-1">{{ somersloopBuildCost }} / building</div>
+        <div class="underchip text-purple-lighten-1">
+          {{ $t('planner.factory.productsAndPower.buildingGroups.somersloopsConsumbedPerBuilding', {num: somersloopBuildCost }) }}
+        </div>
       </div>
     </template>
     <template v-if="group.type === ItemType.Product">
@@ -150,7 +156,7 @@
           class="sf-chip input sloop mx-1"
           variant="tonal"
         >
-          <tooltip text="Somersloop">
+          <tooltip :text="$t('common.items.somersloop')">
             <game-asset clickable subject="somersloop" type="item_id" wiki-name="Somersloop" />
           </tooltip>
           <v-number-input
@@ -170,9 +176,13 @@
           <debounce-spinner :active="pendingRecalc === `group-${group.id}`" />
         </v-chip>
         <div class="underchip text-purple-lighten-1">
-          <span v-if="somersloopSlots === 0">Cannot be amplified</span>
-          <span v-else-if="(group.somersloops ?? 0) > 0">+{{ somersloopBoostPercent }}% output / building</span>
-          <span v-else>{{ somersloopSlots }} slot{{ somersloopSlots > 1 ? 's' : '' }} / building</span>
+          <span v-if="somersloopSlots === 0">{{ $t('planner.factory.productsAndPower.buildingGroups.cannotAmplify') }}</span>
+          <span v-else-if="(group.somersloops ?? 0) > 0">
+            {{ $t('planner.factory.productsAndPower.buildingGroups.somersloopPercentPerBuilding', { num: somersloopBoostPercent }) }}
+          </span>
+          <span v-else>
+            {{ $t('planner.factory.productsAndPower.buildingGroups.somersloopSlotsPerBuilding', somersloopSlots) }}
+          </span>
         </div>
       </div>
     </template>
@@ -217,7 +227,7 @@
           class="underchip"
           :class="underchipColors(String(part))"
         >
-          {{ formatNumberFully(group.parts[part] / group.buildingCount) ?? 0 }} / building
+          {{ $t('planner.factory.productsAndPower.buildingGroups.partsPerBuilding', {num: formatNumberFully(group.parts[part] / group.buildingCount) ?? 0 }) }}
         </div>
       </div>
     </template>
@@ -261,7 +271,7 @@
           class="underchip"
           :class="underchipColors(String(part))"
         >
-          {{ formatNumberFully(group.parts[part] / group.buildingCount) }} / building
+          {{ $t('planner.factory.productsAndPower.buildingGroups.partsPerBuilding', {num: formatNumberFully(group.parts[part] / group.buildingCount) }) }}
         </div>
       </div>
     </template>
