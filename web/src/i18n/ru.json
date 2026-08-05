@@ -2,8 +2,9 @@
   "common": {
     "units": {
       "powerMW": "МВт",
+      "powerGW": "ГВт",
       "timeMin": "мин.",
-      "powerGW": "ГВт"
+      "itemsQty": "ед."
     },
     "hideButton": "Скрыть",
     "showButton": "Показать",
@@ -177,7 +178,7 @@
         "fixImportTooltip": "Для этого предмета выбрано несколько импортеров. Планировщик не знает, какой именно вы хотите исправить.<br />Пожалуйста, поправьте источник самостоятельно в разделе \"Импорт\".",
         "breakdown": {
           "production": "Выпуск",
-          "itemUnit": "{number} ед./@:common.units.timeMin",
+          "itemUnit": "+{num} @:common.units.itemsQty /@:common.units.timeMin",
           "fromImports": "Импорт",
           "fromRaw": "Затраты сырья",
           "internalConsumption": "Внутренний спрос",
@@ -186,8 +187,12 @@
           "surplus": "Избыток",
           "shortage": "Дефицит",
           "hideCalculator": "Закрыть калькулятор экспорта",
-          "showCalculator": "Калькулятор экспорта"
-        }
+          "showCalculator": "Калькулятор экспорта",
+          "itemUnitNeg": "-{num} @:common.units.itemsQty /@:common.units.timeMin"
+        },
+        "recycled": "Переработано",
+        "recycledTooltip": "Этот отход используется в производстве другой продукции этого завода.{br}Планировщик вычитает его из графы Импорт, чтобы не возникало излишка.",
+        "unpackaged": "Распаковано"
       },
       "buildings": {
         "header": "Энергопотребление строений",

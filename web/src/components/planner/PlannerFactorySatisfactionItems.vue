@@ -42,24 +42,26 @@
                     {{ $t("planner.factory.satisfaction.product") }}
                   </v-chip>
                   <v-chip v-if="showByProductChip(factory, partId.toString())" class="sf-chip byproduct x-small mr-2">
-                    Byproduct
+                    {{ $t("planner.factory.satisfaction.byproduct") }}
                   </v-chip>
                   <v-tooltip v-if="showRecycledChip(factory, partId.toString())" bottom>
                     <template #activator="{ props: activatorProps }">
                       <v-chip v-bind="activatorProps" class="sf-chip green x-small mr-2">
-                        <span class="mr-1">Recycled</span> <i class="fas fa-info-circle" />
+                        <span class="mr-1">{{ $t("planner.factory.satisfaction.recycled") }}</span> <i class="fas fa-info-circle" />
                       </v-chip>
                     </template>
-                    <span>This byproduct is used as an ingredient by other products within the same factory.<br>The planner subtracts it from the amount you need to supply via Imports, so you don't over-feed the system.</span>
+                    <i18n-t keypath="planner.factory.satisfaction.recycledTooltip" tag="span">
+                      <template #br><br></template>
+                    </i18n-t>
                   </v-tooltip>
                   <v-chip v-if="showImportedChip(factory, partId.toString())" class="sf-chip import x-small mr-2">
-                    Imported
+                    {{ $t("planner.factory.satisfaction.imported") }}
                   </v-chip>
                   <v-chip v-if="showRawChip(factory, partId.toString())" class="sf-chip cyan x-small mr-2">
-                    Raw
+                    {{ $t("planner.factory.satisfaction.raw") }}
                   </v-chip>
                   <v-chip v-if="showUnpackagedChip(factory, partId.toString())" class="sf-chip cyan x-small mr-2">
-                    Unpackaged
+                    {{ $t("planner.factory.satisfaction.unpackaged") }}
                   </v-chip>
                   <v-chip v-if="showInternalChip(factory, partId.toString())" class="sf-chip green x-small mr-2">
                     {{ $t("planner.factory.satisfaction.internal") }}
@@ -110,13 +112,13 @@
                     <v-tooltip bottom>
                       <template #activator="{ props: activatorProps }">
                         <div v-bind="activatorProps">
-                          <i class="fas fa-exclamation-circle" /><span class="ml-1">FIX GENS MANUALLY</span>
+                          <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixManually") }}</span>
                         </div>
                       </template>
                       <span>{{ $t("planner.factory.satisfaction.fixManuallyTooltip") }}</span>
                     </v-tooltip>
                   </v-btn>
-                  <p class="text-center"><b>{{ + $t("planner.factory.satisfaction.fixManuallyRodsNeeded", { rodsAmount: showFuelRodsNeeded(partId.toString(), part.amountRemaining)}) }}</b> </p>
+                  <p class="text-center font-weight-bold">{{ + $t("planner.factory.satisfaction.fixManuallyRodsNeeded", { rodsAmount: showFuelRodsNeeded(partId.toString(), part.amountRemaining)}) }} </p>
                 </template>
                 <v-btn
                   v-if="showSatisfactionItemButton(factory, partId.toString(), 'fixProduct')"
@@ -138,7 +140,7 @@
                   <v-tooltip bottom>
                     <template #activator="{ props: activatorProps }">
                       <div v-bind="activatorProps">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">CORRECT MANUALLY</span>
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.correctManually") }}</span>
                       </div>
                     </template>
                     <span>{{ $t("planner.factory.satisfaction.correctManuallyTooltip") }}</span>
@@ -164,7 +166,7 @@
                   <v-tooltip bottom>
                     <template #activator="{ props: activatorProps }">
                       <div v-bind="activatorProps">
-                        <i class="fas fa-exclamation-circle" /><span class="ml-1">Fix Import</span>
+                        <i class="fas fa-exclamation-circle" /><span class="ml-1">{{ $t("planner.factory.satisfaction.fixImport") }}</span>
                       </div>
                     </template>
                     <span>{{ $t("planner.factory.satisfaction.fixImportTooltip") }}</span>
@@ -176,48 +178,48 @@
           <td class="border-e-md satisfaction" :class="satisfactionShading(part)">
             <div v-if="satisfactionBreakdowns">
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Production</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.production") }}</span>
                 <span
                   :id="`${ factory.id }-satisfaction-${partId.toString()}-production`"
                   class="align-self-end text-right"
                 >
-                  +{{ formatNumber(part.amountSuppliedViaProduction) }}/min
+                  {{ $t("planner.factory.satisfaction.breakdown.itemUnit", { num :formatNumber(part.amountSuppliedViaProduction) }) }}
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Supply from Imports</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.fromImports") }}</span>
                 <span
                   :id="`${ factory.id }-satisfaction-${partId.toString()}-supply-input`"
                   class="align-self-end text-right"
                 >
-                  +{{ formatNumber(part.amountSuppliedViaInput ) }}/min
+                  {{ $t("planner.factory.satisfaction.breakdown.itemUnit", { num :formatNumber(part.amountSuppliedViaInput) }) }}
                 </span>
               </div>
               <div class="text-green d-flex justify-space-between align-center">
-                <span>Supply from Raw</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.fromRaw") }}</span>
                 <span
                   :id="`${ factory.id }-satisfaction-${partId.toString()}-supply-raw`"
                   class="align-self-end text-right"
                 >
-                  +{{ formatNumber(part.amountSuppliedViaRaw ) }}/min
+                  {{ $t("planner.factory.satisfaction.breakdown.itemUnit", { num :formatNumber(part.amountSuppliedViaRaw) }) }}
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>Internal Consumption</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.internalConsumption") }}</span>
                 <span
                   :id="`${ factory.id }-satisfaction-${partId.toString()}-required-production`"
                   class="align-self-end text-right"
                 >
-                  -{{ formatNumber((part.amountRequiredProduction + part.amountRequiredPower)) }}/min
+                  {{ $t("planner.factory.satisfaction.breakdown.itemUnitNeg", { num :formatNumber(part.amountSuppliedViaInput) }) }}
                 </span>
               </div>
               <div class="text-orange d-flex justify-space-between align-center">
-                <span>Exports</span>
+                <span>{{ $t("planner.factory.satisfaction.breakdown.export") }}</span>
                 <span
                   :id="`${ factory.id }-satisfaction-${partId.toString()}-required-exports`"
                   class="align-self-end text-right"
                 >
-                  -{{ formatNumber(part.amountRequiredExports ) }}/min
+                  {{ $t("planner.factory.satisfaction.breakdown.itemUnitNeg", { num :formatNumber(part.amountSuppliedViaInput) }) }}
                 </span>
               </div>
               <v-divider class="my-2" color="#ccc" />

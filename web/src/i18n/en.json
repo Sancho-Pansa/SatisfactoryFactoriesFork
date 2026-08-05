@@ -205,8 +205,12 @@
           "shortage": "Shortage",
           "hideCalculator": "Close Export Calculator",
           "showCalculator": "Export Calculator",
-          "itemUnit": "{number}/@:common.units.timeMin"
-        }
+          "itemUnit": "+{num}/@:common.units.timeMin",
+          "itemUnitNeg": "-{num}/@:common.units.timeMin"
+        },
+        "recycled": "Recycled",
+        "recycledTooltip": "This byproduct is used as an ingredient by other products within the same factory.{br}The planner subtracts it from the amount you need to supply via Imports, so you don't over-feed the system.",
+        "unpackaged": "Unpackaged"
       },
       "buildings": {
         "header": "Power & Buildings",
